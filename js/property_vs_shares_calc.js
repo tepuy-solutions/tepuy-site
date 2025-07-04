@@ -1,180 +1,120 @@
-/* ============================================================== */
-/*  Property-vs-Shares Calculator – Tepuy Solutions (July 2025)   */
-/* ============================================================== */
+/* Tepuy Solutions – Property vs Shares logic  ------------------ */
 
-/* ---------- helper: format with commas ---------- */
+/* helper: format with commas */
 const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
 
-/* ---------- helper: build one table row ---------- */
+/* helper: build one table row */
 function row(y, p, s, owed, eq, own, rent, int, depr, amort, net) {
   return `<tr>
-      <td>${y}</td><td>${fmt(p)}</td><td>${fmt(s)}</td><td>${fmt(owed)}</td>
-      <td>${fmt(eq)}</td><td>${fmt(own)}</td><td>${fmt(rent)}</td>
-      <td>${fmt(int)}</td><td>${fmt(depr)}</td><td>${fmt(amort)}</td>
-      <td>${fmt(net)}</td></tr>`;
+    <td>${y}</td><td>${fmt(p)}</td><td>${fmt(s)}</td><td>${fmt(owed)}</td>
+    <td>${fmt(eq)}</td><td>${fmt(own)}</td><td>${fmt(rent)}</td>
+    <td>${fmt(int)}</td><td>${fmt(depr)}</td><td>${fmt(amort)}</td>
+    <td>${fmt(net)}</td></tr>`;
 }
 
-/* ---------- comma-format two big inputs ---------- */
+/* comma-format big money inputs */
 ["loanAmount", "buyingCosts"].forEach(id => {
   const el = document.getElementById(id);
-  if (!el) return;
   el.addEventListener("input", () => {
     const raw = el.value.replace(/,/g, "");
     if (!isNaN(raw) && raw !== "") el.value = Number(raw).toLocaleString();
   });
 });
 
-/* ------------------------------------------------- */
-/*  MAIN                                              */
-/* ------------------------------------------------- */
 function calculate() {
-  /* grab numeric helper */
-  const num = id =>
-    parseFloat(document.getElementById(id).value.replace(/,/g, ""));
+  const n = id => parseFloat(document.getElementById(id).value.replace(/,/g, ""));
 
   /* inputs */
-  const loan          = num("loanAmount");
-  const downPct       = num("downpayment") / 100;
-  const buyCosts      = num("buyingCosts");
-  const years         = num("loanPeriod");
-  const rate          = num("loanInterestRate") / 100;
-  const ownPct        = num("owningCosts") / 100;
-  const agentPct      = num("agentFees") / 100;
-  const occupancy     = num("occupancyRate") / 100;
-  const propApp       = num("propertyAppreciation") / 100;
-  const rentYield     = num("rentalIncome") / 100;
-  const sharesReturn  = num("stockMarketAppreciation") / 100;
-  const buildPct      = num("buildingComponent") / 100;
-  const tax           = num("taxBracket") / 100;
-  const yrsToRet      = num("yearsToRetirement");
+  const loan = n("loanAmount"),
+        dp   = n("downpayment") / 100,
+        costs= n("buyingCosts"),
+        yrs  = n("loanPeriod"),
+        r    = n("loanInterestRate") / 100,
+        ownP = n("owningCosts") / 100,
+        agent= n("agentFees") / 100,
+        occ  = n("occupancyRate") / 100,
+        app  = n("propertyAppreciation") / 100,
+        yield= n("rentalIncome") / 100,
+        share= n("stockMarketAppreciation") / 100,
+        build= n("buildingComponent") / 100,
+        tax  = n("taxBracket") / 100,
+        yrsRet = n("yearsToRetirement");
 
   /* quick calcs */
-  const lmiPct   = downPct >= 0.20 ? 0 :
-                   -(0.046 - 0.01) / (0.196 - 0.05) * downPct + 0.058;
-  const lmiAmt   = Math.round(loan * lmiPct / (1 + lmiPct));
-  const buyPrice = Math.round(loan / ((1 - downPct) * (1 + lmiPct)));
-  const upfront  = Math.round(downPct * buyPrice + buyCosts);
-  const wkPay    = (((rate / 12) * loan * Math.pow(1 + rate / 12, years * 12)) /
-                   (Math.pow(1 + rate / 12, years * 12) - 1)) * 12 / 52;
+  const lmiPct = dp >= .2 ? 0 : -(0.046 - 0.01)/(0.196 - 0.05)*dp + 0.058;
+  const lmi    = Math.round(loan * lmiPct / (1 + lmiPct));
+  const price  = Math.round(loan / ((1 - dp) * (1 + lmiPct)));
+  const upfront= Math.round(dp * price + costs);
+  const wkPay  = (((r/12) * loan * Math.pow(1+r/12, yrs*12)) /
+                 (Math.pow(1+r/12, yrs*12)-1)) * 12 / 52;
 
-  /* update quick-output boxes */
-  const q = id => (document.getElementById(id).value = "");
-  q("lmiPercentage"); q("lmiAmount"); q("buyPrice");
-  q("totalCashUpfront"); q("weeklyPayment");
-
-  document.getElementById("lmiPercentage").value = (lmiPct * 100).toFixed(2);
-  document.getElementById("lmiAmount").value     = fmt(lmiAmt);
-  document.getElementById("buyPrice").value      = fmt(buyPrice);
+  /* update quick-outputs */
+  document.getElementById("lmiPercentage").value = (lmiPct*100).toFixed(2);
+  document.getElementById("lmiAmount").value     = fmt(lmi);
+  document.getElementById("buyPrice").value      = fmt(price);
   document.getElementById("totalCashUpfront").value = fmt(upfront);
   document.getElementById("weeklyPayment").value = wkPay.toFixed(2);
 
-  /* projections */
-  let propVal = buyPrice,
-      shares  = upfront,
-      owed    = loan;
+  /* projection loop */
+  let pVal = price, shares = upfront, owed = loan,
+      labels=[], eqArr=[], shArr=[], rows="";
 
-  const labels = [], eqData = [], shData = [];
-  let rowsHTML = "";
+  for (let y=0; y<=yrs; y++) {
+    const rent     = Math.round(pVal * yield * occ);
+    const interest = Math.round(owed * r);
 
-  for (let y = 0; y <= years; y++) {
-    const rent      = Math.round(propVal * rentYield * occupancy);
-    const interest  = Math.round(owed * rate);
-
-    let own  = 0, depr = 0, amort = 0, net  = 0;
-
-    if (y > 0) {
-      own   = Math.round(propVal * (ownPct + agentPct));
-      depr  = Math.round((buyPrice * buildPct) / 40);
-      amort = Math.round(wkPay * 52 - interest);
-
-      const cashFlow = rent - (own + interest + depr);
-      net = (cashFlow < 0 && y < yrsToRet)
-        ? Math.round(cashFlow * (1 - tax) - amort)
-        : Math.round(rent - (own + interest) - amort);
-
-      shares = Math.round(shares * (1 + sharesReturn) - net);
+    let own=0,depr=0,amort=0,net=0;
+    if (y>0) {
+      own  = Math.round(pVal*(ownP+agent));
+      depr = Math.round(price*build/40);
+      amort= Math.round(wkPay*52 - interest);
+      const cash = rent - (own+interest+depr);
+      net = (cash<0 && y<yrsRet) ? Math.round(cash*(1-tax)-amort)
+                                 : Math.round(rent - (own+interest) - amort);
+      shares = Math.round(shares*(1+share) - net);
     }
 
-    /* push chart points */
     labels.push(`Yr ${y}`);
-    eqData.push(propVal - owed);
-    shData.push(shares);
+    eqArr.push(pVal-owed);
+    shArr.push(shares);
+    rows += row(y,pVal,shares,owed,pVal-owed,own,rent,interest,depr,amort,net);
 
-    /* build table row */
-    rowsHTML += row(
-      y, propVal, shares, owed, propVal - owed,
-      own, rent, interest, depr, amort, net
-    );
-
-    /* update for next year */
-    propVal = Math.round(propVal * (1 + propApp));
-    owed    = Math.round(owed * (1 + rate) - wkPay * 52);
+    pVal = Math.round(pVal*(1+app));
+    owed = Math.round(owed*(1+r) - wkPay*52);
   }
 
-  /* ---- inject table ---- */
+  /* inject table */
   document.getElementById("results").innerHTML = `
     <div class="table-container">
       <table>
-        <thead>
-          <tr>
-            <th>Year</th><th>Property</th><th>Shares</th><th>Capital Owed</th>
-            <th>Equity</th><th>Own Costs</th><th>Rent</th><th>Interest</th>
-            <th>Deprec.</th><th>Amort.</th><th>Net CF</th>
-          </tr>
-        </thead>
-        <tbody>${rowsHTML}</tbody>
+        <thead><tr>
+          <th>Year</th><th>Property</th><th>Shares</th><th>Capital Owed</th>
+          <th>Equity</th><th>Own Costs</th><th>Rent</th><th>Interest</th>
+          <th>Deprec.</th><th>Amort.</th><th>Net CF</th></tr></thead>
+        <tbody>${rows}</tbody>
       </table>
     </div>`;
 
-  /* ---- draw / update chart ---- */
-  const canvas = document.getElementById("investmentChart");
-  if (!canvas) {
-    console.error("Canvas #investmentChart not found");
-    return;
-  }
-  const ctx = canvas.getContext("2d");
-
-  try {
-    if (window.equityChart) window.equityChart.destroy();
-    window.equityChart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Equity",
-            data: eqData,
-            fill: true,
-            backgroundColor: "rgba(40,167,69,.25)",
-            borderColor: "#28a745",
-            tension: .35
-          },
-          {
-            label: "Shares Value",
-            data: shData,
-            fill: true,
-            backgroundColor: "rgba(23,162,184,.25)",
-            borderColor: "#17a2b8",
-            tension: .35
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: "index", intersect: false },
-        scales: {
-          y: { ticks: { callback: v => fmt(v) } }
-        },
-        plugins: {
-          legend: { position: "top" }
-        }
-      }
-    });
-  } catch (err) {
-    console.error("Chart build failed:", err);
-  }
+  /* chart */
+  const ctx = document.getElementById("investmentChart").getContext("2d");
+  if (window.eqChart) window.eqChart.destroy();
+  window.eqChart = new Chart(ctx,{
+    type:"line",
+    data:{labels,
+      datasets:[
+        {label:"Equity",data:eqArr,fill:true,
+         backgroundColor:"rgba(40,167,69,.25)",borderColor:"#28a745",tension:.35},
+        {label:"Shares Value",data:shArr,fill:true,
+         backgroundColor:"rgba(23,162,184,.25)",borderColor:"#17a2b8",tension:.35}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:"index",intersect:false},
+      scales:{y:{ticks:{callback:v=>fmt(v)}}}
+    }
+  });
 }
 
-/* ---------- expose for HTML button ---------- */
+/* expose for button */
 window.calculate = calculate;
