@@ -110,4 +110,11 @@ th,td{border:1px solid #ccc;padding:10px;text-align:center;font-size:.95rem}
 thead{background:#4caf50;color:#fff}
 .disclaimer{margin:40px auto 0 auto;background:#fff3cd;border-left:5px solid #ffa502;
            padding:12px;font-size:.9rem;max-width:900px}
+/* ---------- Property vs Shares enhancements ---------- */
+.quick-out label{display:flex;flex-direction:column}
+.quick-out input{background:#f7f7f7;color:#333}
+.chart-container,canvas{width:100%;max-width:900px;margin:auto}
+.result-box.error{background:#ffe7e7;border-left:6px solid #dc3545}
+.grid-2col.quick-out{margin-top:25px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+
 
