@@ -2,175 +2,116 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Retirement Goal Calculator</title>
-  <link rel="stylesheet" href="/css/tepuy.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retirement Goal Calculator | Tepuy Solutions</title>
+
+  <!-- Brand assets -->
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/tepuy.css" />
+
+  <!-- Page-specific styles -->
   <style>
-    body {
-      background: url('/img/auyantepui.jpg') center/cover no-repeat fixed;
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      color: #212529;
+    body{
+      background:url('/img/auyantepui.jpg') center/cover no-repeat fixed;
+      font-family:'Inter',sans-serif;
+      margin:0;
+      color:#212529;
     }
-
-    .navbar {
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: start;
+    .navbar{
+      background:rgba(255,255,255,.9);
+      display:flex;
+      align-items:center;
+      padding:1rem;
+      gap:12px;
     }
-
-    .logo {
-      height: 40px;
-      margin-right: 10px;
+    .navbar a{color:#212529;font-weight:600;margin-left:14px}
+    .logo{height:40px}
+    .wrapper{
+      max-width:750px;
+      margin:60px auto;
+      background:rgba(255,255,255,.9);
+      padding:30px;
+      border-radius:10px;
+      box-shadow:0 4px 12px rgba(0,0,0,.1);
     }
-
-    .main-container {
-      max-width: 700px;
-      margin: 40px auto;
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 30px;
-      border-radius: 10px;
+    h1{text-align:center;margin-bottom:24px}
+    label{display:block;font-weight:600;margin:14px 0 6px}
+    input{
+      width:100%;padding:10px;border:1px solid #ccc;border-radius:5px;
+      background:#fff9e5;
     }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
+    button{
+      display:block;width:100%;margin:24px auto 0;
+      background:#4CAF50;color:#fff;font-weight:700;
+      padding:12px;border:none;border-radius:5px;cursor:pointer;
     }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: 600;
+    .result-box{
+      margin-top:20px;padding:16px;border-radius:8px;font-weight:600;text-align:center;
     }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      background-color: #fff9e5;
+    .success{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
+    .warning{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb}
+    table{width:100%;border-collapse:collapse;margin-top:25px}
+    th,td{padding:10px;border:1px solid #ccc;text-align:right}
+    th{background:#4CAF50;color:#fff}
+    tr:nth-child(even){background:#f4f4f4}
+    .disclaimer{
+      margin-top:25px;padding:14px;font-size:.85rem;color:#856404;
+      background:#fff3cd;border:1px solid #ffeeba;border-radius:6px;
     }
-
-    .button-container {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .result-box {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-
-    .result-success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .result-fail {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: right;
-      border-bottom: 1px solid #ddd;
-    }
-
-    th {
-      background-color: #4CAF50;
-      color: white;
-      text-align: center;
-    }
-
-    .disclaimer {
-      font-size: 0.85rem;
-      margin-top: 20px;
-      padding: 12px;
-      background: #fff3cd;
-      border: 1px solid #ffeeba;
-      border-radius: 5px;
-      color: #856404;
-    }
-
-    footer {
-      text-align: center;
-      color: white;
-      padding: 20px;
-      background-color: #2E3A59;
-      margin-top: 40px;
+    @media(max-width:600px){
+      .wrapper{margin:20px 10px;padding:20px}
+      body{background:#f8f9fa}
     }
   </style>
 </head>
 <body>
 
+  <!-- Navbar -->
   <div class="navbar">
-    <img src="/img/tepuy_logo.png" alt="Tepuy Logo" class="logo" />
-    <span><strong>Retirement Goal Calculator</strong></span>
+    <img src="/img/tepuy_logo.png" alt="Tepuy logo" class="logo">
+    <strong>Retirement Goal Calculator</strong>
   </div>
 
-  <div class="main-container">
+  <!-- Main card -->
+  <div class="wrapper">
     <h1>Retirement Goal Calculator</h1>
-    <p>This calculator helps estimate the capital needed to retire comfortably based on your assumptions.</p>
 
-    <label>Current Age</label>
-    <input type="number" id="age" value="45">
+    <label for="age">Current Age</label>
+    <input id="age" type="number" value="45">
 
-    <label>Current Capital to Invest ($)</label>
-    <input type="number" id="capital" value="100000">
+    <label for="capital">Current Capital to Invest ($)</label>
+    <input id="capital" type="number" value="100000">
 
-    <label>Expected Annual Return (%)</label>
-    <input type="number" id="return" value="7">
+    <label for="returnRate">Expected Annual Return (%)</label>
+    <input id="returnRate" type="number" value="7">
 
-    <label>Expected Inflation Rate (%)</label>
-    <input type="number" id="inflation" value="2.5">
+    <label for="inflation">Expected Inflation Rate (%)</label>
+    <input id="inflation" type="number" value="2.5">
 
-    <label>Withdrawal Rate (% of capital annually)</label>
-    <input type="number" id="withdrawal" value="4.4">
-    <small>Suggested: 4.4%</small>
+    <label for="withdrawal">Withdrawal Rate (% of capital annually)
+      <small id="swrHint" style="font-weight:400;color:#666;display:block">Suggested: 4.4%</small>
+    </label>
+    <input id="withdrawal" type="number" value="4.4">
 
-    <label>Monthly Contributions (Today's Dollars)</label>
-    <input type="number" id="contribution" value="1000">
+    <label for="contribution">Monthly Contributions (Today's Dollars)</label>
+    <input id="contribution" type="number" value="1000">
 
-    <label>Target Monthly Income (Today’s Dollars)</label>
-    <input type="number" id="target" value="4000">
+    <label for="targetIncome">Target Monthly Income (Today's Dollars)</label>
+    <input id="targetIncome" type="number" value="4000">
 
-    <div class="button-container">
-      <button onclick="calculate()">Calculate</button>
-    </div>
+    <button onclick="calculateRetirement()">Calculate 🎯</button>
 
-    <div id="result" class="result-box"></div>
-    <div id="output"></div>
+    <div id="summary" class="result-box" style="display:none"></div>
+    <div id="projectionTable"></div>
 
-    <div class="disclaimer">
-      This tool offers estimates to help plan your retirement, based on your inputs. It’s not financial advice, and Tepuy Solutions isn’t responsible for decisions made. Consult a financial advisor for tailored guidance.
-    </div>
+    <p class="disclaimer">
+      This tool provides estimates for general information only and does not constitute financial advice.
+      Please consult a qualified adviser before making investment or retirement decisions.
+    </p>
   </div>
 
-  <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
+  <footer>&copy; 2025 Tepuy Solutions</footer>
 
   <script src="/js/retirement_calc.js"></script>
 </body>
