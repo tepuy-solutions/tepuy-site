@@ -2,125 +2,101 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tepuy Solutions | Store</title>
-
-  <!-- main site stylesheet -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Store | Tepuy Solutions</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/css/style.css" />
-
-  <!-- store-specific tweaks -->
   <style>
-    .store-hero {
-      text-align: center;
-      padding: 60px 20px 30px;
-      background: linear-gradient(#f0f7ff, #ffffff);
-    }
-    .store-hero h1 {
-      font-size: 2.2rem;
-      margin-bottom: 0.5rem;
-      color: #004080;
-    }
-    .store-hero p {
-      font-size: 1.1rem;
-      color: #444;
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f3f4f6;
+      color: #333;
     }
 
-    .product-grid {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      display: grid;
-      gap: 1.5rem;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    p.description {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
     }
 
     .product-card {
       background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, .04);
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      transition: transform .2s ease;
-    }
-    .product-card:hover { transform: translateY(-4px); }
-
-    .product-card h3 {
-      margin: 0 0 0.5rem;
-      font-size: 1.3rem;
-      color: #004080;
-    }
-    .product-card p {
-      flex: 1;
-      font-size: 0.95rem;
-      line-height: 1.4;
-      color: #555;
-    }
-    .price-tag {
-      font-weight: 700;
-      color: #27a745;
-      margin: 1rem 0 0.75rem;
-      font-size: 1.1rem;
-    }
-    .btn-buy {
-      display: inline-block;
+      padding: 25px;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.07);
       text-align: center;
+    }
+
+    .product-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .product-card p {
+      font-size: 1rem;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    .product-card .btn {
       background: #4CAF50;
-      color: #fff;
-      padding: 10px 16px;
+      color: white;
+      padding: 12px 20px;
       border-radius: 8px;
       text-decoration: none;
-      font-weight: 600;
-      transition: background .25s ease;
+      font-weight: bold;
+      transition: background 0.3s ease;
+      display: inline-block;
     }
-    .btn-buy:hover { background: #388e3c; }
 
-    @media (max-width: 500px) {
-      .store-hero h1 { font-size: 1.7rem; }
+    .product-card .btn:hover {
+      background: #388e3c;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #777;
     }
   </style>
 </head>
 <body>
-
-  <!-- Shared navigation -->
   <!--#include virtual="/nav.html" -->
 
-  <!-- Hero banner -->
-  <section class="store-hero">
-    <h1>Digital Products & Calculators</h1>
-    <p>Premium spreadsheets and guides to boost your financial decision-making.</p>
-  </section>
+  <div class="container">
+    <h1>🛍️ Tepuy Solutions Store</h1>
+    <p class="description">Browse our growing collection of calculators, guides, and digital tools designed for Australians who want to make smarter financial decisions.</p>
 
-  <!-- Product grid -->
-  <section class="product-grid">
+    <div class="product-card">
+      <h2>🏡 Rent vs Buy Guide (PDF)</h2>
+      <p>A free, practical guide to help Australians decide whether to rent or buy in 2025. Includes worked examples, tips, and scenarios.</p>
+      <a href="https://tepuysolutions.gumroad.com/l/nuqtv" class="btn" target="_blank" rel="noopener">📥 Download for Free</a>
+    </div>
 
-    <!-- Sample PDF product -->
-    <article class="product-card">
-      <h3>Rent vs Buy Calculator Guide (PDF)</h3>
-      <p>An 8-page guide explaining our Rent vs Buy Excel calculator, key inputs, and common Australian property scenarios.</p>
-      <div class="price-tag">FREE sample</div>
-      <!-- direct download for now; swap with Gumroad embed later -->
-      <a href="rent_vs_buy_calculator_guide.pdf" class="btn-buy" download>Download PDF</a>
-    </article>
+    <!-- Future products will be added below -->
 
-    <!-- Placeholder cards (add more later) -->
-    <article class="product-card">
-      <h3>Retirement Planner (Excel)</h3>
-      <p>Plan superannuation, investments and pension income to see if you’ll hit your
-         target nest-egg.</p>
-      <div class="price-tag">$9.99</div>
-      <a class="btn-buy" style="background:#6c757d;cursor:not-allowed;">Coming Soon</a>
-    </article>
+  </div>
 
-    <article class="product-card">
-      <h3>Compound Interest Tracker (Excel)</h3>
-      <p>Visualise how monthly contributions and market returns grow your savings over time.</p>
-      <div class="price-tag">$4.99</div>
-      <a class="btn-buy" style="background:#6c757d;cursor:not-allowed;">Coming Soon</a>
-    </article>
-
-  </section>
-
+  <footer>
+    &copy; 2025 Tepuy Solutions. All rights reserved.
+  </footer>
 </body>
 </html>
