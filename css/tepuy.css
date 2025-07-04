@@ -117,4 +117,27 @@ thead{background:#4caf50;color:#fff}
 .result-box.error{background:#ffe7e7;border-left:6px solid #dc3545}
 .grid-2col.quick-out{margin-top:25px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 
+/* ===== Property-vs-Shares table & chart polish ===== */
+.table-container{overflow-x:auto;margin-top:25px}
+.table-container table{width:100%;border-collapse:collapse;background:#fff;font-size:.95rem}
+.table-container th,
+.table-container td{border:1px solid #ccc;padding:8px;text-align:right}
+.table-container thead th{position:sticky;top:0;background:#4caf50;color:#fff;z-index:2}
+.table-container tr:nth-child(even){background:#f7f7f7}
+
+@media(max-width:640px){
+  .table-container table{font-size:.8rem}
+  .quick-out{grid-template-columns:1fr !important}
+}
+
+/* Chart wrapper (canvas is already responsive) */
+#investmentChart{
+  max-width:900px;
+  width:100%;
+  height:50vh;
+}
+@media(max-width:640px){
+  #investmentChart{height:40vh}
+}
+
 
