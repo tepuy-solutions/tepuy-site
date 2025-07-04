@@ -6,14 +6,13 @@
   <title>Retirement Goal Calculator | Tepuy Solutions</title>
 
   <!-- brand assets -->
-  <link rel="icon" type="image/png" href="/img/tepuy_logo.png"/>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+  <link rel="icon" type="image/png" href="/img/favicon.png"/>
   <link rel="stylesheet" href="/css/tepuy.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <!-- NAVBAR (same on every page) -->
+  <!-- NAVBAR ----------------------------------------------------------- -->
   <header class="navbar">
     <div class="logo-title">
       <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo">
@@ -28,138 +27,130 @@
     </nav>
   </header>
 
-  <!-- MAIN CALCULATOR -->
-  <section class="section">
+  <!-- MAIN ------------------------------------------------------------- -->
+  <section class="section" style="max-width:750px">
     <h1 style="text-align:center">Retirement Goal Calculator</h1>
 
-    <!-- ► input form  --------------------------------------------------- -->
-    <form id="retirementForm" class="card" style="max-width:700px;margin:auto">
+    <!-- INPUT CARD -->
+    <form id="retirementForm" class="card">
       <label>Current Age
-        <input type="number" id="currentAge" value="45" min="0">
+        <input type="number" id="currentAge" value="45" min="0" max="120">
       </label>
 
-      <label>Current Capital to Invest ($)
+      <label>Current Capital ($)
         <input type="text" id="currentCapital" value="100,000">
       </label>
 
-      <label>Expected Annual Return (%)
-        <input type="number" id="rateOfReturn" value="7" step="0.1">
-      </label>
+      <label>Annual Return (%) <input type="number" id="rateOfReturn" value="7" step="0.1"></label>
 
-      <label>Expected Inflation Rate (%)
-        <input type="number" id="inflationRate" value="2.5" step="0.1">
-      </label>
+      <label>Inflation (%) <input type="number" id="inflationRate" value="2.5" step="0.1"></label>
 
-      <label>Withdrawal Rate (% of capital annually)<br>
-        <small id="suggestedWithdrawal">Suggested: calculating…</small>
+      <label>
+        Safe Withdrawal Rate (%) 
+        <small id="suggestedWithdrawal" style="display:block;font-weight:400;font-size:.9rem;color:var(--secondary-color)">
+          Suggested: auto-calc
+        </small>
         <input type="number" id="withdrawalRate" value="4.4" step="0.1">
       </label>
 
-      <label>Monthly Contributions (today $)
+      <label>Monthly Contribution ($)
         <input type="text" id="monthlySavings" value="1,000">
       </label>
 
-      <label>Target Monthly Income (today $)
+      <label>Target Monthly Income ($)
         <input type="text" id="desiredMonthlyIncome" value="4,000">
       </label>
 
-      <button type="button" class="primary" style="width:100%" onclick="calculateRetirement()">
-        Calculate
+      <button type="button" class="primary" style="width:100%;margin-top:24px" onclick="calculateRetirement()">
+        Calculate&nbsp;🎯
       </button>
     </form>
 
-    <!-- ► disclaimer & messages ---------------------------------------- -->
-    <p class="disclaimer" style="max-width:700px;margin:25px auto">
-      <strong>Disclaimer:</strong> This tool is educational only and does not constitute financial advice.
-      Consult a licensed adviser for personalised recommendations.
-    </p>
+    <!-- SUMMARY -->
+    <div id="result" class="card" style="display:none;margin-top:20px"></div>
 
-    <div id="result" class="result" style="display:none;max-width:700px;margin:auto"></div>
-
-    <!-- ► projection table --------------------------------------------- -->
-    <div class="table-container" style="max-width:700px;margin:auto">
-      <table id="projectionTable" style="display:none">
+    <!-- PROJECTION TABLE -->
+    <div class="card table-container" style="display:none;margin-top:20px">
+      <table id="projectionTable">
         <thead>
-          <tr>
-            <th>Age</th>
-            <th>Capital ($)</th>
-            <th>Infl-Adj Goal ($)</th>
-            <th>Annual Contribution ($)</th>
-          </tr>
+          <tr><th>Age</th><th>Capital ($)</th><th>Infl-Adj Goal ($)</th><th>Annual Contrib ($)</th></tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
+
+    <!-- DISCLAIMER -->
+    <p class="card" style="background:#fff8e1;color:#7b5e00;margin-top:30px">
+      <strong>Disclaimer:</strong> This tool provides general information only and does not take
+      your personal circumstances into account. Seek licensed financial advice before making decisions.
+    </p>
   </section>
 
   <footer>&copy; 2025 Tepuy Solutions</footer>
 
-  <!-- ► JS logic (kept the same, just tidied) --------------------------- -->
-  <script>
-    /* --- Helper: format commas as you type ---------------------------- */
-    ['currentCapital','monthlySavings','desiredMonthlyIncome'].forEach(id=>{
-      const el=document.getElementById(id);
-      el.addEventListener('input',()=>{
-        const n = el.value.replace(/,/g,'');
-        if(!isNaN(n)&&n!==''){ el.value = Number(n).toLocaleString(); }
-      });
-    });
+<!-- JS ----------------------------------------------------------------- -->
+<script>
+/* format fields with commas */
+['currentCapital','monthlySavings','desiredMonthlyIncome'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{
+    const raw=el.value.replace(/,/g,'');
+    if(!isNaN(raw)&&raw!=='') el.value=parseFloat(raw).toLocaleString();
+  });
+});
 
-    /* --- Suggest a safe withdrawal rate ------------------------------- */
-    function suggestWithdrawalRate(){
-      const r=parseFloat(rateOfReturn.value)/100,
-            i=parseFloat(inflationRate.value)/100;
-      const w=((1+r)/(1+i)-1)*100;
-      if(isFinite(w)&&w>0){ withdrawalRate.value=w.toFixed(1);
-        suggestedWithdrawal.textContent=`Suggested: ${w.toFixed(1)}%`; }
-    }
-    rateOfReturn.addEventListener('input',suggestWithdrawalRate);
-    inflationRate.addEventListener('input',suggestWithdrawalRate);
-    document.addEventListener('DOMContentLoaded',suggestWithdrawalRate);
+function suggestWR(){
+  const r=(+rateOfReturn.value||0)/100,
+        i=(+inflationRate.value||0)/100,
+        w=((1+r)/(1+i)-1)*100;
+  if(w>0){ withdrawalRate.value=w.toFixed(1);
+    suggestedWithdrawal.textContent=`Suggested: ${w.toFixed(1)} %`; }
+}
+rateOfReturn.addEventListener('input',suggestWR);
+inflationRate.addEventListener('input',suggestWR);
+document.addEventListener('DOMContentLoaded',suggestWR);
 
-    /* --- Core calculation --------------------------------------------- */
-    function calculateRetirement(){
-      const age          = +currentAge.value,
-            capitalNow   = +currentCapital.value.replace(/,/g,'')||0,
-            r            = (+rateOfReturn.value)/100,
-            infl         = (+inflationRate.value)/100,
-            wr           = (+withdrawalRate.value)/100,
-            contribMonth = +monthlySavings.value.replace(/,/g,'')||0,
-            incomeMonth  = +desiredMonthlyIncome.value.replace(/,/g,'')||0;
+function calculateRetirement(){
+  const age        =+currentAge.value||0,
+        capNow     =+currentCapital.value.replace(/,/g,'')||0,
+        r          =(+rateOfReturn.value)/100,
+        infl       =(+inflationRate.value)/100,
+        wr         =(+withdrawalRate.value)/100,
+        mContrib   =+monthlySavings.value.replace(/,/g,'')||0,
+        mIncome    =+desiredMonthlyIncome.value.replace(/,/g,'')||0,
+        goalToday  =(mIncome*12)/wr;
 
-      if(!(age>=0&&age<120)){ alert('Enter a valid age (0-120)'); return; }
+  let cap=capNow, yrs=0, rows='';
+  const tbody=document.querySelector('#projectionTable tbody');
+  tbody.innerHTML='';
 
-      const targetToday = (incomeMonth*12)/wr;
-      let cap = capitalNow, years = 0, rows='';
+  while(yrs<100){
+    const goalAdj=goalToday*Math.pow(1+infl,yrs);
+    const yearlyCon=mContrib*12*Math.pow(1+infl,yrs);
 
-      const tbody = projectionTable.querySelector('tbody');
-      tbody.innerHTML='';
+    rows+=`
+      <tr>
+        <td>${age+yrs}</td>
+        <td>$${Math.round(cap).toLocaleString()}</td>
+        <td>$${Math.round(goalAdj).toLocaleString()}</td>
+        <td>$${Math.round(yearlyCon).toLocaleString()}</td>
+      </tr>`;
 
-      while(years<100){
-        const targetAdj = targetToday*Math.pow(1+infl,years);
-        const annualCon = contribMonth*12*Math.pow(1+infl,years);
+    if(cap>=goalAdj) break;
+    cap = cap*(1+r)+yearlyCon;
+    yrs++;
+  }
+  tbody.innerHTML=rows;
+  document.querySelector('.table-container').style.display='block';
 
-        rows +=`
-          <tr>
-            <td>${age+years}</td>
-            <td>$${Math.round(cap).toLocaleString()}</td>
-            <td>$${Math.round(targetAdj).toLocaleString()}</td>
-            <td>$${Math.round(annualCon).toLocaleString()}</td>
-          </tr>`;
-
-        if(cap>=targetAdj) break;
-        cap = cap*(1+r)+annualCon;
-        years++;
-      }
-      tbody.innerHTML=rows;
-      projectionTable.style.display='table';
-
-      result.className='result';
-      result.style.display='block';
-      result.textContent = years<100
-        ? `Goal reached at age ${age+years} (in ${years} years) with ≈ $${Math.round(cap).toLocaleString()}`
-        : `Goal not reachable within 100 years under current assumptions.`;
-    }
-  </script>
+  const res=document.getElementById('result');
+  res.style.display='block';
+  res.style.background= (yrs<100)?'#e8f5e9':'#ffebee';
+  res.style.color       =(yrs<100)?'#1b5e20':'#c62828';
+  res.textContent = (yrs<100)
+    ? `🎉 Goal reached at age ${age+yrs} (in ${yrs} years) with ≈ $${Math.round(cap).toLocaleString()}`
+    : `⚠️ Goal not reachable within 100 years under current assumptions. Consider increasing contributions or return assumptions.`;
+}
+</script>
 </body>
 </html>
