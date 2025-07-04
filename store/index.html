@@ -1,18 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Store | Tepuy Solutions</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .store-container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 1rem;
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .product-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .product-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      color: #004080;
+    }
+
+    .product-card p {
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .product-card .price {
+      font-weight: bold;
+      color: #4CAF50;
+      margin-bottom: 1rem;
+    }
+
+    .product-card button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .product-card button:hover {
+      background: #388e3c;
+    }
+  </style>
 </head>
 <body>
 
   <!--#include virtual="/nav.html" -->
 
   <main>
-    <h1>Store coming soon</h1>
-    <p>Digital calculators and spreadsheets will be sold here.</p>
+    <h1 style="text-align:center;">🛍️ Tepuy Store</h1>
+
+    <div class="store-container">
+
+      <div class="product-card">
+        <h3>Rent vs Buy Calculator</h3>
+        <p>Compare the financial impact of renting vs. buying a home in Australia.</p>
+        <div class="price">$9.99</div>
+        <button disabled>Coming Soon</button>
+      </div>
+
+      <div class="product-card">
+        <h3>Retirement Planner</h3>
+        <p>Estimate your retirement needs and track your progress over time.</p>
+        <div class="price">$9.99</div>
+        <button disabled>Coming Soon</button>
+      </div>
+
+      <div class="product-card">
+        <h3>Compound Interest Tracker</h3>
+        <p>A beautiful visual tool to forecast savings growth over time.</p>
+        <div class="price">$4.99</div>
+        <button disabled>Coming Soon</button>
+      </div>
+
+    </div>
   </main>
 
 </body>
