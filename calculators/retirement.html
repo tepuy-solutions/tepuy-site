@@ -2,117 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Retirement Goal Calculator | Tepuy Solutions</title>
-
-  <!-- Brand assets -->
-  <link rel="icon" type="image/png" href="/img/favicon.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Retirement Calculator | Tepuy Solutions</title>
   <link rel="stylesheet" href="/css/tepuy.css" />
-
-  <!-- Page-specific styles -->
-  <style>
-    body{
-      background:url('/img/auyantepui.jpg') center/cover no-repeat fixed;
-      font-family:'Inter',sans-serif;
-      margin:0;
-      color:#212529;
-    }
-    .navbar{
-      background:rgba(255,255,255,.9);
-      display:flex;
-      align-items:center;
-      padding:1rem;
-      gap:12px;
-    }
-    .navbar a{color:#212529;font-weight:600;margin-left:14px}
-    .logo{height:40px}
-    .wrapper{
-      max-width:750px;
-      margin:60px auto;
-      background:rgba(255,255,255,.9);
-      padding:30px;
-      border-radius:10px;
-      box-shadow:0 4px 12px rgba(0,0,0,.1);
-    }
-    h1{text-align:center;margin-bottom:24px}
-    label{display:block;font-weight:600;margin:14px 0 6px}
-    input{
-      width:100%;padding:10px;border:1px solid #ccc;border-radius:5px;
-      background:#fff9e5;
-    }
-    button{
-      display:block;width:100%;margin:24px auto 0;
-      background:#4CAF50;color:#fff;font-weight:700;
-      padding:12px;border:none;border-radius:5px;cursor:pointer;
-    }
-    .result-box{
-      margin-top:20px;padding:16px;border-radius:8px;font-weight:600;text-align:center;
-    }
-    .success{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
-    .warning{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb}
-    table{width:100%;border-collapse:collapse;margin-top:25px}
-    th,td{padding:10px;border:1px solid #ccc;text-align:right}
-    th{background:#4CAF50;color:#fff}
-    tr:nth-child(even){background:#f4f4f4}
-    .disclaimer{
-      margin-top:25px;padding:14px;font-size:.85rem;color:#856404;
-      background:#fff3cd;border:1px solid #ffeeba;border-radius:6px;
-    }
-    @media(max-width:600px){
-      .wrapper{margin:20px 10px;padding:20px}
-      body{background:#f8f9fa}
-    }
-  </style>
+  <link rel="icon" href="/img/favicon.png" type="image/png" />
+  <script src="/js/retirement_calc.js" defer></script>
 </head>
 <body>
+  <!--#include virtual="/nav.html" -->
 
-  <!-- Navbar -->
-  <div class="navbar">
-    <img src="/img/tepuy_logo.png" alt="Tepuy logo" class="logo">
-    <strong>Retirement Goal Calculator</strong>
+  <div class="container">
+    <h1 class="centered-title">Retirement Calculator</h1>
+
+    <div class="input-grid">
+      <div class="input-group">
+        <label for="current-age">Current Age</label>
+        <input type="number" id="current-age" min="0" />
+      </div>
+      <div class="input-group">
+        <label for="retirement-age">Retirement Age</label>
+        <input type="number" id="retirement-age" min="0" />
+      </div>
+      <div class="input-group">
+        <label for="current-savings">Current Savings ($)</label>
+        <input type="number" id="current-savings" min="0" />
+      </div>
+      <div class="input-group">
+        <label for="annual-contribution">Annual Contribution ($)</label>
+        <input type="number" id="annual-contribution" min="0" />
+      </div>
+      <div class="input-group">
+        <label for="investment-return">Expected Return (%)</label>
+        <input type="number" id="investment-return" min="0" step="0.1" />
+      </div>
+      <div class="input-group">
+        <label for="retirement-years">Years in Retirement</label>
+        <input type="number" id="retirement-years" min="0" />
+      </div>
+    </div>
+
+    <div class="input-group full-width">
+      <button onclick="calculateRetirement()">📊 Calculate</button>
+    </div>
+
+    <div id="result" class="result-box"></div>
+
+    <div class="disclaimer">
+      ⚠️ <strong>Disclaimer:</strong> This calculator is a general guide only and does not constitute financial advice. Please consult a licensed advisor for personal recommendations.
+    </div>
   </div>
 
-  <!-- Main card -->
-  <div class="wrapper">
-    <h1>Retirement Goal Calculator</h1>
-
-    <label for="age">Current Age</label>
-    <input id="age" type="number" value="45">
-
-    <label for="capital">Current Capital to Invest ($)</label>
-    <input id="capital" type="number" value="100000">
-
-    <label for="returnRate">Expected Annual Return (%)</label>
-    <input id="returnRate" type="number" value="7">
-
-    <label for="inflation">Expected Inflation Rate (%)</label>
-    <input id="inflation" type="number" value="2.5">
-
-    <label for="withdrawal">Withdrawal Rate (% of capital annually)
-      <small id="swrHint" style="font-weight:400;color:#666;display:block">Suggested: 4.4%</small>
-    </label>
-    <input id="withdrawal" type="number" value="4.4">
-
-    <label for="contribution">Monthly Contributions (Today's Dollars)</label>
-    <input id="contribution" type="number" value="1000">
-
-    <label for="targetIncome">Target Monthly Income (Today's Dollars)</label>
-    <input id="targetIncome" type="number" value="4000">
-
-    <button onclick="calculateRetirement()">Calculate 🎯</button>
-
-    <div id="summary" class="result-box" style="display:none"></div>
-    <div id="projectionTable"></div>
-
-    <p class="disclaimer">
-      This tool provides estimates for general information only and does not constitute financial advice.
-      Please consult a qualified adviser before making investment or retirement decisions.
-    </p>
-  </div>
-
-  <footer>&copy; 2025 Tepuy Solutions</footer>
-
-  <script src="/js/retirement_calc.js"></script>
+  <!--#include virtual="/footer.html" -->
 </body>
 </html>
