@@ -1,84 +1,41 @@
-/* retirement_calc.js  ──────────────────────────────────────────── */
-
-/* Helper: nice commas */
-function fmt(num, dec = 0) {
-  return num.toLocaleString('en-AU', { maximumFractionDigits: dec });
-}
-
-/* Main calculator */
 function calculateRetirement() {
-  /* Grab & coerce inputs */
-  const curAge   = +document.getElementById('age').value        || 0;
-  let   capital  = +document.getElementById('capital').value     || 0;
-  const r        = (+document.getElementById('return').value     || 0) / 100;
-  const infl     = (+document.getElementById('inflation').value  || 0) / 100;
-  const swr      = (+document.getElementById('swr').value        || 0) / 100;
-  const mContrib = +document.getElementById('contribution').value|| 0;
-  const mIncome  = +document.getElementById('goal').value        || 0;
+  const age = parseInt(document.getElementById('age').value);
+  const capital = parseFloat(document.getElementById('capital').value);
+  const annualReturn = parseFloat(document.getElementById('return').value) / 100;
+  const inflation = parseFloat(document.getElementById('inflation').value) / 100;
+  const withdrawalRate = parseFloat(document.getElementById('withdrawal').value) / 100;
+  const monthlyContribution = parseFloat(document.getElementById('monthly').value);
+  const targetIncome = parseFloat(document.getElementById('targetIncome').value);
 
-  /* Calculate goal in today’s dollars */
-  const goalToday = (mIncome * 12) / swr;
+  const realReturn = ((1 + annualReturn) / (1 + inflation)) - 1;
 
-  const rows = [];
-  let years  = 0;
-  let hit    = false;
-  let hitCap = 0;
+  let year = age;
+  let balance = capital;
+  const yearlyData = [];
 
-  while (years < 120) {                       // safety cap at 120 iterations
-    const goalInflAdj = goalToday * Math.pow(1 + infl, years);
-    const annualContrib = mContrib * 12 * Math.pow(1 + infl, years);
-
-    rows.push(
-      `<tr>
-         <td>${curAge + years}</td>
-         <td>$${fmt(capital)}</td>
-         <td>$${fmt(goalInflAdj)}</td>
-         <td>$${fmt(annualContrib)}</td>
-       </tr>`
-    );
-
-    if (!hit && capital >= goalInflAdj) {
-      hit    = true;
-      hitCap = capital;
-      break;
-    }
-
-    capital = capital * (1 + r) + annualContrib;
-    years++;
+  for (let i = 0; i <= 55 - age; i++) {
+    balance = balance * (1 + realReturn) + (monthlyContribution * 12);
+    yearlyData.push({
+      year: year + i,
+      age: year + i,
+      balance: balance.toFixed(0)
+    });
   }
 
-  /* ---- Update table ---- */
-  document.getElementById('results').innerHTML = `
-    <table>
-      <thead>
-        <tr><th>Age</th><th>Capital</th><th>Infl-Adj Goal</th><th>Contrib / yr</th></tr>
-      </thead>
-      <tbody>${rows.join('')}</tbody>
-    </table>
-  `;
+  const retirementCapitalRequired = (targetIncome * 12) / withdrawalRate;
+  const canRetireAt = yearlyData.find(y => y.balance >= retirementCapitalRequired);
 
-  /* ---- Summary banner ---- */
-  const summary = document.getElementById('summary');
-  summary.style.display = 'block';
+  const summary = canRetireAt
+    ? `🎉 You can retire at age ${canRetireAt.age} with $${parseInt(canRetireAt.balance).toLocaleString()} saved.`
+    : `❗ Based on your inputs, you will not reach your target income goal by age 55.`;
 
-  if (hit) {
-    summary.style.background = '#e6ffe6';
-    summary.style.color = '#1d6331';
-    summary.textContent =
-      `✅ Goal reached at age ${curAge + years} (in ${years} years) with ≈ $${fmt(hitCap)}.`;
-  } else {
-    summary.style.background = '#ffebee';
-    summary.style.color = '#c62828';
-    summary.textContent =
-      '⚠️ Goal not reached within 120 years. Increase contributions or adjust assumptions.';
-  }
-}
+  document.getElementById('summary').innerHTML = `<p>${summary}</p>`;
 
-/* ----- Comma-format selected inputs on blur ----- */
-['capital', 'contribution', 'goal'].forEach(id => {
-  const el = document.getElementById(id);
-  el.addEventListener('blur', () => {
-    const raw = el.value.replace(/,/g, '');
-    if (!isNaN(raw) && raw !== '') el.value = fmt(+raw);
+  let tableHTML = `<table><thead><tr><th>Year</th><th>Age</th><th>Projected Balance ($)</th></tr></thead><tbody>`;
+  yearlyData.forEach(row => {
+    tableHTML += `<tr><td>${row.year}</td><td>${row.age}</td><td>${parseInt(row.balance).toLocaleString()}</td></tr>`;
   });
-});
+  tableHTML += '</tbody></table>';
+
+  document.getElementById('result').innerHTML = tableHTML;
+}
