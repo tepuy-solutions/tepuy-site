@@ -21,3 +21,62 @@ body{background:var(--light);}
 .hero{height:40vh;}
 .hero h1{font-size:1.5rem;}
 }
+/* ================= NAV BAR ================ */
+.top-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 10px 16px;
+  background: #ffffffee;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.top-nav a {
+  text-decoration: none;
+  color: var(--primary, #004080);
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.top-nav a:hover {
+  background: var(--accent, #4CAF50);
+  color: #fff;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropbtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--primary, #004080);
+  padding: 4px 8px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 120%;
+  left: 0;
+  min-width: 180px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
+  border-radius: 4px;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
