@@ -2,155 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Retirement Goal Calculator | Tepuy Solutions</title>
-
-  <!-- brand assets -->
-  <link rel="icon" type="image/png" href="/img/favicon.png"/>
-  <link rel="stylesheet" href="/css/tepuy.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retirement Calculator | Tepuy Solutions</title>
+  <link rel="stylesheet" href="/css/tepuy.css" />
+  <link rel="icon" href="/img/favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
+  <!--#include virtual="/nav.html" -->
 
-  <!-- NAVBAR ----------------------------------------------------------- -->
-  <header class="navbar">
-    <div class="logo-title">
-      <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo">
-      <strong>Tepuy Solutions</strong>
-    </div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/calculators/property_vs_shares.html">Rent vs Buy</a>
-      <a href="/calculators/retirement.html">Retirement</a>
-      <a href="/store/">Store</a>
-      <a href="/blog/">Blog</a>
-    </nav>
-  </header>
+  <div class="container">
+    <h1>Retirement Goal Calculator</h1>
+    <p>This calculator estimates how much you need to retire comfortably based on your goals and assumptions.</p>
 
-  <!-- MAIN ------------------------------------------------------------- -->
-  <section class="section" style="max-width:750px">
-    <h1 style="text-align:center">Retirement Goal Calculator</h1>
-
-    <!-- INPUT CARD -->
-    <form id="retirementForm" class="card">
-      <label>Current Age
-        <input type="number" id="currentAge" value="45" min="0" max="120">
-      </label>
-
-      <label>Current Capital ($)
-        <input type="text" id="currentCapital" value="100,000">
-      </label>
-
-      <label>Annual Return (%) <input type="number" id="rateOfReturn" value="7" step="0.1"></label>
-
-      <label>Inflation (%) <input type="number" id="inflationRate" value="2.5" step="0.1"></label>
-
-      <label>
-        Safe Withdrawal Rate (%) 
-        <small id="suggestedWithdrawal" style="display:block;font-weight:400;font-size:.9rem;color:var(--secondary-color)">
-          Suggested: auto-calc
-        </small>
-        <input type="number" id="withdrawalRate" value="4.4" step="0.1">
-      </label>
-
-      <label>Monthly Contribution ($)
-        <input type="text" id="monthlySavings" value="1,000">
-      </label>
-
-      <label>Target Monthly Income ($)
-        <input type="text" id="desiredMonthlyIncome" value="4,000">
-      </label>
-
-      <button type="button" class="primary" style="width:100%;margin-top:24px" onclick="calculateRetirement()">
-        Calculate&nbsp;🎯
-      </button>
-    </form>
-
-    <!-- SUMMARY -->
-    <div id="result" class="card" style="display:none;margin-top:20px"></div>
-
-    <!-- PROJECTION TABLE -->
-    <div class="card table-container" style="display:none;margin-top:20px">
-      <table id="projectionTable">
-        <thead>
-          <tr><th>Age</th><th>Capital ($)</th><th>Infl-Adj Goal ($)</th><th>Annual Contrib ($)</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+    <div class="form-grid">
+      <label>Current Age <input type="number" id="age" value="45" /></label>
+      <label>Current Capital ($) <input type="number" id="capital" value="100000" /></label>
+      <label>Annual Return (%) <input type="number" id="return" value="7" /></label>
+      <label>Inflation (%) <input type="number" id="inflation" value="2.5" /></label>
+      <label>Safe Withdrawal Rate (%) <input type="number" id="withdrawal" value="4" /></label>
+      <label>Monthly Contribution ($) <input type="number" id="monthly" value="1000" /></label>
+      <label>Target Monthly Income ($) <input type="number" id="targetIncome" placeholder="e.g. 4000" /></label>
     </div>
 
-    <!-- DISCLAIMER -->
-    <p class="card" style="background:#fff8e1;color:#7b5e00;margin-top:30px">
-      <strong>Disclaimer:</strong> This tool provides general information only and does not take
-      your personal circumstances into account. Seek licensed financial advice before making decisions.
-    </p>
-  </section>
+    <div class="button-row">
+      <button onclick="calculateRetirement()">Calculate 🎯</button>
+    </div>
 
-  <footer>&copy; 2025 Tepuy Solutions</footer>
+    <div id="summary" class="summary-box"></div>
+    <div id="result" class="table-container"></div>
 
-<!-- JS ----------------------------------------------------------------- -->
-<script>
-/* format fields with commas */
-['currentCapital','monthlySavings','desiredMonthlyIncome'].forEach(id=>{
-  const el=document.getElementById(id);
-  el.addEventListener('input',()=>{
-    const raw=el.value.replace(/,/g,'');
-    if(!isNaN(raw)&&raw!=='') el.value=parseFloat(raw).toLocaleString();
-  });
-});
+    <div class="disclaimer-box">
+      <strong>Disclaimer:</strong> This calculator is for informational purposes only and does not constitute financial advice. Please consult a qualified professional before making investment or retirement decisions.
+    </div>
+  </div>
 
-function suggestWR(){
-  const r=(+rateOfReturn.value||0)/100,
-        i=(+inflationRate.value||0)/100,
-        w=((1+r)/(1+i)-1)*100;
-  if(w>0){ withdrawalRate.value=w.toFixed(1);
-    suggestedWithdrawal.textContent=`Suggested: ${w.toFixed(1)} %`; }
-}
-rateOfReturn.addEventListener('input',suggestWR);
-inflationRate.addEventListener('input',suggestWR);
-document.addEventListener('DOMContentLoaded',suggestWR);
+  <footer>
+    &copy; 2025 Tepuy Solutions. All rights reserved.
+  </footer>
 
-function calculateRetirement(){
-  const age        =+currentAge.value||0,
-        capNow     =+currentCapital.value.replace(/,/g,'')||0,
-        r          =(+rateOfReturn.value)/100,
-        infl       =(+inflationRate.value)/100,
-        wr         =(+withdrawalRate.value)/100,
-        mContrib   =+monthlySavings.value.replace(/,/g,'')||0,
-        mIncome    =+desiredMonthlyIncome.value.replace(/,/g,'')||0,
-        goalToday  =(mIncome*12)/wr;
-
-  let cap=capNow, yrs=0, rows='';
-  const tbody=document.querySelector('#projectionTable tbody');
-  tbody.innerHTML='';
-
-  while(yrs<100){
-    const goalAdj=goalToday*Math.pow(1+infl,yrs);
-    const yearlyCon=mContrib*12*Math.pow(1+infl,yrs);
-
-    rows+=`
-      <tr>
-        <td>${age+yrs}</td>
-        <td>$${Math.round(cap).toLocaleString()}</td>
-        <td>$${Math.round(goalAdj).toLocaleString()}</td>
-        <td>$${Math.round(yearlyCon).toLocaleString()}</td>
-      </tr>`;
-
-    if(cap>=goalAdj) break;
-    cap = cap*(1+r)+yearlyCon;
-    yrs++;
-  }
-  tbody.innerHTML=rows;
-  document.querySelector('.table-container').style.display='block';
-
-  const res=document.getElementById('result');
-  res.style.display='block';
-  res.style.background= (yrs<100)?'#e8f5e9':'#ffebee';
-  res.style.color       =(yrs<100)?'#1b5e20':'#c62828';
-  res.textContent = (yrs<100)
-    ? `🎉 Goal reached at age ${age+yrs} (in ${yrs} years) with ≈ $${Math.round(cap).toLocaleString()}`
-    : `⚠️ Goal not reachable within 100 years under current assumptions. Consider increasing contributions or return assumptions.`;
-}
-</script>
+  <script src="/js/retirement_calc.js"></script>
 </body>
 </html>
