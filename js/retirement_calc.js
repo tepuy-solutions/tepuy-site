@@ -1,32 +1,41 @@
-function calculateRetirement() {
-  const age = parseInt(document.getElementById("current-age").value);
-  const retirementAge = parseInt(document.getElementById("retirement-age").value);
-  const currentSavings = parseFloat(document.getElementById("current-savings").value);
-  const annualContribution = parseFloat(document.getElementById("annual-contribution").value);
-  const returnRate = parseFloat(document.getElementById("investment-return").value) / 100;
-  const retirementYears = parseInt(document.getElementById("retirement-years").value);
+document.getElementById("retirementForm").addEventListener("submit", function(event) {
+  event.preventDefault();
 
-  const resultDiv = document.getElementById("result");
+  const age = parseInt(document.getElementById("currentAge").value);
+  const capital = parseFloat(document.getElementById("currentCapital").value);
+  const returnRate = parseFloat(document.getElementById("annualReturn").value) / 100;
+  const inflation = parseFloat(document.getElementById("inflation").value) / 100;
+  const swr = parseFloat(document.getElementById("withdrawalRate").value) / 100;
+  const contrib = parseFloat(document.getElementById("monthlyContribution").value) * 12;
+  const targetIncome = parseFloat(document.getElementById("targetIncome").value) * 12;
 
-  if (
-    isNaN(age) || isNaN(retirementAge) || isNaN(currentSavings) ||
-    isNaN(annualContribution) || isNaN(returnRate) || isNaN(retirementYears)
-  ) {
-    resultDiv.innerHTML = "❌ Please fill out all fields with valid numbers.";
-    return;
+  let balance = capital;
+  let target = 0;
+  let year = age;
+  const rows = [];
+
+  while (balance * swr < targetIncome && year < 100) {
+    target = targetIncome / swr / Math.pow(1 + inflation, year - age);
+    balance = balance * (1 + returnRate) + contrib;
+    rows.push({year, balance: Math.round(balance), target: Math.round(target), contrib});
+    year++;
   }
 
-  const yearsToGrow = retirementAge - age;
-  let futureValue = currentSavings;
+  const result = document.getElementById("resultMessage");
+  const table = document.getElementById("resultsTable");
 
-  for (let i = 0; i < yearsToGrow; i++) {
-    futureValue = (futureValue + annualContribution) * (1 + returnRate);
+  if (balance * swr >= targetIncome) {
+    result.innerHTML = `✅ You will reach your retirement income goal by age <strong>${year}</strong>, with a projected capital of <strong>$${balance.toLocaleString()}</strong>.`;
+    result.style.background = "#d4edda";
+  } else {
+    result.innerHTML = `❌ Based on your inputs, you will not reach your goal by age 100.`;
+    result.style.background = "#f8d7da";
   }
 
-  const annualWithdrawal = futureValue / retirementYears;
-
-  resultDiv.innerHTML = `
-    💰 At retirement, you’ll have approximately <strong>$${futureValue.toFixed(2)}</strong> saved.<br/>
-    📆 This allows for a yearly withdrawal of about <strong>$${annualWithdrawal.toFixed(2)}</strong> for ${retirementYears} years.
-  `;
-}
+  let html = "<table><tr><th>Age</th><th>Capital ($)</th><th>Inflation-Adjusted Goal ($)</th><th>Annual Contribution</th></tr>";
+  rows.forEach(r => {
+    html += `<tr><td>${r.year}</td><td>$${r.balance.toLocaleString()}</td><td>$${r.target.toLocaleString()}</td><td>$${r.contrib.toLocaleString()}</td></tr>`;
+  });
+  html += "</table>";
+  table.innerHTML = html;
+});
