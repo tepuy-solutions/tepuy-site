@@ -94,3 +94,20 @@ footer {
   padding: 10px;
   text-align: center;
 }
+/* -------- Retirement Calculator specific -------- */
+.calc-wrapper{max-width:900px;margin:auto;padding:40px 20px}
+.grid-2col{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.grid-2col label{display:flex;flex-direction:column;font-weight:600}
+.grid-2col input{padding:8px;border:1px solid #ccc;border-radius:6px;background:#fff9e5;font-size:1rem}
+.btn-primary{margin:25px auto 0 auto;display:block;padding:12px 28px;font-size:1rem;
+             background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer}
+.btn-primary:hover{background:#218838}
+.result-box{margin-top:25px;padding:18px;border-left:6px solid #28a745;background:#e6ffe7;font-weight:bold}
+.result-box.error{border-left-color:#dc3545;background:#ffe7e7}
+.table-container{overflow-x:auto;margin-top:20px}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{border:1px solid #ccc;padding:10px;text-align:center;font-size:.95rem}
+thead{background:#4caf50;color:#fff}
+.disclaimer{margin:40px auto 0 auto;background:#fff3cd;border-left:5px solid #ffa502;
+           padding:12px;font-size:.9rem;max-width:900px}
+

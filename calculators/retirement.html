@@ -1,73 +1,97 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Retirement Calculator | Tepuy Solutions</title>
+  <title>Retirement Goal Calculator | Tepuy Solutions</title>
+
+  <!-- Brand-wide CSS -->
   <link rel="stylesheet" href="/css/tepuy.css" />
-  <link rel="icon" href="/img/favicon.png" />
+  <link rel="icon" type="image/png" href="/img/favicon.png">
 </head>
 <body>
+
+  <!-- NAV ------------------------------------------------------------------>
   <header class="navbar">
-    <img src="/img/favicon.png" alt="Tepuy Logo" class="logo"/>
-    <h1 class="nav-title">Tepuy Solutions</h1>
+    <div class="logo-title">
+      <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy"/>
+      Tepuy Solutions
+    </div>
     <nav>
-      <a href="/index.html">Home</a>
+      <a href="/">Home</a>
       <a href="/calculators/property_vs_shares.html">Property vs Shares</a>
       <a class="active" href="/calculators/retirement.html">Retirement</a>
-      <a href="/store/index.html">Store</a>
+      <a href="/store/">Store</a>
     </nav>
   </header>
 
+  <!-- HERO ----------------------------------------------------------------->
   <section class="hero">
     <div class="hero-banner">
       <h1>Retirement Goal Calculator</h1>
-      <p>Estimate how much capital you'll need to retire comfortably based on your inputs.</p>
+      <p>Estimate how much capital you’ll need to retire comfortably.</p>
     </div>
   </section>
 
-  <main class="calc-container">
-    <form id="retirement-form">
-      <div class="grid-2x3">
-        <label>Current Age
-          <input type="number" id="currentAge" value="45" required>
-        </label>
-        <label>Retirement Age
-          <input type="number" id="retirementAge" value="76" required>
-        </label>
-        <label>Current Capital to Invest ($)
-          <input type="number" id="currentCapital" value="100000" required>
-        </label>
-        <label>Expected Annual Return (%)
-          <input type="number" id="annualReturn" value="7" required>
-        </label>
-        <label>Expected Inflation Rate (%)
-          <input type="number" id="inflation" value="2.5" required>
-        </label>
-        <label>Withdrawal Rate (% of capital annually)<br><small>Suggested: 4.4%</small>
-          <input type="number" id="withdrawalRate" value="4.4" required>
-        </label>
-        <label>Monthly Contributions (Today's Dollars)
-          <input type="number" id="monthlyContribution" value="1000" required>
-        </label>
-        <label>Target Monthly Income (Today's Dollars)
-          <input type="number" id="targetMonthlyIncome" value="4000" required>
-        </label>
-      </div>
-      <button type="submit" class="btn-primary">Calculate</button>
+  <!-- CALCULATOR ----------------------------------------------------------->
+  <main class="calc-wrapper">
+    <form id="retirementForm" class="grid-2col">
+
+      <label>Current Age
+        <input type="number" id="currentAge" value="45" min="0">
+      </label>
+
+      <label>Current Capital to Invest ($)
+        <input type="text" id="currentCapital" value="100,000" inputmode="numeric">
+      </label>
+
+      <label>Expected Annual Return (%)
+        <input type="number" id="rateOfReturn" value="7" step="0.1">
+      </label>
+
+      <label>Expected Inflation Rate (%)
+        <input type="number" id="inflationRate" value="2.5" step="0.1">
+      </label>
+
+      <label>Withdrawal Rate (% of capital annually)
+        <small id="swrHint">Suggested: 4.4 %</small>
+        <input type="number" id="withdrawalRate" value="4.4" step="0.1">
+      </label>
+
+      <label>Monthly Contributions ($)
+        <input type="text" id="monthlySavings" value="1,000" inputmode="numeric">
+      </label>
+
+      <label>Target Monthly Income ($)
+        <input type="text" id="desiredMonthlyIncome" value="4,000" inputmode="numeric">
+      </label>
+
     </form>
 
-    <p id="summary" class="summary-box"></p>
-    <table id="resultTable"></table>
+    <button id="calcBtn" class="btn-primary">Calculate</button>
+
+    <p id="resultMsg" class="result-box" hidden></p>
+    <div class="table-container">
+      <table id="projectionTable" hidden>
+        <thead>
+          <tr>
+            <th>Age</th>
+            <th>Capital ($)</th>
+            <th>Infl-Adj Goal ($)</th>
+            <th>Annual Contribution</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <p class="disclaimer">
+      ⚠️ This tool provides estimates only and is not financial advice. Consult a professional adviser.
+    </p>
   </main>
 
-  <footer>
-    <div class="disclaimer">
-      ⚠️ This tool offers estimates to help plan your retirement, based on your inputs. It's not financial advice, and Tepuy Solutions isn’t responsible for decisions made. Consult a financial advisor for tailored guidance.
-    </div>
-    <p>© 2025 Tepuy Solutions. All rights reserved.</p>
-  </footer>
+  <!-- FOOTER --------------------------------------------------------------->
+  <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
 
   <script src="/js/retirement_calc.js"></script>
 </body>

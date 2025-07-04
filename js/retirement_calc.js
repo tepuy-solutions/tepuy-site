@@ -1,64 +1,64 @@
+// ------- helpers (comma formatting) ------
+["currentCapital","monthlySavings","desiredMonthlyIncome"].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener("input",()=>{const n=el.value.replace(/,/g,"");if(!isNaN(n)&&n!==""){el.value=Number(n).toLocaleString();}});
+});
 
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('retirement-form');
-  const resultTable = document.getElementById('resultTable');
-  const summary = document.getElementById('summary');
+// ------- auto-suggest SWR ---------------
+const rEl = document.getElementById("rateOfReturn");
+const iEl = document.getElementById("inflationRate");
+const wEl = document.getElementById("withdrawalRate");
+const hint= document.getElementById("swrHint");
 
-  const rInput = document.getElementById('annualReturn');
-  const iInput = document.getElementById('inflation');
-  const swrInput = document.getElementById('withdrawalRate');
-  const swrHint = swrInput.previousElementSibling.querySelector('small');
+function updateSWR(){
+  const r = (+rEl.value||0)/100, i = (+iEl.value||0)/100;
+  if(r<=0||i>=0.15){hint.textContent="Suggested: —";return;}
+  const swr = (((1+r)/(1+i))-1)*100;
+  wEl.value = swr.toFixed(1);
+  hint.textContent = `Suggested: ${swr.toFixed(1)} %`;
+}
+rEl.addEventListener("input",updateSWR);
+iEl.addEventListener("input",updateSWR);
+window.addEventListener("DOMContentLoaded",updateSWR);
 
-  function suggestSWR() {
-    const r = (+rInput.value || 0) / 100;
-    const i = (+iInput.value || 0) / 100;
-    if (r <= 0) return;
-    const swr = (((1 + r) / (1 + i)) - 1) * 100;
-    swrInput.value = swr.toFixed(1);
-    if (swrHint) swrHint.textContent = `Suggested: ${swr.toFixed(1)}%`;
+// ------- main calculation ---------------
+document.getElementById("calcBtn").addEventListener("click",()=>{
+  const age   = +document.getElementById("currentAge").value;
+  const cap0  = +document.getElementById("currentCapital").value.replace(/,/g,"");
+  const r     = +rEl.value/100;
+  const inf   = +iEl.value/100;
+  const swr   = +wEl.value/100;
+  const mSave = +document.getElementById("monthlySavings").value.replace(/,/g,"");
+  const inc   = +document.getElementById("desiredMonthlyIncome").value.replace(/,/g,"");
+
+  const msg = document.getElementById("resultMsg");
+  const tableBody = document.getElementById("projectionTable").querySelector("tbody");
+  const table     = document.getElementById("projectionTable");
+
+  // basic validation
+  if([age,cap0,r,inf,swr,mSave,inc].some(x=>isNaN(x)||x<0)||swr===0){
+    msg.className="result-box error";
+    msg.textContent="❌ Please enter valid positive numbers.";
+    msg.hidden=false; table.hidden=true; return;
   }
 
-  rInput.addEventListener('input', suggestSWR);
-  iInput.addEventListener('input', suggestSWR);
-  suggestSWR();
+  const target0 = inc*12/swr;          // capital needed in today's $
+  let cap = cap0, years=0, rows="";
+  for(let a=age;a<=100;a++){
+    const targetAdj = target0*Math.pow(1+inf,years);
+    const contrib   = mSave*12*Math.pow(1+inf,years);
+    rows += `<tr><td>${a}</td><td>${Math.round(cap).toLocaleString()}</td><td>${Math.round(targetAdj).toLocaleString()}</td><td>${Math.round(contrib).toLocaleString()}</td></tr>`;
+    if(cap>=targetAdj){break;}
+    cap = cap*(1+r)+contrib;
+    years++;
+  }
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const currentAge = +document.getElementById('currentAge').value;
-    const retirementAge = +document.getElementById('retirementAge').value;
-    const capital = +document.getElementById('currentCapital').value;
-    const returnRate = +document.getElementById('annualReturn').value / 100;
-    const inflation = +document.getElementById('inflation').value / 100;
-    const swr = +document.getElementById('withdrawalRate').value / 100;
-    const monthlyContribution = +document.getElementById('monthlyContribution').value;
-    const targetIncome = +document.getElementById('targetMonthlyIncome').value;
+  msg.className="result-box";
+  msg.textContent = cap>=target0 ? 
+      `✅ You will reach your retirement income goal by age ${age+years} (in ${years} years), with a projected capital of $${Math.round(cap).toLocaleString()}.` :
+      `❌ Goal not reached by age 100 with these assumptions.`;
+  msg.hidden=false;
 
-    let balance = capital;
-    let tableHTML = '<tr><th>Age</th><th>Capital ($)</th><th>Inflation-Adjusted Goal</th><th>Annual Contribution</th></tr>';
-    let goalReached = false;
-    let finalAge = retirementAge;
-
-    for (let age = currentAge; age <= 90; age++) {
-      const contribution = monthlyContribution * 12;
-      balance *= (1 + returnRate);
-      balance += contribution;
-
-      const targetAnnualIncome = targetIncome * 12 * Math.pow(1 + inflation, age - currentAge);
-      const requiredCapital = targetAnnualIncome / swr;
-
-      tableHTML += `<tr><td>${age}</td><td>${balance.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td><td>${requiredCapital.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td><td>${contribution.toLocaleString()}</td></tr>`;
-
-      if (!goalReached && balance >= requiredCapital) {
-        goalReached = true;
-        finalAge = age;
-        summary.textContent = `✅ You will reach your retirement income goal by age ${age} (in ${age - currentAge} years), with a projected capital of ${balance.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}.`;
-      }
-    }
-
-    if (!goalReached) {
-      summary.textContent = `❌ Based on your inputs, you will not reach your target income goal by age ${retirementAge}.`;
-    }
-
-    resultTable.innerHTML = tableHTML;
-  });
+  tableBody.innerHTML=rows;
+  table.hidden=false;
 });
