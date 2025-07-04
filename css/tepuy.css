@@ -1,0 +1,95 @@
+/* === tepuy.css – Unified styling based on Auyantepui palette ========= */
+
+:root {
+  --primary-color: #3E5C76;   /* deep blue-grey */
+  --secondary-color: #7B9E89; /* muted green    */
+  --accent-color: #F4A261;    /* warm highlight */
+  --bg-light: #F8F9FA;
+  --text-dark: #212529;
+  --text-light: #ffffff;
+  --card-bg: #ffffff;
+  --footer-bg: #2E3A59;
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+a { color: var(--primary-color); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- Navbar ---------- */
+.navbar {
+  background: var(--primary-color);
+  padding: 1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-light);
+}
+.navbar a {
+  color: var(--text-light);
+  margin-left: 1em;
+  padding: 0.5em;             /* extra tap-target on mobile  */
+  display: inline-block;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+              url('/img/auyantepui.jpg') center/cover no-repeat;
+  color: #fff;
+  text-align: center;
+  padding: 120px 20px;
+}
+.hero h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+.hero p  { font-size: 1.2rem; margin-bottom: 2rem; }
+
+.hero-buttons .btn {
+  background: var(--accent-color);
+  color: var(--text-light);
+  padding: 12px 24px;
+  margin: 0 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: background 0.3s;
+}
+.hero-buttons .btn:hover { background: #e07a5f; }
+
+/* ---------- Logo helpers ---------- */
+.logo        { height: 40px; margin-right: 10px; vertical-align: middle; }
+.logo-title  { display: flex; align-items: center; }
+
+/* ---------- Footer ---------- */
+footer {
+  background: var(--footer-bg);
+  color: var(--text-light);
+  text-align: center;
+  padding: 1.5em 0;
+  margin-top: 40px;
+}
+
+/* ---------- Utilities ---------- */
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ---------- Mobile tweaks ---------- */
+@media (max-width: 600px) {
+  .hero h1      { font-size: 2.2rem; }
+  .hero p       { font-size: 1rem;  }
+  .hero-buttons .btn {
+    display: block;
+    margin: 10px auto;
+  }
+  .navbar { flex-direction: column; align-items: flex-start; }
+}
