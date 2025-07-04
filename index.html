@@ -1,67 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tepuy Solutions | Engineering & Finance Tools.</title>
-  <link rel="icon" type="image/png" href="/img/favicon.png"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/css/style.css"/>
+  <title>Tepuy Solutions | Smarter Engineering & Financial Tools</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/img/auyantepui.jpg') center/cover no-repeat;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .hero .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 24px;
+      margin: 10px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .hero .btn:hover {
+      background-color: #388e3c;
+    }
+
+    .btn-secondary {
+      background-color: #2196F3;
+    }
+
+    .btn-secondary:hover {
+      background-color: #1976D2;
+    }
+  </style>
 </head>
 <body>
   <!--#include virtual="/nav.html" -->
 
   <section class="hero">
-    <div class="hero-content">
-      <h1>Tepuy Solutions</h1>
-      <p>Smarter Financial & Engineering Tools for Everyday Australians.</p>
-      <div class="hero-buttons">
-        <a href="/calculators/property_vs_shares.html" class="btn">📊 Try Calculator</a>
-        <a href="/store/" class="btn btn-secondary">🛍️ Visit Store</a>
-      </div>
-    </div>
+    <h1>Tepuy Solutions</h1>
+    <p>Professional-grade calculators, insights & tools to empower smarter financial and engineering decisions in Australia.</p>
+    <a href="/calculators/property_vs_shares.html" class="btn">📊 Try Calculator</a>
+    <a href="/store/" class="btn btn-secondary">🛍️ Visit Store</a>
   </section>
-
-  <style>
-    .hero {
-      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/img/auyantepui.jpg') center/cover no-repeat;
-      color: white;
-      padding: 100px 20px;
-      text-align: center;
-    }
-
-    .hero-content h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero-content p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-    }
-
-    .hero-buttons .btn {
-      background: #4CAF50;
-      color: white;
-      padding: 12px 20px;
-      margin: 0 10px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background 0.3s ease;
-    }
-
-    .hero-buttons .btn:hover {
-      background: #388e3c;
-    }
-
-    .btn-secondary {
-      background: #2196F3;
-    }
-
-    .btn-secondary:hover {
-      background: #1976D2;
-    }
-  </style>
 </body>
 </html>
