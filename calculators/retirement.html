@@ -4,54 +4,65 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Retirement Calculator | Tepuy Solutions</title>
-  <link rel="stylesheet" href="/css/tepuy.css" />
   <link rel="icon" href="/img/favicon.png" type="image/png" />
-  <script src="/js/retirement_calc.js" defer></script>
+  <link rel="stylesheet" href="/css/tepuy.css" />
 </head>
 <body>
+
   <!--#include virtual="/nav.html" -->
 
-  <div class="container">
-    <h1 class="centered-title">Retirement Calculator</h1>
+  <section class="hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/img/auyantepui.jpg') center/cover no-repeat;">
+    <div class="hero-content">
+      <h1>Retirement Calculator</h1>
+      <p>Estimate your financial future and suggested withdrawal for a comfortable retirement.</p>
+    </div>
+  </section>
 
-    <div class="input-grid">
-      <div class="input-group">
-        <label for="current-age">Current Age</label>
-        <input type="number" id="current-age" min="0" />
-      </div>
-      <div class="input-group">
-        <label for="retirement-age">Retirement Age</label>
-        <input type="number" id="retirement-age" min="0" />
-      </div>
-      <div class="input-group">
-        <label for="current-savings">Current Savings ($)</label>
-        <input type="number" id="current-savings" min="0" />
-      </div>
-      <div class="input-group">
-        <label for="annual-contribution">Annual Contribution ($)</label>
-        <input type="number" id="annual-contribution" min="0" />
-      </div>
-      <div class="input-group">
-        <label for="investment-return">Expected Return (%)</label>
-        <input type="number" id="investment-return" min="0" step="0.1" />
-      </div>
-      <div class="input-group">
-        <label for="retirement-years">Years in Retirement</label>
-        <input type="number" id="retirement-years" min="0" />
+  <main class="container">
+    <div class="calculator-card">
+      <form id="retirementForm">
+        <div class="grid-form">
+          <div class="form-group">
+            <label for="startingCapital">Starting Capital ($):</label>
+            <input type="number" id="startingCapital" required>
+          </div>
+          <div class="form-group">
+            <label for="years">Years in Retirement:</label>
+            <input type="number" id="years" required>
+          </div>
+          <div class="form-group">
+            <label for="expectedReturn">Expected Return (% per year):</label>
+            <input type="number" id="expectedReturn" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="inflationRate">Inflation Rate (%):</label>
+            <input type="number" id="inflationRate" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="finalBalance">Desired Final Balance ($):</label>
+            <input type="number" id="finalBalance" required>
+          </div>
+          <div class="form-group">
+            <label for="fees">Annual Fees (%):</label>
+            <input type="number" id="fees" step="0.01" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn">💡 Calculate</button>
+      </form>
+
+      <div id="result" class="result-card" style="display:none;"></div>
+
+      <div class="disclaimer-box">
+        ⚠️ <strong>Disclaimer:</strong> This tool provides estimates and does not constitute financial advice. Please consult a licensed financial advisor before making decisions.
       </div>
     </div>
+  </main>
 
-    <div class="input-group full-width">
-      <button onclick="calculateRetirement()">📊 Calculate</button>
-    </div>
+  <footer>
+    &copy; 2025 Tepuy Solutions. All rights reserved.
+  </footer>
 
-    <div id="result" class="result-box"></div>
-
-    <div class="disclaimer">
-      ⚠️ <strong>Disclaimer:</strong> This calculator is a general guide only and does not constitute financial advice. Please consult a licensed advisor for personal recommendations.
-    </div>
-  </div>
-
-  <!--#include virtual="/footer.html" -->
+  <script src="/js/retirement_calc.js"></script>
 </body>
 </html>
