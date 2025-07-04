@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Investment vs Shares Calculator</title>
+    <link rel="icon" type="image/png" href="favicontepuy.png"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: url('auyantepui.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #f0f0f0;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: rgba(248, 248, 248, 0.9);
+            border-bottom: 1px solid #ccc;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            gap: 20px;
+            flex-wrap: nowrap;
+        }
+        .header img {
+            flex: 0 0 35%;
+            max-height: 80px;
+            height: auto;
+            object-fit: contain;
+        }
+        .header h1 {
+            flex: 1;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #222;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            white-space: normal;
+            overflow-wrap: break-word;
+            max-width: 65%;
+            text-align: left;
+        }
+        .container {
+            flex: 1;
+            width: 700px !important; /* Fixed width, override JS */
+            padding: 20px;
+            box-sizing: border-box;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: rgba(255, 255, 255, 0.97); /* Whiter appearance */
+            border-radius: 8px;
+            overflow-x: hidden; /* Prevent horizontal overflow */
+        }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(51, 51, 51, 0.9);
+            color: #fff;
+            font-size: 14px;
+            font-style: italic;
+            border-top: 1px solid #444;
+        }
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .chart-container {
+            width: 100% !important; /* Fit container, override JS */
+            height: 60vh;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            width: 100% !important; /* Fit container, override JS */
+            max-height: 60vh;
+            border: 1px solid #ccc;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+        }
+        table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            background-color: #333;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        thead {
+            display: table-header-group;
+        }
+        thead th {
+            background-color: #444;
+            font-size: 1.1em;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        th {
+            padding: 12px 15px;
+        }
+        tbody {
+            background-color: #555;
+        }
+        tr {
+            transition: background-color 0.3s ease;
+        }
+        tr:hover {
+            background-color: #666;
+        }
+        td {
+            padding: 10px 15px;
+            text-align: right;
+        }
+        td, th {
+            font-size: 1em;
+            letter-spacing: 0.5px;
+            border: 1px solid #666;
+        }
+        tr:not(:last-child) {
+            border-bottom: 2px solid #444;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            width: 100%; /* Stay within container */
+            box-sizing: border-box;
+        }
+        label {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        .note {
+            font-size: 14px;
+            color: gray;
+            margin-bottom: 4px;
+        }
+        input {
+            background-color: #FFFFE6;
+            color: #00008B;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            padding: 8px;
+            border: 1px solid black;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .calculated-output input {
+            font-style: italic;
+            color: black;
+            background-color: white;
+            border: 1px solid black;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .disclaimer {
+            font-size: 12px;
+            color: #666;
+            background-color: rgba(248, 248, 248, 0.8);
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+            width: 100% !important; /* Fit container, override JS */
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+        .error {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #ffebee;
+            border: 1px solid #ef5350;
+            border-radius: 4px;
+            text-align: center;
+            color: #d32f2f;
+            width: 100% !important; /* Fit container, override JS */
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+                width: 100% !important; /* Full width on mobile */
+                max-width: 700px; /* Cap at 700px */
+            }
+            .header {
+                padding: 15px 20px;
+                gap: 10px;
+            }
+            .header img {
+                flex: 0 0 30%;
+                max-height: 60px;
+            }
+            .header h1 {
+                font-size: 1.2rem;
+                max-width: 70%;
+            }
+            .input-group, button {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .chart-container, .table-container, .disclaimer, .error {
+                width: 100% !important; /* Fit container */
+                box-sizing: border-box;
+            }
+            .disclaimer {
+                font-size: 10px;
+                padding: 6px;
+            }
+            .chart-container, .table-container {
+                height: 50vh;
+            }
+            table {
+                font-size: 12px;
+            }
+            th, td {
+                padding: 8px;
+            }
+            .error {
+                font-size: 16px;
+                padding: 8px;
+            }
+        }
+        @media (orientation: landscape) and (max-height: 768px) {
+            .container {
+                width: 400px !important; /* Fixed width in landscape */
+                padding: 15px;
+            }
+            .input-group, button {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .chart-container, .table-container, .disclaimer, .error {
+                width: 100% !important; /* Fit container */
+                box-sizing: border-box;
+            }
+            label {
+                font-size: 14px;
+            }
+            input {
+                font-size: 14px;
+            }
+            button {
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/">Home</a>
+  <a href="/calculators/retirement.html">Retirement Calculator</a>
+  <a href="/calculators/property_vs_shares.html">Rent vs Buy Calculator</a>
+  <a href="https://fpllucho.pythonanywhere.com" target="_blank">FPL App</a>
+  <a href="/blog/index.html">Blog</a>
+  <a href="/store/index.html">Store</a>
+</nav>
+
+    <div class="header">
+        <img src="logo_tepuy.jpg" alt="Tepuy Solutions Logo">
+        <h1>Property Investment vs Shares Calculator</h1>
+    </div>
+
+    <div class="container">
+        <form id="investmentForm">
+            <div class="input-group">
+                <label for="loanAmount">Loan Amount</label>
+                <div class="note">Includes LMI, excludes stamp duty and other costs.</div>
+                <input type="text" id="loanAmount" value="800,000" inputmode="numeric" pattern="[0-9,]*">
+            </div>
+            <div class="input-group">
+                <label for="downpayment">Downpayment (%)</label>
+                <div class="note">Percentage of purchase price, excluding buying costs.</div>
+                <input type="number" id="downpayment" value="10" step="0.01" inputmode="numeric">
+            </div>
+            <div class="input-group">
+                <label for="buyingCosts">Stamp Duty and Buying Costs</label>
+                <div class="note">Includes stamp duty, inspections, legal fees, etc.</div>
+                <input type="text" id="buyingCosts" value="48,000" inputmode="numeric" pattern="[0-9,]*">
+            </div>
+            <div class="input-group">
+                <label for="loanPeriod">Loan Period (Years)</label>
+                <div class="note">Loan term duration.</div>
+                <input type="number" id="loanPeriod" value="30" inputmode="numeric">
+            </div>
+            <div class="input-group">
+                <label for="loanInterestRate">Loan Interest Rate (%)</label>
+                <div class="note">Effective annual interest rate.</div>
+                <input type="number" id="loanInterestRate" value="6.5" step="0.01" inputmode="decimal">
+            </div>
+            <div class="input-group">
+                <label for="owningCosts">Owning Cost (%)</label>
+                <div class="note">Maintenance, repairs, land tax, body corporate, home insurance as % of house value.</div>
+                <input type="number" id="owningCosts" value="2.0" step="0.1" inputmode="decimal">
+            </div>
+            <div class="input-group">
+                <label for="agentFees">Agent Management Fees (%)</label>
+                <div class="note">As a yearly percentage of property value.</div>
+                <input type="number" id="agentFees" value="0.2" step="0.1" inputmode="decimal">
+            </div>
+            <div class="input-group">
+                <label for="occupancyRate">Occupancy Rate</label>
+                <div class="note">Percentage of time property is occupied.</div>
+                <input type="number" id="occupancyRate" value="90" step="1" inputmode="decimal" min="0" max="100">
+            </div>
+            <div class="input-group">
+                <label for="propertyAppreciation">Property Yearly Appreciation (%)</label>
+                <div class="note">Based on historic data, includes renovations.</div>
+                <input type="number" id="propertyAppreciation" value="6.5" step="0.1" inputmode="decimal" min="0" max="100">
+            </div>
+            <div class="input-group">
+                <label for="rentalIncome">Rental Income (%)</label>
+                <div class="note">Yearly % of house value.</div>
+                <input type="number" id="rentalIncome" value="4.8" step="0.1" inputmode="decimal" min="0" max="100">
+            </div>
+            <div class="input-group">
+                <label for="stockMarketAppreciation">Shares Yearly Return (%)</label>
+                <div class="note">Capital + dividends per year.</div>
+                <input type="number" id="stockMarketAppreciation" value="11" step="0.1" inputmode="decimal" min="0" max="100">
+            </div>
+            <div class="input-group">
+                <label for="taxBracket">Tax Bracket (%)</label>
+                <div class="note">Investor’s tax bracket for deductions.</div>
+                <input type="number" id="taxBracket" value="30" step="0.1" inputmode="numeric" min="0" max="100">
+            </div>
+            <div class="input-group">
+                <label for="yearsToRetirement">Years to Retirement</label>
+                <div class="note">Years left for tax calculations.</div>
+                <input type="number" id="yearsToRetirement" value="30" step="1" inputmode="numeric" min="0" max="100">
+            </div>
+            <div class="input-group">
+                <label for="buildingComponent">Building Component (%)</label>
+                <div class="note">Percentage of building and infrastructure for depreciation calculation.</div>
+                <input type="number" id="buildingComponent" value="50" step="1" inputmode="numeric" min="0" max="100">
+            </div>
+            <div class="input-group calculated-output">
+                <label for="buyPrice">Buy Price</label>
+                <div class="note">Actual purchase price.</div>
+                <input type="text" id="buyPrice" readonly placeholder="Calculated output" style="color: grey;">
+            </div>
+            <div class="input-group calculated-output">
+                <label for="totalCashUpfront">Total Cash Upfront</label>
+                <div class="note">Calculated from downpayment and costs.</div>
+                <input type="text" id="totalCashUpfront" readonly placeholder="Calculated output" style="color: grey;">
+            </div>
+            <div class="input-group calculated-output">
+                <label for="weeklyPayment">Weekly Interest + Capital Payment</label>
+                <div class="note">Based on loan details.</div>
+                <input type="text" id="weeklyPayment" readonly placeholder="Calculated output" style="color: grey;">
+            </div>
+            <div class="input-group calculated-output">
+                <label for="lmiPercentage">LMI (%)</label>
+                <div class="note">Calculated. Applies if downpayment < 20%.</div>
+                <input type="text" id="lmiPercentage" readonly placeholder="Calculated output" style="color: grey;">
+            </div>
+            <div class="input-group calculated-output">
+                <label for="lmiAmount">LMI ($)</label>
+                <div class="note">Calculated from loan amount and LMI percentage.</div>
+                <input type="text" id="lmiAmount" readonly placeholder="Calculated output" style="color: grey;">
+            </div>
+            <button type="button" onclick="validateAndCalculate()">Calculate</button>
+        </form>
+        <div id="error" class="error" style="display:none;"></div>
+        <div class="disclaimer">
+            This tool offers estimates to help plan your investments, based on your inputs. It’s not financial advice, and Tepuy Solutions isn’t responsible for decisions made. Consult a financial advisor for tailored guidance.
+        </div>
+        <div class="chart-container">
+            <canvas id="investmentChart"></canvas>
+        </div>
+        <div class="table-container" id="results"></div>
+    </div>
+
+    <div class="footer">
+        © 2025 Powered by <a href="https://tepuysolutions.com/" target="_blank">Tepuy Solutions</a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function formatNumberWithCommas(number) {
+                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            const inputFields = ["loanAmount", "buyingCosts"];
+            inputFields.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener("input", function() {
+                        let value = input.value.replace(/,/g, '');
+                        if (!isNaN(value) && value !== '') {
+                            input.value = formatNumberWithCommas(value);
+                        } else {
+                            input.value = '';
+                        }
+                    });
+                }
+            });
+
+            window.validateAndCalculate = function() {
+                const errorDiv = document.getElementById("error");
+                const inputs = {
+                    loanAmount: document.getElementById("loanAmount").value.replace(/,/g, ''),
+                    downpayment: document.getElementById("downpayment").value,
+                    buyingCosts: document.getElementById("buyingCosts").value.replace(/,/g, ''),
+                    loanPeriod: document.getElementById("loanPeriod").value,
+                    loanInterestRate: document.getElementById("loanInterestRate").value,
+                    owningCosts: document.getElementById("owningCosts").value,
+                    agentFees: document.getElementById("agentFees").value,
+                    occupancyRate: document.getElementById("occupancyRate").value,
+                    propertyAppreciation: document.getElementById("propertyAppreciation").value,
+                    rentalIncome: document.getElementById("rentalIncome").value,
+                    stockMarketAppreciation: document.getElementById("stockMarketAppreciation").value,
+                    taxBracket: document.getElementById("taxBracket").value,
+                    yearsToRetirement: document.getElementById("yearsToRetirement").value,
+                    buildingComponent: document.getElementById("buildingComponent").value
+                };
+
+                const parsedInputs = {
+                    loanAmount: parseFloat(inputs.loanAmount),
+                    downpayment: parseFloat(inputs.downpayment),
+                    buyingCosts: parseFloat(inputs.buyingCosts),
+                    loanPeriod: parseFloat(inputs.loanPeriod),
+                    loanInterestRate: parseFloat(inputs.loanInterestRate) / 100,
+                    owningCosts: parseFloat(inputs.owningCosts) / 100,
+                    agentFees: parseFloat(inputs.agentFees) / 100,
+                    occupancyRate: parseFloat(inputs.occupancyRate) / 100,
+                    propertyAppreciation: parseFloat(inputs.propertyAppreciation) / 100,
+                    rentalIncome: parseFloat(inputs.rentalIncome) / 100,
+                    stockMarketAppreciation: parseFloat(inputs.stockMarketAppreciation) / 100,
+                    taxBracket: parseFloat(inputs.taxBracket) / 100,
+                    yearsToRetirement: parseFloat(inputs.yearsToRetirement),
+                    buildingComponent: parseFloat(inputs.buildingComponent) / 100
+                };
+
+                if (!inputs.loanAmount || isNaN(parsedInputs.loanAmount) || parsedInputs.loanAmount <= 0) {
+                    errorDiv.innerText = "Error: Please enter a valid loan amount (positive number).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.downpayment || isNaN(parsedInputs.downpayment) || parsedInputs.downpayment < 0 || parsedInputs.downpayment > 100) {
+                    errorDiv.innerText = "Error: Please enter a valid downpayment (0-100%).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.buyingCosts || isNaN(parsedInputs.buyingCosts) || parsedInputs.buyingCosts < 0) {
+                    errorDiv.innerText = "Error: Please enter valid buying costs (non-negative).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.loanPeriod || isNaN(parsedInputs.loanPeriod) || parsedInputs.loanPeriod <= 0 || parsedInputs.loanPeriod > 100) {
+                    errorDiv.innerText = "Error: Please enter a valid loan period (1-100 years).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.loanInterestRate || isNaN(parsedInputs.loanInterestRate) || parsedInputs.loanInterestRate < 0) {
+                    errorDiv.innerText = "Error: Please enter a valid loan interest rate (non-negative).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.owningCosts || isNaN(parsedInputs.owningCosts) || parsedInputs.owningCosts < 0) {
+                    errorDiv.innerText = "Error: Please enter valid owning costs (non-negative).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.agentFees || isNaN(parsedInputs.agentFees) || parsedInputs.agentFees < 0) {
+                    errorDiv.innerText = "Error: Please enter valid agent fees (non-negative).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.occupancyRate || isNaN(parsedInputs.occupancyRate) || parsedInputs.occupancyRate < 0 || parsedInputs.occupancyRate > 1) {
+                    errorDiv.innerText = "Error: Please enter a valid occupancy rate (0-100%).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.propertyAppreciation || isNaN(parsedInputs.propertyAppreciation) || parsedInputs.propertyAppreciation < 0) {
+                    errorDiv.innerText = "Error: Please enter a valid property appreciation rate (non-negative).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.rentalIncome || isNaN(parsedInputs.rentalIncome) || parsedInputs.rentalIncome < 0) {
+                    errorDiv.innerText = "Error: Please enter a valid rental income rate (non-negative).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.stockMarketAppreciation || isNaN(parsedInputs.stockMarketAppreciation) || parsedInputs.stockMarketAppreciation < 0) {
+                    errorDiv.innerText = "Error: Please enter a valid shares return rate (non-negative).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.taxBracket || isNaN(parsedInputs.taxBracket) || parsedInputs.taxBracket < 0 || parsedInputs.taxBracket > 1) {
+                    errorDiv.innerText = "Error: Please enter a valid tax bracket (0-100%).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.yearsToRetirement || isNaN(parsedInputs.yearsToRetirement) || parsedInputs.yearsToRetirement < 0 || parsedInputs.yearsToRetirement > 100) {
+                    errorDiv.innerText = "Error: Please enter a valid years to retirement (0-100).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+                if (!inputs.buildingComponent || isNaN(parsedInputs.buildingComponent) || parsedInputs.buildingComponent < 0 || parsedInputs.buildingComponent > 1) {
+                    errorDiv.innerText = "Error: Please enter a valid building component (0-100%).";
+                    errorDiv.style.display = "block";
+                    document.getElementById("results").style.display = "none";
+                    document.getElementById("investmentChart").style.display = "none";
+                    return;
+                }
+
+                errorDiv.style.display = "none";
+                calculate();
+            };
+        });
+    </script>
+    <script src="/js/calculator.js"></script>
+</body>
+</html>

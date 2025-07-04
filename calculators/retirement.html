@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Retirement Goal Calculator</title>
+  <link rel="icon" type="image/png" href="favicontepuy.png"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh; /* Allow content to expand */
+      display: flex;
+      flex-direction: column;
+      background-image: url('auyantepui.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-color: #f0f0f0; /* Fallback color */
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 20px 40px;
+      background-color: rgba(248, 248, 248, 0.9); /* Semi-transparent for readability */
+      border-bottom: 1px solid #ccc;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      gap: 20px;
+    }
+    .header img {
+      max-height: 80px;
+      object-fit: contain;
+    }
+    .header h1 {
+      font-size: 1.5rem;
+      color: #222;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .container {
+      flex: 1;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent for readability */
+      border-radius: 8px;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      max-width: 350px; /* ~Half container width */
+      margin: 0 auto; /* Center inputs */
+    }
+    label {
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+    input {
+      padding: 6px 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #FFFFE6;
+      color: #00008B;
+      text-align: center;
+      max-width: 100%; /* Prevent overflow */
+      box-sizing: border-box;
+    }
+    button {
+      padding: 12px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      max-width: 350px;
+      margin: 16px auto 0 auto; /* Center button */
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      font-size: 18px;
+      font-weight: bold;
+      padding: 10px;
+      background-color: #e8ffe8;
+      border: 1px solid #4CAF50;
+      border-radius: 4px;
+      text-align: center;
+      color: #1e4620;
+      max-width: 700px;
+    }
+    .error {
+      font-size: 18px;
+      font-weight: bold;
+      padding: 10px;
+      background-color: #ffebee;
+      border: 1px solid #ef5350;
+      border-radius: 4px;
+      text-align: center;
+      color: #d32f2f;
+      max-width: 700px;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin-top: 10px;
+      max-width: 100%;
+    }
+    table {
+      width: 100%;
+      max-width: 700px; /* Fit within container */
+      border-collapse: collapse;
+      margin-top: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background-color: #fff;
+    }
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+      font-size: 14px;
+    }
+    thead {
+      background-color: #4CAF50;
+      color: white;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .footer {
+      text-align: center;
+      padding: 15px;
+      background-color: rgba(51, 51, 51, 0.9); /* Semi-transparent for readability */
+      color: #fff;
+      font-size: 14px;
+      font-style: italic;
+      border-top: 1px solid #444;
+    }
+    .footer a {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+    .disclaimer {
+      font-size: 12px;
+      color: #666;
+      background-color: rgba(248, 248, 248, 0.8);
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 8px;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .disclaimer strong {
+      color: #444;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      .input-group, button {
+        max-width: 200px; /* Compact for mobile */
+      }
+      .header {
+        padding: 15px 20px;
+      }
+      table {
+        font-size: 12px;
+      }
+      th, td {
+        padding: 8px;
+      }
+      .disclaimer {
+        font-size: 10px;
+        padding: 6px;
+      }
+      .result, .error {
+        font-size: 16px;
+        padding: 8px;
+      }
+    }
+    /* Adjustments for landscape orientation on smaller screens (e.g., iPhone) */
+    @media (orientation: landscape) and (max-height: 768px) {
+      .container {
+        max-width: 400px; /* Narrower container to show background */
+        padding: 15px;
+      }
+      .input-group, button {
+        max-width: 100%; /* Fit within narrower container */
+      }
+      .result, .error, .table-container, .disclaimer {
+        max-width: 400px; /* Match container width */
+      }
+      label {
+        font-size: 14px; /* Slightly smaller labels */
+      }
+      input {
+        font-size: 14px; /* Slightly smaller inputs */
+      }
+      button {
+        font-size: 16px; /* Slightly smaller button text */
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/">Home</a>
+  <a href="/calculators/retirement.html">Retirement Calculator</a>
+  <a href="/calculators/property_vs_shares.html">Rent vs Buy Calculator</a>
+  <a href="https://fpllucho.pythonanywhere.com" target="_blank">FPL App</a>
+  <a href="/blog/index.html">Blog</a>
+  <a href="/store/index.html">Store</a>
+</nav>
+
+  <div class="header">
+    <img src="logo_tepuy.jpg" alt="Tepuy Solutions Logo" />
+    <h1>Retirement Goal Calculator</h1>
+  </div>
+
+  <div class="container">
+    <form id="retirementForm">
+      <div class="input-group">
+        <label for="currentAge">Current Age</label>
+        <input type="number" id="currentAge" value="45" min="0" inputmode="numeric" pattern="[0-9]*"/>
+      </div>
+
+      <div class="input-group">
+        <label for="currentCapital">Current Capital to Invest ($)</label>
+        <input type="text" id="currentCapital" value="100,000" inputmode="numeric" pattern="[0-9,]*"/>
+      </div>
+
+      <div class="input-group">
+        <label for="rateOfReturn">Expected Annual Return (%)</label>
+        <input type="number" id="rateOfReturn" value="7" step="0.1" inputmode="decimal"/>
+      </div>
+
+      <div class="input-group">
+        <label for="inflationRate">Expected Inflation Rate (%)</label>
+        <input type="number" id="inflationRate" value="2.5" step="0.1" inputmode="decimal"/>
+      </div>
+
+      <div class="input-group">
+        <label for="withdrawalRate">
+          Withdrawal Rate (% of capital annually)<br>
+          <small id="suggestedWithdrawal">Suggested: Calculating...</small>
+        </label>
+        <input type="number" id="withdrawalRate" value="4.4" step="0.1" inputmode="decimal"/>
+      </div>
+
+      <div class="input-group">
+        <label for="monthlySavings">Monthly Contributions (Today’s Dollars)</label>
+        <input type="text" id="monthlySavings" value="1,000" inputmode="numeric" pattern="[0-9,]*"/>
+      </div>
+
+      <div class="input-group">
+        <label for="desiredMonthlyIncome">Target Monthly Income (Today’s Dollars)</label>
+        <input type="text" id="desiredMonthlyIncome" value="4,000" inputmode="numeric" pattern="[0-9,]*"/>
+      </div>
+
+      <button type="button" onclick="calculateRetirement()">Calculate</button>
+    </form>
+
+<div class="disclaimer">
+  This tool offers estimates to help plan your retirement, based on your inputs. It’s not financial advice, and Tepuy Solutions isn’t responsible for decisions made. Consult a financial advisor for tailored guidance.
+</div>
+
+    <div id="result" class="result" style="display:none;"></div>
+
+    <div class="table-container">
+      <table id="projectionTable" style="display: none;">
+        <thead>
+          <tr>
+            <th>Age</th>
+            <th>Capital ($)</th>
+            <th>Inflation-Adjusted Goal</th>
+            <th>Annual Contribution</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2025 Powered by <a href="https://tepuysolutions.com/" target="_blank">Tepuy Solutions</a>
+  </div>
+
+  <script>
+    function addCommaFormatting(id) {
+      const input = document.getElementById(id);
+      input.addEventListener('input', () => {
+        const clean = input.value.replace(/,/g, '');
+        if (!isNaN(clean) && clean !== '') {
+          input.value = Number(clean).toLocaleString();
+        }
+      });
+    }
+
+    ['currentCapital', 'monthlySavings', 'desiredMonthlyIncome'].forEach(addCommaFormatting);
+
+    function suggestWithdrawalRate() {
+      const r = parseFloat(document.getElementById("rateOfReturn").value) / 100;
+      const i = parseFloat(document.getElementById("inflationRate").value) / 100;
+      const suggestedText = document.getElementById("suggestedWithdrawal");
+      if (!isNaN(r) && !isNaN(i) && i < 0.15) {
+        const safeWR = ((1 + r) / (1 + i) - 1) * 100;
+        document.getElementById("withdrawalRate").value = safeWR.toFixed(1);
+        suggestedText.innerText = `Suggested: ${safeWR.toFixed(1)}%`;
+      } else {
+        suggestedText.innerText = "Suggested: Invalid input";
+      }
+    }
+
+    // Call on page load to set initial suggestion
+    document.addEventListener('DOMContentLoaded', suggestWithdrawalRate);
+
+    // Update suggestion when inputs change
+    document.getElementById("rateOfReturn").addEventListener('input', suggestWithdrawalRate);
+    document.getElementById("inflationRate").addEventListener('input', suggestWithdrawalRate);
+
+    function calculateRetirement() {
+      // Get input values
+      const result = document.getElementById("result");
+      const age = parseFloat(document.getElementById("currentAge").value);
+      const capital = parseFloat(document.getElementById("currentCapital").value.replace(/,/g, ''));
+      const rate = parseFloat(document.getElementById("rateOfReturn").value) / 100;
+      const inflation = parseFloat(document.getElementById("inflationRate").value) / 100;
+      let withdrawal = parseFloat(document.getElementById("withdrawalRate").value) / 100;
+      const savings = parseFloat(document.getElementById("monthlySavings").value.replace(/,/g, ''));
+      const income = parseFloat(document.getElementById("desiredMonthlyIncome").value.replace(/,/g, ''));
+
+      // Basic input validation
+      if (isNaN(age) || age < 0 || age > 120) {
+        result.className = "result error";
+        result.innerText = "Error: Please enter a valid age (0-120).";
+        result.style.display = "block";
+        document.getElementById("projectionTable").style.display = "none";
+        return;
+      }
+      if (isNaN(capital) || capital < 0) {
+        result.className = "result error";
+        result.innerText = "Error: Please enter a valid current capital (non-negative).";
+        result.style.display = "block";
+        document.getElementById("projectionTable").style.display = "none";
+        return;
+      }
+      if (isNaN(rate)) {
+        result.className = "result error";
+        result.innerText = "Error: Please enter a valid annual return.";
+        result.style.display = "block";
+        document.getElementById("projectionTable").style.display = "none";
+        return;
+      }
+      if (isNaN(inflation)) {
+        result.className = "result error";
+        result.innerText = "Error: Please enter a valid inflation rate.";
+        result.style.display = "block";
+        document.getElementById("projectionTable").style.display = "none";
+        return;
+      }
+      if (isNaN(savings) || savings < 0) {
+        result.className = "result error";
+        result.innerText = "Error: Please enter a valid monthly contribution (non-negative).";
+        result.style.display = "block";
+        document.getElementById("projectionTable").style.display = "none";
+        return;
+      }
+      if (isNaN(income) || income <= 0) {
+        result.className = "result error";
+        result.innerText = "Error: Please enter a valid target monthly income (positive).";
+        result.style.display = "block";
+        document.getElementById("projectionTable").style.display = "none";
+        return;
+      }
+      if (!withdrawal || withdrawal <= 0 || isNaN(withdrawal)) {
+        withdrawal = (1 + rate) / (1 + inflation) - 1;
+        if (withdrawal <= 0) {
+          result.className = "result error";
+          result.innerText = "Error: Invalid withdrawal rate. Please adjust return or inflation rates.";
+          result.style.display = "block";
+          document.getElementById("projectionTable").style.display = "none";
+          return;
+        }
+        document.getElementById("withdrawalRate").value = (withdrawal * 100).toFixed(1);
+      }
+
+      // Perform calculation
+      const targetToday = (income * 12) / withdrawal;
+      const maxYears = 100;
+      let currentCapital = capital;
+      let years = 0;
+      let rows = "";
+
+      while (years < maxYears) {
+        const targetAdjusted = targetToday * Math.pow(1 + inflation, years);
+        const annualContribution = savings * 12 * Math.pow(1 + inflation, years);
+
+        rows += `
+          <tr>
+            <td>${age + years}</td>
+            <td>$${Math.round(currentCapital).toLocaleString()}</td>
+            <td>$${Math.round(targetAdjusted).toLocaleString()}</td>
+            <td>$${Math.round(annualContribution).toLocaleString()}</td>
+          </tr>`;
+
+        if (currentCapital >= targetAdjusted) break;
+
+        currentCapital = currentCapital * (1 + rate) + annualContribution;
+        years++;
+      }
+
+      // Display results
+      result.className = "result"; // Reset to default styling
+      if (years >= maxYears) {
+        result.innerText = "Goal not reachable within 100 years with current assumptions.";
+      } else {
+        result.innerText = `You will reach your retirement income goal by age ${age + years} (in ${years} years), with a projected capital of $${Math.round(currentCapital).toLocaleString()}.`;
+      }
+
+      document.getElementById("projectionTable").querySelector("tbody").innerHTML = rows;
+      document.getElementById("projectionTable").style.display = "table";
+      result.style.display = "block";
+    }
+  </script>
+</body>
+</html>
