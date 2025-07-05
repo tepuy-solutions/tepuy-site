@@ -31,8 +31,8 @@ function calculate() {
 
   for (let i = 0; i <= years; i++) {
     labels.push("Year " + i);
-    propertyValues.push(propBalance);
-    sharesValues.push(sharesBalance);
+    propertyValues.push(Math.round(propBalance));
+    sharesValues.push(Math.round(sharesBalance));
 
     if (i < loanYears) {
       propBalance += yearlyNet;
@@ -48,34 +48,39 @@ function calculate() {
   document.getElementById("totalCashUpfront").value = upfront.toLocaleString();
   document.getElementById("weeklyPayment").value = (yearlyPayment / 52).toFixed(2);
 
-  // Chart
-  const ctx = document.getElementById("investmentChart").getContext("2d");
+  const canvas = document.getElementById("investmentChart");
+  if (!canvas) return console.warn("Chart canvas not found.");
+
+  const ctx = canvas.getContext("2d");
   if (window.investChart) window.investChart.destroy();
   window.investChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: labels,
+      labels,
       datasets: [
         {
           label: 'Property Value',
           data: propertyValues,
           borderColor: '#4CAF50',
           backgroundColor: 'rgba(76, 175, 80, 0.1)',
+          fill: true,
           tension: 0.3,
-          fill: true
+          pointRadius: 2
         },
         {
           label: 'Shares Value',
           data: sharesValues,
           borderColor: '#2196F3',
           backgroundColor: 'rgba(33, 150, 243, 0.1)',
+          fill: true,
           tension: 0.3,
-          fill: true
+          pointRadius: 2
         }
       ]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       scales: {
         y: {
           ticks: {
@@ -84,9 +89,7 @@ function calculate() {
         }
       },
       plugins: {
-        legend: {
-          position: 'bottom'
-        },
+        legend: { position: 'bottom' },
         tooltip: {
           callbacks: {
             label: ctx => `${ctx.dataset.label}: $${ctx.formattedValue}`
