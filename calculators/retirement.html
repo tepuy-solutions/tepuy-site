@@ -7,15 +7,12 @@
 
   <link rel="icon" href="/img/favicon.png" type="image/png">
   <link rel="stylesheet" href="/css/tepuy.css">
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <header class="navbar">
-  <div class="logo-title">
-    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy">Tepuy Solutions
-  </div>
+  <div class="logo-title"><img src="/img/tepuy_logo.png" class="logo" alt="Tepuy">Tepuy Solutions</div>
   <nav>
     <a href="/">Home</a>
     <a href="/calculators/property_vs_shares.html">Property vs Shares</a>
@@ -27,44 +24,54 @@
 <section class="hero">
   <div class="hero-banner">
     <h1>Retirement Goal Calculator</h1>
-    <p>Estimate how much capital you’ll need to retire comfortably based on your inputs.</p>
+    <p>Estimate the capital required to fund your target income in retirement.</p>
   </div>
 </section>
 
 <main class="calc-wrapper">
 
-  <!-- ===== Input form ===== -->
+  <!-- ===== INPUTS (7 fields) ===== -->
   <form id="retForm" class="grid-3col">
-    <label>Current Age<input id="curAge" type="number" value="45"></label>
-    <label>Retirement Age<input id="retAge" type="number" value="65"></label>
-    <label>Current Capital to Invest ($)<input id="curCap" value="100,000"></label>
+    <label>Current Age
+      <input id="curAge" type="number" value="45">
+    </label>
 
-    <label>Expected Annual Return (%)<input id="annRet" type="number" value="7" step=".1"></label>
-    <label>Expected Inflation Rate (%)<input id="infl" type="number" value="2.5" step=".1"></label>
+    <label>Current Capital to Invest ($)
+      <input id="curCap" value="100,000">
+    </label>
+
+    <label>Expected Annual Return (%)
+      <input id="annRet" type="number" value="7" step=".1">
+    </label>
+
+    <label>Expected Inflation Rate (%)
+      <input id="infl" type="number" value="2.5" step=".1">
+    </label>
+
     <label>Withdrawal Rate (% of capital annually)
       <small id="recRateLabel" class="suggest">(suggested 4 %)</small>
       <input id="wdRate" type="number" value="4" step=".1">
     </label>
 
-    <label>Monthly Contributions ($)<input id="monthlyContrib" value="1,000"></label>
-    <label>Target Monthly Income ($)<input id="targetMonthly" value="4,000"></label>
+    <label>Monthly Contributions ($)
+      <input id="monthlyContrib" value="1,000">
+    </label>
+
+    <label>Target Monthly Income ($)
+      <input id="targetMonthly" value="4,000">
+    </label>
   </form>
 
-  <!-- ===== trigger ===== -->
   <button class="btn-primary" onclick="runRetirementCalc()">Calculate</button>
 
-  <!-- ===== quick result ===== -->
   <p id="quickMsg" class="result-box" hidden></p>
 
-  <!-- ===== chart ===== -->
   <canvas id="retChart" height="230"></canvas>
 
-  <!-- ===== table ===== -->
   <div id="retResults" class="table-container"></div>
 
   <p class="disclaimer">
-    This calculator provides estimates only and does not constitute financial advice.
-    Please consult a licensed professional before making investment decisions.
+    This tool provides estimates only and is not financial advice.  Please consult a licensed professional.
   </p>
 </main>
 
