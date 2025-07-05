@@ -2,52 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tepuy Solutions | Financial & Engineering Tools</title>
-  <meta name="description"
-        content="Premium financial calculators, dashboards and consulting that turn complex numbers into clear decisions.">
+  <meta name="description" content="Premium financial calculators, dashboards and consulting that turn complex numbers into clear decisions.">
   <link rel="icon" href="/img/favicon.png" type="image/png" />
   <link rel="stylesheet" href="/css/tepuy.css" />
 </head>
 <body>
 
-<!-- ▸ Sticky site-wide header -->
-<header class="ts-nav">
-  <div class="ts-nav-left">
-    <a href="/" class="ts-brand">
-      <img src="/img/tepuy_logo.png" alt="Tepuy logo">
-      Tepuy Solutions
-    </a>
+<!-- ───────── NAVBAR (desktop + mobile) ───────── -->
+<header class="navbar">
+  <div class="logo-title">
+    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo" />
+    Tepuy Solutions
   </div>
-
-  <!-- desktop menu -->
-  <nav class="ts-menu">
+  <nav class="nav-links" id="navMenu">
     <a class="active" href="/">Home</a>
     <a href="/calculators/property_vs_shares.html">Calculators</a>
     <a href="/blog/">Blog</a>
     <a href="/store/">Store</a>
     <a href="/about.html">Who We Are</a>
+    <a href="/contact.html">Contact Us</a>
   </nav>
-
-  <!-- contact call-out -->
-  <a href="/contact.html" class="btn btn-outline desk-only">Contact Us</a>
-
-  <!-- hamburger (mobile) -->
-  <button id="burger" class="burger" aria-label="Toggle menu">
-    <span></span><span></span><span></span>
-  </button>
+  <button class="hamburger" id="menuToggle" aria-label="Menu">&#9776;</button>
 </header>
 
-<!-- ▸ Mobile slide-out -->
-<nav id="mobileMenu" class="mobile-drawer">
-  <a href="/calculators/property_vs_shares.html">Calculators</a>
-  <a href="/blog/">Blog</a>
-  <a href="/store/">Store</a>
-  <a href="/about.html">Who We Are</a>
-  <a href="/contact.html" class="btn btn-outline">Contact Us</a>
-</nav>
-
-<!-- ===== HERO ===== -->
+<!-- ===== HERO ==================================================== -->
 <section class="hero hero-home">
   <div class="hero-inner">
     <h1>Smart tools for confident decisions</h1>
@@ -59,7 +39,7 @@
   </div>
 </section>
 
-<!-- ===== SERVICES STRIP ===== -->
+<!-- ===== SERVICES STRIP ========================================== -->
 <section class="strip">
   <article class="feature">
     <div class="feat-img" style="background-image:url('/img/feature_calc.jpg')"></div>
@@ -69,7 +49,6 @@
       <a href="/calculators/property_vs_shares.html" class="text-link">Explore tools →</a>
     </div>
   </article>
-
   <article class="feature rev">
     <div class="feat-img" style="background-image:url('/img/feature_dash.jpg')"></div>
     <div class="feat-body">
@@ -78,7 +57,6 @@
       <a href="/contact.html" class="text-link">Request a demo →</a>
     </div>
   </article>
-
   <article class="feature">
     <div class="feat-img" style="background-image:url('/img/feature_consult.jpg')"></div>
     <div class="feat-body">
@@ -89,15 +67,13 @@
   </article>
 </section>
 
-<!-- ===== LATEST BLOG ===== -->
+<!-- ===== BLOG PREVIEW ============================================ -->
 <section class="blog-preview">
   <header>
     <h2>Latest Insights</h2>
     <a href="/blog/" class="text-link">View all articles →</a>
   </header>
-
   <div class="blog-cards">
-    <!-- repeat for up to 3 latest posts -->
     <article class="post-card">
       <a href="/blog/property-vs-shares-australia.html">
         <img src="/img/posts/property_vs_shares_thumb.jpg" alt="">
@@ -107,12 +83,10 @@
         </div>
       </a>
     </article>
-
-    <!-- ▸ Add more post-card blocks as new posts go live -->
   </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
+<!-- ===== FOOTER ================================================== -->
 <footer class="ts-footer">
   <div class="footer-grid">
     <div>
@@ -136,15 +110,16 @@
       <a href="/contact.html" class="btn btn-outline">Contact Us</a>
     </div>
   </div>
-
   <p class="tiny">© 2025 Tepuy Solutions. Built with clarity &amp; care.</p>
 </footer>
 
-<!-- ===== BURGER SCRIPT ===== -->
 <script>
-  const burger   = document.getElementById('burger');
-  const drawer   = document.getElementById('mobileMenu');
-  burger.onclick = () => drawer.classList.toggle('open');
+  const menuToggle = document.getElementById("menuToggle");
+  const navMenu = document.getElementById("navMenu");
+  menuToggle.addEventListener("click", () => {
+    navMenu.classList.toggle("open");
+  });
 </script>
+
 </body>
 </html>
