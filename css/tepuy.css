@@ -1,164 +1,63 @@
+/* === Tepuy Solutions design system ========================= */
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  background: #f8f8f8;
+:root{
+  --brand-blue:#2c3e50;
+  --brand-green:#28a745;
+  --brand-green-dark:#218838;
+  --brand-bg:#f8f8f8;
+  --text-dark:#111;
+  --text-light:#fff;
 }
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #2c3e50;
-  padding: 10px 20px;
-  color: white;
-}
-.navbar a {
-  color: white;
-  margin-left: 20px;
-  text-decoration: none;
-}
-.navbar a.active {
-  font-weight: bold;
-  text-decoration: underline;
-}
-.logo {
-  height: 32px;
-}
-.hero {
-  text-align: center;
-  padding: 100px 20px;
-  color: white;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-              url('/img/auyantepui.jpg') center/cover no-repeat;
-}
-.hero-banner {
-  background: rgba(255,255,255,0.92);
-  color: #111;
-  display: inline-block;
-  padding: 30px;
-  border-radius: 10px;
-}
-.calc-container {
-  padding: 40px 20px;
-  max-width: 900px;
-  margin: auto;
-}
-.grid-2x3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-input {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-}
-button.btn-primary {
-  margin-top: 20px;
-  padding: 12px 20px;
-  font-size: 16px;
-  background-color: #28a745;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 4px;
-}
-.summary-box {
-  background-color: #e7f9ec;
-  padding: 15px;
-  margin-top: 20px;
-  border-left: 5px solid #28a745;
-}
-table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
-}
-table, th, td {
-  border: 1px solid #ccc;
-}
-th, td {
-  padding: 10px;
-  text-align: center;
-}
-.disclaimer {
-  background: #fff3cd;
-  padding: 10px;
-  margin: 20px;
-  font-size: 14px;
-  border-left: 5px solid #ffa502;
-}
-footer {
-  background-color: #2c3e50;
-  color: white;
-  padding: 10px;
-  text-align: center;
-}
-/* -------- Retirement Calculator specific -------- */
-.calc-wrapper{max-width:900px;margin:auto;padding:40px 20px}
-.grid-2col{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.grid-2col label{display:flex;flex-direction:column;font-weight:600}
-.grid-2col input{padding:8px;border:1px solid #ccc;border-radius:6px;background:#fff9e5;font-size:1rem}
-.btn-primary{margin:25px auto 0 auto;display:block;padding:12px 28px;font-size:1rem;
-             background:#28a745;color:#fff;border:none;border-radius:6px;cursor:pointer}
-.btn-primary:hover{background:#218838}
-.result-box{margin-top:25px;padding:18px;border-left:6px solid #28a745;background:#e6ffe7;font-weight:bold}
-.result-box.error{border-left-color:#dc3545;background:#ffe7e7}
-.table-container{overflow-x:auto;margin-top:20px}
-table{width:100%;border-collapse:collapse;background:#fff}
-th,td{border:1px solid #ccc;padding:10px;text-align:center;font-size:.95rem}
-thead{background:#4caf50;color:#fff}
-.disclaimer{margin:40px auto 0 auto;background:#fff3cd;border-left:5px solid #ffa502;
-           padding:12px;font-size:.9rem;max-width:900px}
-/* ---------- Property vs Shares enhancements ---------- */
-.quick-out label{display:flex;flex-direction:column}
-.quick-out input{background:#f7f7f7;color:#333}
-.chart-container,canvas{width:100%;max-width:900px;margin:auto}
-.result-box.error{background:#ffe7e7;border-left:6px solid #dc3545}
-.grid-2col.quick-out{margin-top:25px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 
-/* ===== Property-vs-Shares table & chart polish ===== */
-.table-container{overflow-x:auto;margin-top:25px}
-.table-container table{width:100%;border-collapse:collapse;background:#fff;font-size:.95rem}
-.table-container th,
-.table-container td{border:1px solid #ccc;padding:8px;text-align:right}
-.table-container thead th{position:sticky;top:0;background:#4caf50;color:#fff;z-index:2}
-.table-container tr:nth-child(even){background:#f7f7f7}
+/* --- base ----------------------------------- */
+*{box-sizing:border-box}
+body{margin:0;font-family:'Inter','Segoe UI',sans-serif;background:var(--brand-bg);color:var(--text-dark)}
+a{color:var(--brand-blue);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%}
 
+/* --- nav ------------------------------------ */
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px;background:var(--brand-blue);color:var(--text-light)}
+.navbar a{color:var(--text-light);margin-left:22px}
+.navbar a.active{font-weight:600;border-bottom:2px solid var(--text-light)}
+.logo{height:32px;margin-right:10px}
+.logo-title{display:flex;align-items:center;font-weight:600;font-size:1.05rem}
+
+/* --- hero ----------------------------------- */
+.hero{background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),url('/img/auyantepui.jpg') center/cover no-repeat;text-align:center;padding:110px 20px;color:var(--text-light)}
+.hero-banner{background:rgba(255,255,255,.92);color:var(--text-dark);display:inline-block;padding:34px 40px;border-radius:10px;max-width:680px}
+.hero-buttons{margin-top:25px}
+.btn{display:inline-block;padding:12px 22px;margin:0 6px;font-weight:600;background:var(--brand-green);color:#fff;border-radius:6px}
+.btn:hover{background:var(--brand-green-dark)}
+
+/* --- common calculator shell ---------------- */
+.calc-wrapper{max-width:1000px;margin:40px auto;padding:0 20px}
+.grid-3col{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-bottom:28px}
+.grid-2col{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:24px}
+.grid-2col label,.grid-3col label{display:flex;flex-direction:column;font-weight:600}
+input{padding:9px 10px;border:1px solid #ccc;border-radius:6px;font-size:1rem;background:#fffdf5}
+
+/* --- buttons / result boxes ----------------- */
+.btn-primary{padding:14px 28px;margin:0 auto 10px auto;display:block;background:var(--brand-green);border:none;color:#fff;border-radius:6px;font-size:1rem;cursor:pointer}
+.btn-primary:hover{background:var(--brand-green-dark)}
+.result-box{margin-top:26px;padding:18px;border-left:6px solid var(--brand-green);background:#e7f9ec;font-weight:600}
+.result-box.error{border-left-color:#dc3545;background:#ffe8e8}
+
+/* --- table & quick outputs ------------------ */
+.quick-out label{display:flex;flex-direction:column;font-size:.92rem}
+.quick-out input{background:#f3f3f3;color:#333;font-weight:600}
+.table-container{overflow-x:auto;margin-top:26px}
+table{width:100%;border-collapse:collapse;font-size:.93rem;background:#fff}
+thead{background:var(--brand-green);color:#fff;position:sticky;top:0}
+th,td{padding:10px;border:1px solid #d0d0d0;text-align:right}
+tr:nth-child(even){background:#fafafa}
+
+/* --- footer --------------------------------- */
+footer{background:var(--brand-blue);color:var(--text-light);text-align:center;padding:16px;font-size:.9rem}
+
+/* --- responsive tweaks ----------------------- */
 @media(max-width:640px){
-  .table-container table{font-size:.8rem}
-  .quick-out{grid-template-columns:1fr !important}
+  .hero-banner{padding:28px 24px}
+  .btn{display:block;margin:10px auto}
+  th,td{font-size:.84rem}
 }
-
-/* Chart wrapper (canvas is already responsive) */
-#investmentChart{
-  max-width:900px;
-  width:100%;
-  height:50vh;
-}
-@media(max-width:640px){
-  #investmentChart{height:40vh}
-}
-
-.grid-3col {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 16px;
-  margin-bottom: 30px;
-}
-
-.grid-2col {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-  margin: 20px 0;
-}
-
-input {
-  padding: 8px;
-  width: 100%;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-
