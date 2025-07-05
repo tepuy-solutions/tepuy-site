@@ -12,11 +12,12 @@ const fmt= n  => n.toLocaleString("en-AU",{maximumFractionDigits:0});
 
 /* live safe-rate suggestion = (r-i)/(1+i) */
 function updateSuggest(){
-  const r=+$("annRet").value||0,
-        i=+$("infl").value||0,
-        safe=((r-i)/(1+i)).toFixed(1);
-  $("recRateLabel").textContent=`(suggested ${safe} %)`;
-  $("wdRate").value=safe;                        // keep box in sync
+  const r = +$("annRet").value / 100 || 0;
+  const i = +$("infl").value   / 100 || 0;
+  const safeWR = ((1 + r) / (1 + i) - 1) * 100;   // exact perpetuity formula
+  const safeTxt = safeWR.toFixed(1);
+  $("recRateLabel").textContent = `(suggested ${safeTxt} %)`;
+  $("wdRate").value = safeTxt;                     // keep input in sync
 }
 $("annRet").addEventListener("input",updateSuggest);
 $("infl").addEventListener("input",updateSuggest);
