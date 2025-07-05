@@ -1,76 +1,257 @@
-/* ==========  Tepuy Solutions Design System  ================= */
 
-:root{
-  /* premium deep-forest palette */
-  --brand-blue:          #1c3240;   /* nav + footer background */
-  --brand-green:         #1a8738;   /* primary action */
-  --brand-green-dark:    #156c2c;   /* hover / active */
-  --brand-bg:            #f7f9f8;   /* page background */
-  --text-dark:           #0d0d0d;
-  --text-light:          #ffffff;
+/* === Tepuy Solutions: Premium Forest Theme ========================= */
+
+:root {
+  --brand-green: #1f4c3b;
+  --brand-green-dark: #163f30;
+  --brand-green-light: #d4ede1;
+  --brand-bg: #f4f8f6;
+  --text-dark: #0b1f16;
+  --text-light: #ffffff;
+  --accent: #28a745;
 }
 
-/* ----------  Base  ---------------------------------------- */
-*{box-sizing:border-box}
-body{margin:0;font-family:'Inter','Segoe UI',sans-serif;background:var(--brand-bg);color:var(--text-dark)}
-a{color:var(--brand-green);text-decoration:none}
-a:hover{text-decoration:underline}
-img{max-width:100%}
-
-/* ----------  Navigation Bar  ------------------------------ */
-.navbar{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 24px;background:var(--brand-blue);color:var(--text-light)
+/* --- base ----------------------------------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: var(--brand-bg);
+  color: var(--text-dark);
 }
-.navbar a{color:var(--text-light);margin-left:24px}
-.navbar a.active{font-weight:600;border-bottom:2px solid var(--text-light)}
-.logo{height:34px;margin-right:12px}
-.logo-title{display:flex;align-items:center;font-weight:600;font-size:1.05rem}
-
-/* ----------  Hero  ---------------------------------------- */
-.hero{
-  background:
-    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-    url('/img/auyantepui.jpg') center/cover no-repeat;
-  text-align:center;padding:110px 20px;color:var(--text-light)
+a {
+  color: var(--brand-green);
+  text-decoration: none;
 }
-.hero-banner{
-  background:rgba(255,255,255,.92);color:var(--text-dark);
-  display:inline-block;padding:36px 42px;border-radius:10px;max-width:720px
+a:hover {
+  text-decoration: underline;
 }
-.hero-buttons{margin-top:28px}
-.btn{
-  display:inline-block;padding:13px 26px;margin:0 6px;font-weight:600;
-  background:var(--brand-green);color:#fff;border-radius:6px;transition:.2s
-}
-.btn:hover{background:var(--brand-green-dark)}
-.btn-outline{
-  background:transparent;color:var(--brand-green);border:2px solid var(--brand-green)
-}
-.btn-outline:hover{background:var(--brand-green);color:#fff}
-
-/* ----------  NEW: About Section  --------------------------- */
-.about{
-  background:#122821;color:var(--text-light);padding:60px 20px;text-align:center
-}
-.about-inner{max-width:820px;margin:0 auto}
-.about h2{font-size:2rem;margin:0 0 18px 0;font-weight:600}
-.about p{font-size:1.05rem;line-height:1.6;margin:0}
-
-/* ----------  Calculator & Blog styles  -------------------- */
-/* (all previous rules kept exactly the same so tools keep working) */
-.calc-wrapper{max-width:1000px;margin:40px auto;padding:0 20px}
-/* …  everything that was already in the old CSS follows unchanged … */
-
-/* ----------  Footer  -------------------------------------- */
-footer{
-  background:var(--brand-blue);color:var(--text-light);
-  text-align:center;padding:18px;font-size:.9rem
+img {
+  max-width: 100%;
 }
 
-/* ----------  Responsive tweaks  --------------------------- */
-@media(max-width:640px){
-  .hero-banner{padding:32px 28px}
-  .btn{display:block;margin:10px auto}
-  .about h2{font-size:1.55rem}
+/* --- nav ------------------------------------ */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: var(--brand-green);
+  color: var(--text-light);
+}
+.navbar a {
+  color: var(--text-light);
+  margin-left: 20px;
+}
+.navbar a.active {
+  font-weight: 600;
+  border-bottom: 2px solid var(--text-light);
+}
+.logo {
+  height: 32px;
+  margin-right: 10px;
+}
+.logo-title {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* --- hero ----------------------------------- */
+.hero {
+  background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)), url('/img/auyantepui.jpg') center/cover no-repeat;
+  text-align: center;
+  padding: 110px 20px;
+  color: var(--text-light);
+}
+.hero-banner {
+  background: rgba(255,255,255,0.94);
+  color: var(--text-dark);
+  display: inline-block;
+  padding: 34px 40px;
+  border-radius: 10px;
+  max-width: 680px;
+}
+.hero-buttons {
+  margin-top: 25px;
+}
+.btn {
+  display: inline-block;
+  padding: 12px 22px;
+  margin: 0 6px;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 6px;
+}
+.btn:hover {
+  background: #218838;
+}
+
+/* --- layout shell ---------------------------- */
+.calc-wrapper {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+.grid-3col, .grid-2col {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+.grid-3col {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+.grid-2col {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+input, select {
+  padding: 9px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fffdf5;
+}
+
+/* --- buttons / result boxes ------------------ */
+.btn-primary {
+  padding: 14px 28px;
+  margin: 0 auto 10px auto;
+  display: block;
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background: #218838;
+}
+.result-box {
+  margin-top: 26px;
+  padding: 18px;
+  border-left: 6px solid var(--accent);
+  background: var(--brand-green-light);
+  font-weight: 600;
+}
+.result-box.error {
+  border-left-color: #dc3545;
+  background: #ffe8e8;
+}
+
+/* --- table / quick outputs ------------------ */
+.quick-out label {
+  font-size: .92rem;
+}
+.quick-out input {
+  background: #f3f3f3;
+  color: #333;
+  font-weight: 600;
+}
+.table-container {
+  overflow-x: auto;
+  margin-top: 26px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .93rem;
+  background: #fff;
+}
+thead {
+  background: var(--accent);
+  color: #fff;
+  position: sticky;
+  top: 0;
+}
+th, td {
+  padding: 10px;
+  border: 1px solid #d0d0d0;
+  text-align: right;
+}
+tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* --- blog styles ----------------------------- */
+.blog-grid {
+  max-width: 1000px;
+  margin: 40px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 26px;
+  padding: 0 20px;
+}
+.post-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: transform .15s;
+}
+.post-card:hover {
+  transform: translateY(-4px);
+}
+.post-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+.post-card-body {
+  padding: 18px;
+}
+.post-card-body h2 {
+  font-size: 1.15rem;
+  margin: 0 0 8px 0;
+  color: var(--brand-green);
+}
+.meta {
+  font-size: .83rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+.excerpt {
+  font-size: .9rem;
+  color: #333;
+}
+
+/* --- blog single post ------------------------ */
+.blog-post {
+  max-width: 750px;
+  margin: 40px auto;
+  padding: 0 20px;
+  background: #fff;
+}
+.post-meta {
+  color: #666;
+  font-size: .85rem;
+  margin-bottom: 20px;
+}
+.blog-footer {
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* --- footer ---------------------------------- */
+footer {
+  background: var(--brand-green);
+  color: var(--text-light);
+  text-align: center;
+  padding: 16px;
+  font-size: .9rem;
+}
+
+/* --- responsive ------------------------------ */
+@media(max-width:640px) {
+  .hero-banner { padding: 28px 24px; }
+  .btn { display: block; margin: 10px auto; }
+  th, td { font-size: .84rem; }
 }
