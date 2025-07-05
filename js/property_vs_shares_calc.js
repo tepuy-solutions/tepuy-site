@@ -1,97 +1,98 @@
-const $$ = id => document.getElementById(id);
-const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
-
 function calculate() {
-  const num = id => parseFloat($$(id).value.replace(/,/g, "")) || 0;
-  const pct = id => num(id) / 100;
+  const toNumber = val => parseFloat(val.replace(/[^0-9.-]+/g, '')) || 0;
 
-  const loan  = num("loanAmount");
-  const dp    = pct("downpayment");
-  const costs = num("buyingCosts");
-  const yrs   = num("loanPeriod");
-  const rate  = pct("loanInterestRate");
-  const ownP  = pct("owningCosts");
-  const agent = pct("agentFees");
-  const occ   = pct("occupancyRate");
-  const grow  = pct("propertyAppreciation");
-  const yield = pct("rentalIncome");
-  const share = pct("stockMarketAppreciation");
-  const build = pct("buildingComponent");
-  const tax   = pct("taxBracket");
-  const yrsRet= num("yearsToRetirement");
+  const loan = toNumber(document.getElementById("loanAmount").value);
+  const dpPct = parseFloat(document.getElementById("downpayment").value) / 100;
+  const buyingCosts = toNumber(document.getElementById("buyingCosts").value);
+  const interest = parseFloat(document.getElementById("loanInterestRate").value) / 100;
+  const loanYears = parseFloat(document.getElementById("loanPeriod").value);
+  const owningCosts = parseFloat(document.getElementById("owningCosts").value) / 100;
+  const agentFees = parseFloat(document.getElementById("agentFees").value) / 100;
+  const occRate = parseFloat(document.getElementById("occupancyRate").value) / 100;
+  const appreciation = parseFloat(document.getElementById("propertyAppreciation").value) / 100;
+  const rentalYield = parseFloat(document.getElementById("rentalIncome").value) / 100;
+  const stockReturn = parseFloat(document.getElementById("stockMarketAppreciation").value) / 100;
+  const tax = parseFloat(document.getElementById("taxBracket").value) / 100;
+  const years = parseInt(document.getElementById("yearsToRetirement").value);
+  const buildingPct = parseFloat(document.getElementById("buildingComponent").value) / 100;
 
-  const lmiPct = dp >= 0.2 ? 0 : -(0.046 - 0.01)/(0.196 - 0.05)*dp + 0.058;
-  const lmi    = Math.round(loan * lmiPct / (1 + lmiPct));
-  const price  = Math.round(loan / ((1 - dp) * (1 + lmiPct)));
-  const upfront= Math.round(dp * price + costs);
-  const wkPay  = (((rate/12)*loan*Math.pow(1+rate/12,yrs*12))/(Math.pow(1+rate/12,yrs*12)-1))*12/52;
+  const propVal = loan / (1 - dpPct);
+  const lmiPct = dpPct < 0.2 ? 0.02 : 0;
+  const lmiCost = propVal * lmiPct;
+  const upfront = dpPct * propVal + buyingCosts + lmiCost;
 
-  $$("lmiPercentage").value   = (lmiPct*100).toFixed(2);
-  $$("lmiAmount").value       = fmt(lmi);
-  $$("buyPrice").value        = fmt(price);
-  $$("totalCashUpfront").value= fmt(upfront);
-  $$("weeklyPayment").value   = wkPay.toFixed(2);
+  const yearlyPayment = (loan * interest * Math.pow(1 + interest, loanYears)) / (Math.pow(1 + interest, loanYears) - 1);
+  const yearlyRental = propVal * rentalYield * occRate;
+  const yearlyCost = propVal * owningCosts;
+  const yearlyNet = yearlyRental - yearlyCost;
 
-  let rows="", labels=[], equityArr=[], sharesArr=[];
-  let pVal=price, shares=upfront, owed=loan;
+  const propertyValues = [], sharesValues = [], labels = [];
+  let propBalance = propVal, sharesBalance = upfront;
 
-  for(let y=0;y<=yrs;y++){
-    const rent = Math.round(pVal*yield*occ);
-    const interest = Math.round(owed*rate);
-    let own=0,depr=0,amort=0,net=0;
+  for (let i = 0; i <= years; i++) {
+    labels.push("Year " + i);
+    propertyValues.push(propBalance);
+    sharesValues.push(sharesBalance);
 
-    if(y>0){
-      own  = Math.round(pVal*(ownP+agent));
-      depr = Math.round(price*build/40);
-      amort= Math.round(wkPay*52 - interest);
-      const cash = rent - (own+interest+depr);
-      net = (cash<0 && y<yrsRet) ? Math.round(cash*(1-tax)-amort)
-                                 : Math.round(rent-(own+interest)-amort);
-      shares = Math.round(shares*(1+share) - net);
+    if (i < loanYears) {
+      propBalance += yearlyNet;
     }
 
-    rows += `<tr><td>${y}</td><td>${fmt(pVal)}</td><td>${fmt(shares)}</td>
-             <td>${fmt(owed)}</td><td>${fmt(pVal-owed)}</td>
-             <td>${fmt(own)}</td><td>${fmt(rent)}</td><td>${fmt(interest)}</td>
-             <td>${fmt(depr)}</td><td>${fmt(amort)}</td><td>${fmt(net)}</td></tr>`;
-
-    labels.push(`Yr ${y}`);
-    equityArr.push(pVal-owed);
-    sharesArr.push(shares);
-
-    pVal = Math.round(pVal*(1+grow));
-    owed = Math.round(owed*(1+rate) - wkPay*52);
+    propBalance *= (1 + appreciation);
+    sharesBalance *= (1 + stockReturn);
   }
 
-  $$("results").innerHTML = `
-    <div class="table-container">
-      <table><thead><tr>
-        <th>Yr</th><th>Property</th><th>Shares</th><th>Owed</th><th>Equity</th>
-        <th>Own Costs</th><th>Rent</th><th>Interest</th><th>Depr.</th>
-        <th>Amort.</th><th>Net CF</th></tr></thead>
-        <tbody>${rows}</tbody></table>
-    </div>`;
+  document.getElementById("lmiPercentage").value = (lmiPct * 100).toFixed(1);
+  document.getElementById("lmiAmount").value = lmiCost.toLocaleString();
+  document.getElementById("buyPrice").value = propVal.toLocaleString();
+  document.getElementById("totalCashUpfront").value = upfront.toLocaleString();
+  document.getElementById("weeklyPayment").value = (yearlyPayment / 52).toFixed(2);
 
-  const ctx=$$("pvChart").getContext("2d");
-  if(window.pvChart) window.pvChart.destroy();
-  window.pvChart=new Chart(ctx,{
-    type:"line",
-    data:{
-      labels,
-      datasets:[
-        {label:"Equity",data:equityArr,borderColor:"#28a745",backgroundColor:"rgba(40,167,69,.2)",fill:true,tension:.35},
-        {label:"Shares",data:sharesArr,borderColor:"#007bff",backgroundColor:"rgba(0,123,255,.2)",fill:true,tension:.35}
+  // Chart
+  const ctx = document.getElementById("investmentChart").getContext("2d");
+  if (window.investChart) window.investChart.destroy();
+  window.investChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Property Value',
+          data: propertyValues,
+          borderColor: '#4CAF50',
+          backgroundColor: 'rgba(76, 175, 80, 0.1)',
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: 'Shares Value',
+          data: sharesValues,
+          borderColor: '#2196F3',
+          backgroundColor: 'rgba(33, 150, 243, 0.1)',
+          tension: 0.3,
+          fill: true
+        }
       ]
     },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{boxWidth:14}}},
-      scales:{
-        y:{ticks:{callback:v=>fmt(v)}},
-        x:{ticks:{autoSkip:true,maxTicksLimit:12}}
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          ticks: {
+            callback: value => `$${value.toLocaleString()}`
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: $${ctx.formattedValue}`
+          }
+        }
       }
     }
   });
 }
-
-window.calculate = calculate;
