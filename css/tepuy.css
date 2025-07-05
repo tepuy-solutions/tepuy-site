@@ -63,3 +63,6 @@ footer{background:var(--brand-blue);color:var(--text-light);text-align:center;pa
 }
 /* small helper for inline suggestion text */
 .suggest{font-size:.8rem;font-weight:400;color:#555;margin-left:4px}
+#pvChart{width:100%;max-width:1000px;height:50vh;margin:34px auto}
+@media(max-width:640px){#pvChart{height:40vh}}
+
