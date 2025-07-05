@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Property vs Shares | Tepuy Solutions</title>
 
-  <!-- CSS & Chart.js -->
+  <!-- global CSS -->
   <link rel="stylesheet" href="/css/tepuy.css" />
-  <link rel="icon" href="/img/favicon.png" type="image/png" />
+  <link rel="icon"   href="/img/favicon.png" type="image/png" />
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
+<!-- ───────── NAVBAR ───────── -->
 <header class="navbar">
   <div class="logo-title">
-    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy" />
+    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy">
     Tepuy Solutions
   </div>
   <nav>
@@ -25,58 +28,64 @@
   </nav>
 </header>
 
+<!-- ───────── HERO ───────── -->
 <section class="hero">
   <div class="hero-banner">
-    <h1>Property vs Shares Calculator</h1>
-    <p>Compare projected net wealth from real estate and index-fund investing.</p>
+    <h1>Property Investment vs Shares Calculator</h1>
+    <p>Project net-worth growth in real estate vs an index-fund portfolio.</p>
   </div>
 </section>
 
+<!-- ───────── MAIN CONTENT ───────── -->
 <main class="calc-wrapper">
 
-  <!-- ===== Inputs (3-column grid) ===== -->
+  <!-- INPUTS (3-column grid) -->
   <form id="investmentForm" class="grid-3col">
     <label>Loan Amount <input id="loanAmount" value="800,000" /></label>
     <label>Down-payment (%) <input type="number" id="downpayment" value="10" step=".1" /></label>
     <label>Stamp Duty & Costs ($) <input id="buyingCosts" value="48,000" /></label>
+
     <label>Loan Period (yrs) <input type="number" id="loanPeriod" value="30" /></label>
     <label>Interest Rate (%) <input type="number" id="loanInterestRate" value="6.5" step=".1" /></label>
     <label>Owning Costs (%/yr) <input type="number" id="owningCosts" value="2" step=".1" /></label>
+
     <label>Agent Fees (%/yr) <input type="number" id="agentFees" value="0.2" step=".1" /></label>
     <label>Occupancy Rate (%) <input type="number" id="occupancyRate" value="90" /></label>
     <label>Appreciation Rate (%/yr) <input type="number" id="propertyAppreciation" value="6.5" step=".1" /></label>
+
     <label>Rental Yield (%/yr) <input type="number" id="rentalIncome" value="4.8" step=".1" /></label>
     <label>Shares Return (%/yr) <input type="number" id="stockMarketAppreciation" value="11" step=".1" /></label>
     <label>Tax Bracket (%) <input type="number" id="taxBracket" value="30" step=".1" /></label>
+
     <label>Years to Retirement <input type="number" id="yearsToRetirement" value="30" /></label>
     <label>Building Component (%) <input type="number" id="buildingComponent" value="50" /></label>
   </form>
 
   <button class="btn-primary" onclick="calculate()">Calculate</button>
 
-  <!-- quick outputs -->
+  <!-- QUICK OUTPUTS -->
   <div class="grid-2col quick-out">
-    <label>LMI (%) <input id="lmiPercentage" readonly /></label>
-    <label>LMI ($) <input id="lmiAmount" readonly /></label>
-    <label>Buy Price <input id="buyPrice" readonly /></label>
-    <label>Total Upfront <input id="totalCashUpfront" readonly /></label>
-    <label>Weekly Payment <input id="weeklyPayment" readonly /></label>
+    <label>LMI (%)          <input id="lmiPercentage"     readonly></label>
+    <label>LMI ($)          <input id="lmiAmount"         readonly></label>
+    <label>Buy Price        <input id="buyPrice"          readonly></label>
+    <label>Total Upfront    <input id="totalCashUpfront"  readonly></label>
+    <label>Weekly Payment   <input id="weeklyPayment"     readonly></label>
   </div>
 
-  <!-- chart -->
-  <canvas id="investmentChart" height="260"></canvas>
+  <!-- CHART -->
+  <canvas id="investmentChart" height="180"></canvas>
 
-  <!-- results table -->
+  <!-- RESULTS TABLE -->
   <div id="results" class="table-container"></div>
 
   <p class="disclaimer">
-    Results are estimates only and do not constitute financial advice.
+    Figures are estimates only and do not constitute financial advice.
   </p>
 </main>
 
-<footer>© 2025 Tepuy Solutions</footer>
+<footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
 
-<!-- logic -->
+<!-- CALCULATION LOGIC -->
 <script src="/js/property_vs_shares_calc.js"></script>
 </body>
 </html>
