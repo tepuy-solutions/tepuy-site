@@ -5,8 +5,9 @@ const num = id => parseFloat($(id).value.replace(/,/g, "")) || 0;
 const pct = id => num(id) / 100;
 
 /* ---------- main ------------- */
-function calculate() {
-  /* ── grab inputs ── */
+function calculate () {
+
+  /* === INPUTS === */
   const loanAmt   = num("loanAmount");
   const dpPct     = pct("downpayment");
   const buyCosts  = num("buyingCosts");
@@ -22,123 +23,124 @@ function calculate() {
   const tax       = pct("taxBracket");
   const yearsRet  = num("yearsToRetirement");
 
-  /* ── upfront maths ── */
+  /* === UP-FRONT FIGURES === */
   const lmiPct = dpPct >= .20 ? 0
-    : -(0.046-0.01)/(0.196-0.05)*dpPct + 0.058;      // same sliding scale
+    : -(0.046-0.01)/(0.196-0.05)*dpPct + 0.058;
+
   const lmiAmt = Math.round(loanAmt * lmiPct / (1+lmiPct));
   const price  = Math.round(loanAmt / ((1-dpPct)*(1+lmiPct)));
   const cashUp = Math.round(dpPct*price + buyCosts);
   const wkPay  = (((rLoan/12)*loanAmt*Math.pow(1+rLoan/12,yearsLoan*12)) /
                  (Math.pow(1+rLoan/12,yearsLoan*12)-1))*12/52;
 
-  /* ── quick-output boxes ── */
   $("lmiPercentage").value    = (lmiPct*100).toFixed(2);
   $("lmiAmount").value        = fmt(lmiAmt);
   $("buyPrice").value         = fmt(price);
   $("totalCashUpfront").value = fmt(cashUp);
   $("weeklyPayment").value    = wkPay.toFixed(2);
 
-  /* ── initialise year-0 state ── */
-  let propertyValue      = price;
-  let sharesValue        = cashUp;
-  let capitalOwed        = loanAmt;
+  /* === YEAR-BY-YEAR LOOP === */
+  let propVal = price;          // opening value year 0
+  let shares  = cashUp;         // cash invested in shares
+  let owed    = loanAmt;
 
-  /* arrays for chart / table */
   const labels=[], equityArr=[], sharesArr=[];
   let rows="";
 
-  for (let year = 0; year <= yearsLoan; year++) {
+  for (let y = 0; y <= yearsLoan; y++) {
 
-      /* year-specific variables */
-      let ownCost=0, incomeRent=0, interest=0,
-          depr=0, amort=0, netCF=0;
+    /* ----- values that rely on *opening* prop & debt ----- */
+    const rent      = (y === 0) ? 0
+                     : Math.round(propVal * rentYld * occ);           // prev-year value
+    const interest  = (y === 0) ? 0
+                     : Math.round(owed * rLoan);
 
-      /* record BEFORE updates */
-      labels.push(`Yr ${year}`);
-      equityArr.push(propertyValue - capitalOwed);
-      sharesArr.push(sharesValue);
+    /* ----- grow property for *this* year ----- */
+    if (y > 0) propVal = Math.round(propVal * (1 + growProp));
 
-      /* create table row (values will be filled after calc for Y>0) */
-      if(year===0){
-        rows+=`<tr><td>0</td>
-          <td>${fmt(propertyValue)}</td><td>${fmt(sharesValue)}</td>
-          <td>${fmt(capitalOwed)}</td><td>${fmt(propertyValue-capitalOwed)}</td>
-          <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>`;
-      }else{
+    /* owning costs, depreciation use NEW value */
+    const ownCost   = (y === 0) ? 0
+                     : Math.round(propVal * (ownPct + agentPct));
+    const depr      = (y === 0) ? 0 : Math.round(price * buildPct / 40);
 
-        /* ===== your original calculation block ===== */
-        incomeRent = Math.round(propertyValue * rentYld * occ);
+    /* amortisation after interest */
+    const amort     = (y === 0) ? 0
+                     : Math.round(wkPay*52 - interest);
 
-        /* value already grown last loop, interest uses opening owed */
-        interest   = Math.round(capitalOwed * rLoan);
+    /* update loan balance for next loop */
+    if (y > 0) {
+      owed = Math.max(0, Math.round(owed*(1+rLoan) - wkPay*52));
+    }
 
-        const monthlyPayment  = wkPay * 52 / 12;
-        amort      = Math.round(wkPay*52 - interest);
-        ownCost    = Math.round(propertyValue * (ownPct + agentPct));
-        depr       = Math.round(price * buildPct / 40);
+    /* equity now that prop value updated */
+    const equity = propVal - owed;
 
-        const cashFlow = incomeRent - (ownCost + interest + depr);
+    /* taxable cash-flow & net CF (negative gearing) */
+    const cashFlow = rent - (ownCost + interest + depr);
+    let netCF;
+    if (cashFlow < 0 && y < yearsRet && y > 0) {
+      netCF = Math.round(cashFlow * (1 - tax) - amort);
+    } else {
+      netCF = Math.round(rent - (ownCost + interest) - amort);
+    }
 
-        if (cashFlow < 0 && year < yearsRet) {
-          netCF = Math.round(cashFlow * (1 - tax) - amort);
-        } else {
-          netCF = Math.round(incomeRent - (ownCost + interest) - amort);
-        }
+    /* compound shares after applying net CF */
+    if (y > 0) shares = Math.round(shares * (1 + rShares) - netCF);
 
-        sharesValue = Math.round(sharesValue * (1 + rShares) - netCF);
+    /* arrays for chart */
+    labels.push(`Yr ${y}`);
+    equityArr.push(equity);
+    sharesArr.push(shares);
 
-        rows += `<tr>
-          <td>${year}</td>
-          <td>${fmt(propertyValue)}</td>
-          <td>${fmt(sharesValue)}</td>
-          <td>${fmt(capitalOwed)}</td>
-          <td>${fmt(propertyValue - capitalOwed)}</td>
-          <td>${fmt(ownCost)}</td>
-          <td>${fmt(incomeRent)}</td>
-          <td>${fmt(interest)}</td>
-          <td>${fmt(depr)}</td>
-          <td>${fmt(amort)}</td>
-          <td>${fmt(netCF)}</td></tr>`;
-      }
-
-      /* grow for NEXT iteration (skip after final loop) */
-      if(year < yearsLoan){
-        propertyValue = Math.round(propertyValue * (1 + growProp));
-        capitalOwed   = Math.max(0, Math.round(capitalOwed*(1+rLoan) - wkPay*52));
-      }
+    /* build table row */
+    rows += `<tr>
+      <td>${y}</td>
+      <td>${fmt(propVal)}</td>
+      <td>${fmt(shares)}</td>
+      <td>${fmt(owed)}</td>
+      <td>${fmt(equity)}</td>
+      <td>${fmt(ownCost)}</td>
+      <td>${fmt(rent)}</td>
+      <td>${fmt(interest)}</td>
+      <td>${fmt(depr)}</td>
+      <td>${fmt(amort)}</td>
+      <td>${fmt(netCF)}</td>
+    </tr>`;
   }
 
-  /* ── inject table ── */
-  $("results").innerHTML = `<div class="table-container">
-    <table>
-      <thead><tr>
-        <th>Yr</th><th>Property</th><th>Shares</th><th>Owed</th><th>Equity</th>
-        <th>Own&nbsp;Cost</th><th>Rent</th><th>Interest</th><th>Depr.</th>
-        <th>Amort.</th><th>Net&nbsp;CF</th></tr></thead>
-      <tbody>${rows}</tbody></table>
-  </div>`;
+  /* === inject table === */
+  $("results").innerHTML = `
+    <div class="table-container">
+      <table>
+        <thead><tr>
+          <th>Yr</th><th>Property Value</th><th>Shares Value</th><th>Capital Owed</th><th>Equity</th>
+          <th>Own Costs</th><th>Rent</th><th>Interest</th><th>Depr.</th><th>Amort.</th><th>Net CF</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
 
-  /* ── chart ── */
-  if(window.pvChart) pvChart.destroy();
-  pvChart = new Chart($("#investmentChart"),{
-    type:"line",
-    data:{
+  /* === chart === */
+  if (window.pvChart) pvChart.destroy();
+  pvChart = new Chart($("#investmentChart"), {
+    type : "line",
+    data : {
       labels,
-      datasets:[
-        {label:"Property Equity", data:equityArr ,
-         borderColor:"#28a745", backgroundColor:"rgba(40,167,69,.15)",
-         tension:.35, fill:true},
-        {label:"Shares Value",   data:sharesArr ,
-         borderColor:"#007bff", backgroundColor:"rgba(0,123,255,.15)",
-         tension:.35, fill:true}
+      datasets : [
+        { label : "Property Equity", data : equityArr ,
+          borderColor : "#28a745", backgroundColor : "rgba(40,167,69,.15)",
+          tension : .35, fill : true },
+        { label : "Shares Value",   data : sharesArr ,
+          borderColor : "#007bff", backgroundColor : "rgba(0,123,255,.15)",
+          tension : .35, fill : true }
       ]
     },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{position:"bottom"}},
-      scales:{
-        y:{ticks:{callback:v=>fmt(v)}},
-        x:{ticks:{autoSkip:true,maxTicksLimit:12}}
+    options : {
+      responsive : true, maintainAspectRatio : false,
+      plugins    : { legend : { position : "bottom" } },
+      scales     : {
+        y : { ticks : { callback : v => fmt(v) } },
+        x : { ticks : { autoSkip : true, maxTicksLimit : 12 } }
       }
     }
   });
