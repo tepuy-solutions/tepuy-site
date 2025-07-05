@@ -70,6 +70,5 @@ footer{background:var(--brand-blue);color:var(--text-light);text-align:center;pa
 .table-container{overflow-x:auto;margin-top:20px}
 .table-container table{width:100%;border-collapse:collapse;font-size:.9rem}
 .table-container th, .table-container td{padding:6px 8px;border:1px solid #ddd;text-align:right}
-.table-container th{background:#f4f4f4;font-weight:600}
 .table-container tr:nth-child(even){background:#fafafa}
 
