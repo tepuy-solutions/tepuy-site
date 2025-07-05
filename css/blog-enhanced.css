@@ -1,0 +1,136 @@
+
+/* === Tepuy Blog Enhancements (Scoped) ================== */
+
+/* Apply only to blog index and article pages */
+
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  padding: 40px 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+.post-card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.post-card img {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  height: 160px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.post-card-body {
+  padding: 18px;
+}
+
+.post-card-body h2 {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+}
+
+.post-card-body .meta {
+  font-size: 0.82rem;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.post-card-body .excerpt {
+  font-size: 0.93rem;
+  color: #333;
+}
+
+/* Single blog post enhancements */
+.blog-post {
+  background: #fff;
+  border-radius: 8px;
+  padding: 36px 24px;
+  max-width: 750px;
+  margin: 40px auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.blog-post h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.blog-post .post-meta {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 24px;
+}
+
+.blog-footer {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.share-buttons,
+.like-section,
+#comments {
+  margin-top: 40px;
+  font-size: 0.95rem;
+}
+
+.share-buttons a {
+  margin-right: 12px;
+  color: #2c3e50;
+  text-decoration: underline;
+}
+
+.like-section button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#comments textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  margin-top: 10px;
+}
+
+#comments button {
+  margin-top: 10px;
+  padding: 10px 18px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Mobile refinements */
+@media (max-width: 640px) {
+  .blog-grid {
+    padding: 20px 12px;
+  }
+
+  .blog-post {
+    padding: 28px 18px;
+  }
+
+  .post-card-body h2 {
+    font-size: 1.05rem;
+  }
+}
