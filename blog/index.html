@@ -11,18 +11,24 @@
 </head>
 <body>
 
+<!-- ───────── NAVBAR (desktop + mobile) ───────── -->
 <header class="navbar">
   <div class="logo-title">
     <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo" />
     Tepuy Solutions
   </div>
-  <nav>
-    <a href="/">Home</a>
+
+  <!-- links wrapper -->
+  <nav class="nav-links" id="navMenu">
+    <a class="active" href="/">Home</a>
     <a href="/calculators/property_vs_shares.html">Property&nbsp;vs&nbsp;Shares</a>
     <a href="/calculators/retirement.html">Retirement</a>
     <a href="/store/">Store</a>
-    <a class="active" href="/blog/">Blog</a>
+    <a href="/blog/">Blog</a>
   </nav>
+
+  <!-- hamburger toggle -->
+  <button class="hamburger" id="menuToggle" aria-label="Menu">&#9776;</button>
 </header>
 
 <section class="hero">
@@ -51,5 +57,14 @@
 </main>
 
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
+<!-- █████  tiny JS to toggle mobile menu  █████ -->
+<script>
+  const toggleBtn = document.getElementById('menuToggle');
+  const navMenu  = document.getElementById('navMenu');
+  toggleBtn.addEventListener('click', () => {
+    navMenu.classList.toggle('show');
+  });
+</script>
+
 </body>
 </html>
