@@ -122,7 +122,7 @@ function calculate () {
 
   /* === chart === */
   if (window.pvChart) pvChart.destroy();
-  pvChart = new Chart($("#investmentChart"), {
+  pvChart = new Chart($("investmentChart"), {
     type : "line",
     data : {
       labels,
