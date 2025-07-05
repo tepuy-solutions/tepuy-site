@@ -124,3 +124,48 @@ footer{background:var(--brand-green);color:var(--text-light);text-align:center;p
   .btn{display:block;margin:10px auto}
   th,td{font-size:.84rem}
 }
+/* ===== NEW NAV & MOBILE DRAWER ============================ */
+.ts-nav{position:sticky;top:0;z-index:888;box-shadow:0 1px 4px rgba(0,0,0,.06);background:var(--brand-green-dark)}
+.ts-nav a{font-size:.95rem}
+.ts-nav .ts-brand{display:flex;align-items:center;font-weight:700;font-size:1.05rem}
+.ts-nav .ts-brand img{height:34px;margin-right:8px}
+.ts-menu{display:flex;gap:22px}
+.burger{display:none;flex-direction:column;gap:4px;background:none;border:none;padding:7px 0;cursor:pointer}
+.burger span{display:block;width:22px;height:2px;background:var(--text-light)}
+.mobile-drawer{position:fixed;top:0;right:-260px;width:260px;height:100vh;background:#fff;box-shadow:-2px 0 8px rgba(0,0,0,.15);padding:80px 24px;display:flex;flex-direction:column;gap:18px;transition:.3s}
+.mobile-drawer.open{right:0}
+
+/* ===== HERO & ABOUT SECTIONS ============================== */
+.hero-home{min-height:68vh;display:flex;align-items:center;justify-content:center}
+.hero-inner h1{font-size:2.1rem;margin-bottom:12px}
+.hero-cta .btn{margin:6px 10px}
+
+/* ===== STRIP FEATURES ===================================== */
+.strip .feature{display:flex;align-items:center;margin:50px 0}
+.strip .feature.rev{flex-direction:row-reverse}
+.strip .feat-img{flex:1;min-height:220px;background-size:cover;background-position:center;border-radius:8px}
+.strip .feat-body{flex:1;padding:0 4%;max-width:480px}
+.strip h2{margin-top:0}
+.text-link{color:var(--accent);font-weight:600}
+
+/* ===== BLOG PREVIEW ======================================= */
+.blog-preview header{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px}
+.blog-preview h2{margin:0}
+.blog-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.blog-cards .post-card h3{font-size:1rem;margin:0 0 6px 0}
+
+/* ===== FOOTER ============================================= */
+.ts-footer{background:var(--brand-green-dark);color:var(--text-light);padding:40px 20px}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:26px;max-width:1000px;margin:0 auto}
+.footer-grid a{display:block;margin:5px 0;color:#cde0d9;font-size:.92rem}
+.footer-cta{display:flex;align-items:center}
+.tiny{margin-top:30px;font-size:.8rem;text-align:center;color:#a8c3b9}
+
+/* ===== MOBILE BREAKPOINTS ================================= */
+@media(max-width:768px){
+  .ts-menu{display:none}
+  .burger{display:flex}
+  .desk-only{display:none}
+  .strip .feature, .strip .feature.rev{flex-direction:column}
+}
+
