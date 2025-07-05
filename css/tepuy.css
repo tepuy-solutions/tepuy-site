@@ -61,3 +61,5 @@ footer{background:var(--brand-blue);color:var(--text-light);text-align:center;pa
   .btn{display:block;margin:10px auto}
   th,td{font-size:.84rem}
 }
+/* small helper for inline suggestion text */
+.suggest{font-size:.8rem;font-weight:400;color:#555;margin-left:4px}

@@ -1,98 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Retirement Goal Calculator | Tepuy Solutions</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Retirement Calculator • Tepuy Solutions</title>
 
-  <!-- Brand-wide CSS -->
-  <link rel="stylesheet" href="/css/tepuy.css" />
-  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/tepuy.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <!-- NAV ------------------------------------------------------------------>
-  <header class="navbar">
-    <div class="logo-title">
-      <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy"/>
-      Tepuy Solutions
-    </div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/calculators/property_vs_shares.html">Property vs Shares</a>
-      <a class="active" href="/calculators/retirement.html">Retirement</a>
-      <a href="/store/">Store</a>
-    </nav>
-  </header>
+<header class="navbar">
+  <div class="logo-title">
+    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy">Tepuy Solutions
+  </div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/calculators/property_vs_shares.html">Property vs Shares</a>
+    <a class="active" href="/calculators/retirement.html">Retirement</a>
+    <a href="/store/">Store</a>
+  </nav>
+</header>
 
-  <!-- HERO ----------------------------------------------------------------->
-  <section class="hero">
-    <div class="hero-banner">
-      <h1>Retirement Goal Calculator</h1>
-      <p>Estimate how much capital you’ll need to retire comfortably.</p>
-    </div>
-  </section>
+<section class="hero">
+  <div class="hero-banner">
+    <h1>Retirement Goal Calculator</h1>
+    <p>Estimate how much capital you’ll need to retire comfortably based on your inputs.</p>
+  </div>
+</section>
 
-  <!-- CALCULATOR ----------------------------------------------------------->
-  <main class="calc-wrapper">
-    <form id="retirementForm" class="grid-2col">
+<main class="calc-wrapper">
 
-      <label>Current Age
-        <input type="number" id="currentAge" value="45" min="0">
-      </label>
+  <!-- ===== Input form ===== -->
+  <form id="retForm" class="grid-3col">
+    <label>Current Age<input id="curAge" type="number" value="45"></label>
+    <label>Retirement Age<input id="retAge" type="number" value="65"></label>
+    <label>Current Capital to Invest ($)<input id="curCap" value="100,000"></label>
 
-      <label>Current Capital to Invest ($)
-        <input type="text" id="currentCapital" value="100,000" inputmode="numeric">
-      </label>
+    <label>Expected Annual Return (%)<input id="annRet" type="number" value="7" step=".1"></label>
+    <label>Expected Inflation Rate (%)<input id="infl" type="number" value="2.5" step=".1"></label>
+    <label>Withdrawal Rate (% of capital annually)
+      <small id="recRateLabel" class="suggest">(suggested 4 %)</small>
+      <input id="wdRate" type="number" value="4" step=".1">
+    </label>
 
-      <label>Expected Annual Return (%)
-        <input type="number" id="rateOfReturn" value="7" step="0.1">
-      </label>
+    <label>Monthly Contributions ($)<input id="monthlyContrib" value="1,000"></label>
+    <label>Target Monthly Income ($)<input id="targetMonthly" value="4,000"></label>
+  </form>
 
-      <label>Expected Inflation Rate (%)
-        <input type="number" id="inflationRate" value="2.5" step="0.1">
-      </label>
+  <!-- ===== trigger ===== -->
+  <button class="btn-primary" onclick="runRetirementCalc()">Calculate</button>
 
-      <label>Withdrawal Rate (% of capital annually)
-        <small id="swrHint">Suggested: 4.4 %</small>
-        <input type="number" id="withdrawalRate" value="4.4" step="0.1">
-      </label>
+  <!-- ===== quick result ===== -->
+  <p id="quickMsg" class="result-box" hidden></p>
 
-      <label>Monthly Contributions ($)
-        <input type="text" id="monthlySavings" value="1,000" inputmode="numeric">
-      </label>
+  <!-- ===== chart ===== -->
+  <canvas id="retChart" height="230"></canvas>
 
-      <label>Target Monthly Income ($)
-        <input type="text" id="desiredMonthlyIncome" value="4,000" inputmode="numeric">
-      </label>
+  <!-- ===== table ===== -->
+  <div id="retResults" class="table-container"></div>
 
-    </form>
+  <p class="disclaimer">
+    This calculator provides estimates only and does not constitute financial advice.
+    Please consult a licensed professional before making investment decisions.
+  </p>
+</main>
 
-    <button id="calcBtn" class="btn-primary">Calculate</button>
-
-    <p id="resultMsg" class="result-box" hidden></p>
-    <div class="table-container">
-      <table id="projectionTable" hidden>
-        <thead>
-          <tr>
-            <th>Age</th>
-            <th>Capital ($)</th>
-            <th>Infl-Adj Goal ($)</th>
-            <th>Annual Contribution</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <p class="disclaimer">
-      ⚠️ This tool provides estimates only and is not financial advice. Consult a professional adviser.
-    </p>
-  </main>
-
-  <!-- FOOTER --------------------------------------------------------------->
-  <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
-
-  <script src="/js/retirement_calc.js"></script>
+<footer>© 2025 Tepuy Solutions</footer>
+<script src="/js/retirement_calc.js"></script>
 </body>
 </html>
