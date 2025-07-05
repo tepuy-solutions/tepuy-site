@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Property vs Shares: A Smart Investment Comparison | Tepuy Solutions</title>
+  <link rel="icon" href="/img/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="/css/tepuy.css" />
+  <meta name="description" content="Compare property and share investing using Tepuy Solutions' smart calculator. Make better financial decisions based on your goals and risk tolerance.">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo-title">
+    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo">Tepuy Solutions
+  </div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/calculators/property_vs_shares.html">Property vs Shares</a>
+    <a href="/calculators/retirement.html">Retirement</a>
+    <a href="/store/">Store</a>
+    <a class="active" href="/blog/">Blog</a>
+  </nav>
+</header>
+
+<main class="calc-wrapper">
+  <article class="blog-post">
+    <h1>Property vs Shares: A Smart Investment Comparison</h1>
+    <div class="post-meta">
+      <span>By Tepuy Solutions</span> |
+      <time datetime="2025-07-05">July 5, 2025</time> |
+      <span>3 min read</span>
+    </div>
+
+    <p>When it comes to investing your hard-earned money, property and shares are two of the most popular choices...</p>
+    
+    <!-- full blog content stays the same up to the end -->
+
+    <div class="blog-footer">
+      <a class="btn btn-primary" href="/calculators/property_vs_shares.html">Try the Calculator →</a>
+    </div>
+
+    <!-- Social Share Buttons -->
+    <div class="share-buttons">
+      <p><strong>Share this post:</strong></p>
+      <a href="https://twitter.com/intent/tweet?url=https://tepuysolutions.com/blog/property-vs-shares-australia.html" target="_blank">Twitter</a> |
+      <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://tepuysolutions.com/blog/property-vs-shares-australia.html" target="_blank">LinkedIn</a> |
+      <a href="mailto:?subject=Check this blog&body=https://tepuysolutions.com/blog/property-vs-shares-australia.html">Email</a>
+    </div>
+
+    <!-- Like Button -->
+    <div class="like-section">
+      <button id="likeBtn">👍 Like</button>
+      <span id="likeCount">0</span> likes
+    </div>
+
+    <!-- Comment Section -->
+    <div id="comments">
+      <h3>Comments</h3>
+      <div id="commentList"></div>
+      <textarea id="newComment" rows="3" placeholder="Add a comment..."></textarea>
+      <br>
+      <button onclick="addComment()">Post Comment</button>
+    </div>
+
+  </article>
+</main>
+
+<footer>© 2025 Tepuy Solutions. Empowering financial and technical decisions.</footer>
+
+<!-- Script for Likes & Comments -->
+<script>
+  // Like Logic
+  const likeBtn = document.getElementById("likeBtn");
+  const likeCount = document.getElementById("likeCount");
+  let likes = localStorage.getItem("likes") || 0;
+  likeCount.textContent = likes;
+  likeBtn.onclick = () => {
+    likes++;
+    likeCount.textContent = likes;
+    localStorage.setItem("likes", likes);
+  };
+
+  // Comment Logic
+  const commentBox = document.getElementById("newComment");
+  const commentList = document.getElementById("commentList");
+
+  function loadComments() {
+    const comments = JSON.parse(localStorage.getItem("comments") || "[]");
+    commentList.innerHTML = comments.map(c => `<p>${c}</p>`).join("");
+  }
+
+  function addComment() {
+    const text = commentBox.value.trim();
+    if (text) {
+      const comments = JSON.parse(localStorage.getItem("comments") || "[]");
+      comments.push(text);
+      localStorage.setItem("comments", JSON.stringify(comments));
+      commentBox.value = "";
+      loadComments();
+    }
+  }
+
+  loadComments();
+</script>
+</body>
+</html>
