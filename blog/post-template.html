@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title><!-- Post Title --> | Tepuy Solutions</title>
+  <link rel="icon" href="/img/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="/css/tepuy.css" />
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo-title">
+    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo">Tepuy Solutions
+  </div>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/blog/" class="active">Blog</a>
+  </nav>
+</header>
+
+<article class="post">
+  <header class="post-header">
+    <h1><!-- Post Title --></h1>
+    <p class="meta">
+      By Luis Garcés • <span id="post-date"><!-- date --></span> •
+      <span id="read-time">– min read</span> •
+      <button id="like-btn" class="like-btn">👍 <span id="like-count">0</span></button>
+    </p>
+    <img class="featured" src="/img/posts/placeholder_featured.jpg" alt="">
+  </header>
+
+  <section class="post-body">
+    <!-- Write your markdown-to-HTML content here -->
+    <p>Start with a strong introduction…</p>
+  </section>
+
+  <section class="share-box">
+    <strong>Share:</strong>
+    <button class="share-btn" data-net="twitter">Twitter</button>
+    <button class="share-btn" data-net="linkedin">LinkedIn</button>
+    <button class="share-btn" data-net="facebook">Facebook</button>
+  </section>
+
+  <section class="comments">
+    <h2>Comments</h2>
+    <form id="comment-form">
+      <input id="comment-name" placeholder="Name" required>
+      <textarea id="comment-text" rows="4" placeholder="Comment" required></textarea>
+      <button type="submit" class="btn-primary">Post comment</button>
+    </form>
+    <ul id="comment-list"></ul>
+  </section>
+</article>
+
+<footer>© 2025 Tepuy Solutions.</footer>
+<script src="/js/blog.js"></script>
+<script>
+  /* ---- per-post variables ---- */
+  document.getElementById("post-date").textContent = "12 Jul 2025";
+  // blog.js auto-computes read-time, likes & comments
+</script>
+</body>
+</html>

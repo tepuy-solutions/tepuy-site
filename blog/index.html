@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Blog | Tepuy Solutions</title>
-  <link rel="icon" href="/img/favicon.png" type="image/png">
-  <link rel="stylesheet" href="/css/tepuy.css">
+  <link rel="icon" href="/img/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="/css/tepuy.css" />
 </head>
 <body>
 
@@ -24,17 +24,28 @@
 
 <section class="hero">
   <div class="hero-banner">
-    <h1>Blog</h1>
-    <p>Insights on investing, engineering, and smart financial thinking.</p>
+    <h1>Insights & Ideas</h1>
+    <p>Actionable research, engineering know-how, and investment analysis.</p>
   </div>
 </section>
 
-<main class="calc-wrapper">
-  <div class="result-box">
-    <p>Our blog is launching soon. Stay tuned for articles that empower your financial and technical decisions.</p>
-  </div>
+<main class="blog-grid">
+  <!-- Each .post-card links to a full article -->
+  <article class="post-card">
+    <a href="/blog/property-vs-shares-australia.html">
+      <img src="/img/posts/property_vs_shares_thumb.jpg" alt="Property vs Shares">
+      <div class="post-card-body">
+        <h2>Property vs Shares in Australia — 2025 Outlook</h2>
+        <p class="meta">By Luis Garcés • 12 Jul 2025 • 6 min read</p>
+        <p class="excerpt">We model capital-growth, cash-flow, and tax impacts to see which asset class wins over 30 years…</p>
+      </div>
+    </a>
+  </article>
+
+  <!-- Duplicate .post-card blocks for more posts -->
 </main>
 
-<footer>© 2025 Tepuy Solutions. Built with clarity & care for decision-makers.</footer>
+<footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
+<script src="/js/blog.js"></script>
 </body>
 </html>
