@@ -1,8 +1,6 @@
-/* ------- helpers -------- */
 const $$ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
 
-/* ------- main calc ------ */
 function calculate() {
   const num = id => parseFloat($$(id).value.replace(/,/g, "")) || 0;
   const pct = id => num(id) / 100;
@@ -28,14 +26,12 @@ function calculate() {
   const upfront= Math.round(dp * price + costs);
   const wkPay  = (((rate/12)*loan*Math.pow(1+rate/12,yrs*12))/(Math.pow(1+rate/12,yrs*12)-1))*12/52;
 
-  // quick outs
   $$("lmiPercentage").value   = (lmiPct*100).toFixed(2);
   $$("lmiAmount").value       = fmt(lmi);
   $$("buyPrice").value        = fmt(price);
   $$("totalCashUpfront").value= fmt(upfront);
   $$("weeklyPayment").value   = wkPay.toFixed(2);
 
-  // loop projection & build arrays
   let rows="", labels=[], equityArr=[], sharesArr=[];
   let pVal=price, shares=upfront, owed=loan;
 
@@ -67,7 +63,6 @@ function calculate() {
     owed = Math.round(owed*(1+rate) - wkPay*52);
   }
 
-  // results table
   $$("results").innerHTML = `
     <div class="table-container">
       <table><thead><tr>
@@ -77,7 +72,6 @@ function calculate() {
         <tbody>${rows}</tbody></table>
     </div>`;
 
-  // chart
   const ctx=$$("pvChart").getContext("2d");
   if(window.pvChart) window.pvChart.destroy();
   window.pvChart=new Chart(ctx,{
@@ -86,7 +80,7 @@ function calculate() {
       labels,
       datasets:[
         {label:"Equity",data:equityArr,borderColor:"#28a745",backgroundColor:"rgba(40,167,69,.2)",fill:true,tension:.35},
-        {label:"Shares Value",data:sharesArr,borderColor:"#007bff",backgroundColor:"rgba(0,123,255,.2)",fill:true,tension:.35}
+        {label:"Shares",data:sharesArr,borderColor:"#007bff",backgroundColor:"rgba(0,123,255,.2)",fill:true,tension:.35}
       ]
     },
     options:{
