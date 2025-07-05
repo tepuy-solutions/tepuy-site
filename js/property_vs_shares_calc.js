@@ -1,101 +1,118 @@
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
+
+/* ---------- main ---------- */
 function calculate() {
-  const toNumber = val => parseFloat(val.replace(/[^0-9.-]+/g, '')) || 0;
+  /* numeric helpers */
+  const num = id => parseFloat($(id).value.replace(/,/g, "")) || 0;
+  const pct = id => num(id) / 100;
 
-  const loan = toNumber(document.getElementById("loanAmount").value);
-  const dpPct = parseFloat(document.getElementById("downpayment").value) / 100;
-  const buyingCosts = toNumber(document.getElementById("buyingCosts").value);
-  const interest = parseFloat(document.getElementById("loanInterestRate").value) / 100;
-  const loanYears = parseFloat(document.getElementById("loanPeriod").value);
-  const owningCosts = parseFloat(document.getElementById("owningCosts").value) / 100;
-  const agentFees = parseFloat(document.getElementById("agentFees").value) / 100;
-  const occRate = parseFloat(document.getElementById("occupancyRate").value) / 100;
-  const appreciation = parseFloat(document.getElementById("propertyAppreciation").value) / 100;
-  const rentalYield = parseFloat(document.getElementById("rentalIncome").value) / 100;
-  const stockReturn = parseFloat(document.getElementById("stockMarketAppreciation").value) / 100;
-  const tax = parseFloat(document.getElementById("taxBracket").value) / 100;
-  const years = parseInt(document.getElementById("yearsToRetirement").value);
-  const buildingPct = parseFloat(document.getElementById("buildingComponent").value) / 100;
+  /* inputs */
+  const loan      = num("loanAmount");
+  const dp        = pct("downpayment");
+  const costs     = num("buyingCosts");
+  const years     = num("loanPeriod");
+  const rLoan     = pct("loanInterestRate");
+  const ownP      = pct("owningCosts");
+  const agentP    = pct("agentFees");
+  const occ       = pct("occupancyRate");
+  const growP     = pct("propertyAppreciation");
+  const rentY     = pct("rentalIncome");
+  const rShares   = pct("stockMarketAppreciation");
+  const tax       = pct("taxBracket");
+  const yrsRet    = num("yearsToRetirement");
+  const buildP    = pct("buildingComponent");
 
-  const propVal = loan / (1 - dpPct);
-  const lmiPct = dpPct < 0.2 ? 0.02 : 0;
-  const lmiCost = propVal * lmiPct;
-  const upfront = dpPct * propVal + buyingCosts + lmiCost;
+  /* derived upfront figures */
+  const lmiPct = dp >= 0.2 ? 0 : 0.02;                 // simple LMI curve
+  const propPrice = Math.round(loan / (1 - dp));
+  const lmiAmt = Math.round(propPrice * lmiPct);
+  const upfront = Math.round(dp * propPrice + costs + lmiAmt);
 
-  const yearlyPayment = (loan * interest * Math.pow(1 + interest, loanYears)) / (Math.pow(1 + interest, loanYears) - 1);
-  const yearlyRental = propVal * rentalYield * occRate;
-  const yearlyCost = propVal * owningCosts;
-  const yearlyNet = yearlyRental - yearlyCost;
+  /* weekly mortgage payment */
+  const mRate = rLoan / 12;
+  const payWeekly = loan * mRate * Math.pow(1 + mRate, years * 12) /
+                    (Math.pow(1 + mRate, years * 12) - 1) * 12 / 52;
 
-  const propertyValues = [], sharesValues = [], labels = [];
-  let propBalance = propVal, sharesBalance = upfront;
+  /* quick outputs */
+  $("lmiPercentage").value    = (lmiPct * 100).toFixed(1);
+  $("lmiAmount").value        = fmt(lmiAmt);
+  $("buyPrice").value         = fmt(propPrice);
+  $("totalCashUpfront").value = fmt(upfront);
+  $("weeklyPayment").value    = payWeekly.toFixed(2);
 
-  for (let i = 0; i <= years; i++) {
-    labels.push("Year " + i);
-    propertyValues.push(Math.round(propBalance));
-    sharesValues.push(Math.round(sharesBalance));
+  /* projection arrays */
+  const labels = [], equityArr = [], sharesArr = [];
+  let propVal = propPrice, shares = upfront, owed = loan, tableRows = "";
 
-    if (i < loanYears) {
-      propBalance += yearlyNet;
+  for (let y = 0; y <= years; y++) {
+    const rent = Math.round(propVal * rentY * occ);
+    const interest = Math.round(owed * rLoan);
+    let own = 0, depr = 0, amort = 0, net = 0;
+
+    if (y > 0) {
+      own  = Math.round(propVal * (ownP + agentP));
+      depr = Math.round(propPrice * buildP / 40);
+      amort = Math.round(payWeekly * 52 - interest);
+      const cashFlow = rent - (own + interest + depr);
+      net = (cashFlow < 0 && y < yrsRet) ?
+            Math.round(cashFlow * (1 - tax) - amort) :
+            Math.round(rent - own - interest - amort);
+      shares = Math.round(shares * (1 + rShares) - net);
     }
 
-    propBalance *= (1 + appreciation);
-    sharesBalance *= (1 + stockReturn);
+    labels.push("Yr " + y);
+    equityArr.push(propVal - owed);
+    sharesArr.push(shares);
+
+    tableRows += `
+      <tr>
+        <td>${y}</td><td>${fmt(propVal)}</td><td>${fmt(shares)}</td>
+        <td>${fmt(owed)}</td><td>${fmt(propVal - owed)}</td>
+        <td>${fmt(own)}</td><td>${fmt(rent)}</td><td>${fmt(interest)}</td>
+        <td>${fmt(depr)}</td><td>${fmt(amort)}</td><td>${fmt(net)}</td>
+      </tr>`;
+
+    /* rollover to next year */
+    propVal = Math.round(propVal * (1 + growP));
+    owed    = Math.max(0, Math.round(owed + owed * rLoan - payWeekly * 52));
   }
 
-  document.getElementById("lmiPercentage").value = (lmiPct * 100).toFixed(1);
-  document.getElementById("lmiAmount").value = lmiCost.toLocaleString();
-  document.getElementById("buyPrice").value = propVal.toLocaleString();
-  document.getElementById("totalCashUpfront").value = upfront.toLocaleString();
-  document.getElementById("weeklyPayment").value = (yearlyPayment / 52).toFixed(2);
+  /* insert table */
+  $("results").innerHTML = `
+    <table>
+      <thead><tr>
+        <th>Yr</th><th>Property</th><th>Shares</th><th>Owed</th><th>Equity</th>
+        <th>Own&nbsp;Cost</th><th>Rent</th><th>Interest</th>
+        <th>Depr.</th><th>Amort.</th><th>Net CF</th></tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table>`;
 
-  const canvas = document.getElementById("investmentChart");
-  if (!canvas) return console.warn("Chart canvas not found.");
-
-  const ctx = canvas.getContext("2d");
+  /* chart */
+  const ctx = $("investmentChart").getContext("2d");
   if (window.investChart) window.investChart.destroy();
   window.investChart = new Chart(ctx, {
-    type: 'line',
+    type: "line",
     data: {
       labels,
       datasets: [
-        {
-          label: 'Property Value',
-          data: propertyValues,
-          borderColor: '#4CAF50',
-          backgroundColor: 'rgba(76, 175, 80, 0.1)',
-          fill: true,
-          tension: 0.3,
-          pointRadius: 2
-        },
-        {
-          label: 'Shares Value',
-          data: sharesValues,
-          borderColor: '#2196F3',
-          backgroundColor: 'rgba(33, 150, 243, 0.1)',
-          fill: true,
-          tension: 0.3,
-          pointRadius: 2
-        }
+        { label: "Equity", data: equityArr,   borderColor:"#4CAF50",
+          backgroundColor:"rgba(76,175,80,.15)", tension:.35, fill:true },
+        { label: "Shares", data: sharesArr,   borderColor:"#2196F3",
+          backgroundColor:"rgba(33,150,243,.15)", tension:.35, fill:true }
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          ticks: {
-            callback: value => `$${value.toLocaleString()}`
-          }
-        }
-      },
-      plugins: {
-        legend: { position: 'bottom' },
-        tooltip: {
-          callbacks: {
-            label: ctx => `${ctx.dataset.label}: $${ctx.formattedValue}`
-          }
-        }
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:"bottom" } },
+      scales:{
+        y:{ ticks:{ callback:v=>"$"+fmt(v) } },
+        x:{ ticks:{ autoSkip:true,maxTicksLimit:12 } }
       }
     }
   });
 }
+
+/* expose for button */
+window.calculate = calculate;
