@@ -6,7 +6,7 @@
   <title>Blog | Tepuy Solutions</title>
   <link rel="icon" href="/img/favicon.png" type="image/png" />
   <link rel="stylesheet" href="/css/tepuy.css" />
-  <meta name="description" content="Browse investment and engineering blog articles from Tepuy Solutions. Learn about shares vs property, calculators, and more." />
+  <script src="https://unpkg.com/scrollreveal"></script>
 </head>
 <body>
 
@@ -38,18 +38,35 @@
       <a href="/blog/property-vs-shares-australia.html">
         <img src="/img/posts/property_vs_shares_thumb.jpg" alt="Property vs Shares cover image">
         <div class="post-card-body">
-          <h2>Property vs Shares in Australia — 2025 Outlook</h2>
-          <p class="meta">By Tepuy Solutions • 12 Jul 2025 • 6 min read</p>
-          <p class="excerpt">When it comes to investing your hard-earned money, property and shares are two of the most …</p>
+          <h2>Property vs Shares: A Smart Investment Comparison</h2>
+          <p class="meta">
+            <span>👤 Tepuy Solutions</span>
+            <span>📅 Jul 12, 2025</span>
+            <span>⏱️ 3 min read</span>
+          </p>
+          <p class="excerpt">We model capital-growth, cash-flow and tax impacts to see which asset class wins over 30 years …</p>
+          <div class="engagement">
+            <span>👁️ 248</span>
+            <span>💬 3</span>
+            <span>❤️ <span id="like-count-1">12</span></span>
+          </div>
         </div>
       </a>
     </article>
-
     <!-- ▸ Add more post-card blocks below as new posts go live -->
-    
   </div>
 </main>
 
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
+
+<script>
+ScrollReveal().reveal('.post-card', {
+  delay: 100,
+  duration: 800,
+  distance: '20px',
+  origin: 'bottom',
+  reset: false
+});
+</script>
 </body>
 </html>
