@@ -1,10 +1,7 @@
-/* ------- helpers -------- */
 const $$ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
 
-/* ------- main calc ------ */
 function calculate() {
-  // numeric helpers
   const num = id => parseFloat($$(id).value.replace(/,/g, "")) || 0;
   const pct = id => num(id) / 100;
 
@@ -29,16 +26,14 @@ function calculate() {
   const upfront= Math.round(dp * price + costs);
   const wkPay  = (((rate/12)*loan*Math.pow(1+rate/12,yrs*12))/(Math.pow(1+rate/12,yrs*12)-1))*12/52;
 
-  // quick outs
   $$("lmiPercentage").value   = (lmiPct*100).toFixed(2);
   $$("lmiAmount").value       = fmt(lmi);
   $$("buyPrice").value        = fmt(price);
   $$("totalCashUpfront").value= fmt(upfront);
   $$("weeklyPayment").value   = wkPay.toFixed(2);
 
-  // loop projection
-  let rows = "";
-  let pVal = price, shares = upfront, owed = loan;
+  let rows="", labels=[], equityArr=[], sharesArr=[];
+  let pVal=price, shares=upfront, owed=loan;
 
   for(let y=0;y<=yrs;y++){
     const rent = Math.round(pVal*yield*occ);
@@ -60,7 +55,10 @@ function calculate() {
              <td>${fmt(own)}</td><td>${fmt(rent)}</td><td>${fmt(interest)}</td>
              <td>${fmt(depr)}</td><td>${fmt(amort)}</td><td>${fmt(net)}</td></tr>`;
 
-    // advance a year
+    labels.push(`Yr ${y}`);
+    equityArr.push(pVal-owed);
+    sharesArr.push(shares);
+
     pVal = Math.round(pVal*(1+grow));
     owed = Math.round(owed*(1+rate) - wkPay*52);
   }
@@ -70,9 +68,30 @@ function calculate() {
       <table><thead><tr>
         <th>Yr</th><th>Property</th><th>Shares</th><th>Owed</th><th>Equity</th>
         <th>Own Costs</th><th>Rent</th><th>Interest</th><th>Depr.</th>
-        <th>Amort.</th><th>Net CF</th>
-      </tr></thead><tbody>${rows}</tbody></table>
+        <th>Amort.</th><th>Net CF</th></tr></thead>
+        <tbody>${rows}</tbody></table>
     </div>`;
+
+  const ctx=$$("pvChart").getContext("2d");
+  if(window.pvChart) window.pvChart.destroy();
+  window.pvChart=new Chart(ctx,{
+    type:"line",
+    data:{
+      labels,
+      datasets:[
+        {label:"Equity",data:equityArr,borderColor:"#28a745",backgroundColor:"rgba(40,167,69,.2)",fill:true,tension:.35},
+        {label:"Shares",data:sharesArr,borderColor:"#007bff",backgroundColor:"rgba(0,123,255,.2)",fill:true,tension:.35}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{boxWidth:14}}},
+      scales:{
+        y:{ticks:{callback:v=>fmt(v)}},
+        x:{ticks:{autoSkip:true,maxTicksLimit:12}}
+      }
+    }
+  });
 }
 
 window.calculate = calculate;
