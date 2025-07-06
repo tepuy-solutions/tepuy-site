@@ -142,6 +142,29 @@
 
   proBtn.onclick = startCheckout;
 </script>
+<script>
+  /* Stripe Checkout launch */
+  const btn = document.getElementById('unlockPro');
+  if (btn) {
+    btn.onclick = async () => {
+      btn.disabled = true;
+      try {
+        const res  = await fetch('/.netlify/functions/createCheckout', { method:'POST' });
+        const json = await res.json();
+        if (json.url) {
+          window.location.href = json.url;   // takes user to Stripe
+        } else {
+          alert('Checkout session error.');
+          btn.disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Network error—try again.');
+        btn.disabled = false;
+      }
+    };
+  }
+</script>
 
 <!-- In-page style for pro gate -->
 <style>
