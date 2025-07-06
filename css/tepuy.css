@@ -200,3 +200,22 @@ footer{background:var(--brand-green);color:var(--text-light);text-align:center;p
 .pro-gate { margin:40px 0; text-align:center; }
 .locked-msg { margin-bottom:14px; font-weight:600; color:#b02d2d; }
 .pro-only.locked { filter: blur(3px); pointer-events:none; }
+/* ===== PRO PRICING MODAL =============================== */
+.modal-overlay{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.55);z-index:9999;
+}
+.modal{
+  background:#fff;border-radius:10px;padding:32px 36px;max-width:360px;width:90%;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);text-align:center;position:relative;
+}
+.modal-close{
+  position:absolute;top:10px;right:10px;background:none;border:none;font-size:1.2rem;
+  cursor:pointer;color:var(--text-dark);
+}
+.modal h2{margin:0 0 12px;font-size:1.55rem;color:var(--brand-green);}
+.modal .price{font-size:1.8rem;margin:0 0 18px;color:var(--accent);}
+.modal .benefits{list-style:none;padding:0;margin:0 0 24px;text-align:left;font-size:.96rem}
+.modal .benefits li{margin:6px 0;padding-left:4px}
+.btn-wide{width:100%;max-width:260px;margin:0 auto}
+.small-note{font-size:.8rem;color:#555;margin-top:12px}

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/css/tepuy.css" />
   <link rel="icon" href="/img/favicon.png" type="image/png" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 
@@ -54,7 +55,7 @@
     <label>Building Component (%) <input type="number" id="buildingComponent" value="50" /></label>
   </form>
 
-  <button class="btn-primary" onclick="calculate()">Calculate</button>
+  <button class="btn-primary" id="runCalc">Calculate</button>
 
   <div class="grid-2col quick-out">
     <label>LMI (%) <input id="lmiPercentage" readonly /></label>
@@ -71,45 +72,75 @@
   <div id="results" class="table-container"></div>
 
   <p class="disclaimer">Figures are estimates only and do not constitute financial advice.</p>
-
-  <!-- 🔒 PRO GATE BLOCK -->
-  <div class="pro-gate">
-    <p class="locked-msg">🔒 Extra results, CSV export &amp; save-scenario are Pro features</p>
-    <button id="unlockPro" class="btn-primary">Unlock Pro (A$9)</button>
-  </div>
 </main>
+
+<!-- MODAL -->
+<div id="proModal" class="overlay" style="display:none;">
+  <div class="overlay-card">
+    <h3>Unlock Advanced Results</h3>
+    <p>You've reached your free limit. Unlock unlimited use, CSV export, save/load scenarios, and extra results.</p>
+    <button id="goPro" class="btn">Unlock for A$9</button>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
 
-<!-- SCRIPTS -->
+<!-- JS -->
 <script src="/js/property_vs_shares_calc.js"></script>
-<script src="https://js.stripe.com/v3/"></script>
 <script>
+  // Mobile menu toggle
   const toggleBtn = document.getElementById('menuToggle');
   const navMenu = document.getElementById('navMenu');
   toggleBtn.addEventListener('click', () => {
     navMenu.classList.toggle('show');
   });
 
-  // Stripe Checkout launcher
-  const btn = document.getElementById('unlockPro');
-  if (btn) {
-    btn.onclick = async () => {
-      btn.disabled = true;
-      const res = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
-      const json = await res.json();
-      window.location.href = json.url;
-    };
+  // Stripe checkout launcher
+  async function startCheckout() {
+    const res = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
+    const json = await res.json();
+    window.location.href = json.url;
   }
 
-  // Simple localStorage gate unlock
-  const unlocked = localStorage.getItem('proUnlocked') === 'yes';
-  if (unlocked) {
-    document.querySelector('.pro-gate').style.display = 'none';
-    document.querySelectorAll('.pro-only').forEach(el => el.classList.remove('pro-only'));
+  // Modal gate logic
+  const FREE_LIMIT = 3;
+  const uses = +localStorage.getItem('pvProUses') || 0;
+  const paid = localStorage.getItem('pvProPaid') === 'yes';
+
+  document.getElementById('runCalc').addEventListener('click', () => {
+    if (paid || uses < FREE_LIMIT) {
+      window.calculate();
+      if (!paid) {
+        localStorage.setItem('pvProUses', uses + 1);
+        if (uses + 1 >= FREE_LIMIT) showModal();
+      }
+    } else {
+      showModal();
+    }
+  });
+
+  function showModal() {
+    document.getElementById('proModal').style.display = 'flex';
+    document.querySelector('main').classList.add('blur');
   }
+
+  document.getElementById('goPro').addEventListener('click', startCheckout);
 </script>
+
+<style>
+  .overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6); display: flex;
+    align-items: center; justify-content: center; z-index: 9999;
+  }
+  .overlay-card {
+    background: #fff; padding: 30px; border-radius: 8px;
+    max-width: 400px; text-align: center;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+  }
+  main.blur { filter: blur(3px); }
+</style>
 
 </body>
 </html>
