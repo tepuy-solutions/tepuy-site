@@ -2,21 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Property vs Shares | Tepuy Solutions</title>
-  <link rel="stylesheet" href="/css/tepuy.css" />
-  <link rel="icon" href="/img/favicon.png" type="image/png" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Property vs Shares • Tepuy Solutions</title>
+
+  <!-- styles & favicon -->
+  <link rel="stylesheet" href="/css/tepuy.css">
+  <link rel="icon" href="/img/favicon.png" type="image/png">
+
+  <!-- libs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!-- ───────── NAVBAR ───────── -->
 <header class="navbar">
   <div class="logo-title">
-    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo" />
+    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo">
     Tepuy Solutions
   </div>
+
   <nav class="nav-links" id="navMenu">
     <a class="active" href="/">Home</a>
     <a href="/calculators/property_vs_shares.html">Property&nbsp;vs&nbsp;Shares</a>
@@ -24,10 +29,11 @@
     <a href="/store/">Store</a>
     <a href="/blog/">Blog</a>
   </nav>
+
   <button id="menuToggle" class="hamburger" aria-label="Menu">&#9776;</button>
 </header>
 
-<!-- HERO -->
+<!-- ───────── HERO ───────── -->
 <section class="hero">
   <div class="hero-banner">
     <h1>Property Investment vs Shares Calculator</h1>
@@ -35,156 +41,109 @@
   </div>
 </section>
 
-<!-- MAIN -->
+<!-- ───────── MAIN ───────── -->
 <main class="calc-wrapper">
-  <!-- INPUT FORM -->
+
+  <!-- INPUTS -->
   <form id="investmentForm" class="grid-3col">
-    <label>Loan Amount <input id="loanAmount" value="800,000" /></label>
-    <label>Down-payment (%) <input type="number" id="downpayment" value="10" step=".1" /></label>
-    <label>Stamp Duty & Costs ($) <input id="buyingCosts" value="48,000" /></label>
-    <label>Loan Period (yrs) <input type="number" id="loanPeriod" value="30" /></label>
-    <label>Interest Rate (%) <input type="number" id="loanInterestRate" value="6.5" step=".1" /></label>
-    <label>Owning Costs (%/yr) <input type="number" id="owningCosts" value="2" step=".1" /></label>
-    <label>Agent Fees (%/yr) <input type="number" id="agentFees" value="0.2" step=".1" /></label>
-    <label>Occupancy Rate (%) <input type="number" id="occupancyRate" value="90" /></label>
-    <label>Appreciation Rate (%/yr) <input type="number" id="propertyAppreciation" value="6.5" step=".1" /></label>
-    <label>Rental Yield (%/yr) <input type="number" id="rentalIncome" value="4.8" step=".1" /></label>
-    <label>Shares Return (%/yr) <input type="number" id="stockMarketAppreciation" value="11" step=".1" /></label>
-    <label>Tax Bracket (%) <input type="number" id="taxBracket" value="30" step=".1" /></label>
-    <label>Years to Retirement <input type="number" id="yearsToRetirement" value="30" /></label>
-    <label>Building Component (%) <input type="number" id="buildingComponent" value="50" /></label>
+    <label>Loan Amount <input id="loanAmount" value="800,000"></label>
+    <label>Down-payment (%) <input id="downpayment" type="number" value="10" step=".1"></label>
+    <label>Stamp Duty & Costs ($) <input id="buyingCosts" value="48,000"></label>
+
+    <label>Loan Period (yrs) <input id="loanPeriod" type="number" value="30"></label>
+    <label>Interest Rate (%)  <input id="loanInterestRate" type="number" value="6.5" step=".1"></label>
+    <label>Owning Costs (%/yr)<input id="owningCosts" type="number" value="2"   step=".1"></label>
+
+    <label>Agent Fees (%/yr)   <input id="agentFees" type="number" value="0.2" step=".1"></label>
+    <label>Occupancy Rate (%)  <input id="occupancyRate" type="number" value="90"></label>
+    <label>Appreciation (%/yr) <input id="propertyAppreciation" type="number" value="6.5" step=".1"></label>
+
+    <label>Rental Yield (%/yr) <input id="rentalIncome" type="number" value="4.8" step=".1"></label>
+    <label>Shares Return (%/yr)<input id="stockMarketAppreciation" type="number" value="11" step=".1"></label>
+    <label>Tax Bracket (%)     <input id="taxBracket" type="number" value="30" step=".1"></label>
+
+    <label>Years to Retirement  <input id="yearsToRetirement" type="number" value="30"></label>
+    <label>Building Component (%)<input id="buildingComponent" type="number" value="50"></label>
   </form>
 
   <button class="btn-primary" id="runCalc">Calculate</button>
 
-  <!-- OUTPUT -->
+  <!-- QUICK OUTPUTS -->
   <div class="grid-2col quick-out">
-    <label>LMI (%) <input id="lmiPercentage" readonly /></label>
-    <label>LMI ($) <input id="lmiAmount" readonly /></label>
-    <label>Buy Price <input id="buyPrice" readonly /></label>
-    <label>Total Upfront <input id="totalCashUpfront" readonly /></label>
-    <label>Weekly Payment <input id="weeklyPayment" readonly /></label>
+    <label>LMI (%)        <input id="lmiPercentage"     readonly></label>
+    <label>LMI ($)        <input id="lmiAmount"         readonly></label>
+    <label>Buy Price      <input id="buyPrice"          readonly></label>
+    <label>Total Upfront  <input id="totalCashUpfront"  readonly></label>
+    <label>Weekly Payment <input id="weeklyPayment"     readonly></label>
   </div>
 
-  <div class="chart-wrap" style="height:320px;">
-    <canvas id="investmentChart"></canvas>
-  </div>
-
+  <!-- CHART & TABLE -->
+  <div class="chart-wrap" style="height:320px;"><canvas id="investmentChart"></canvas></div>
   <div id="results" class="table-container"></div>
 
   <p class="disclaimer">Figures are estimates only and do not constitute financial advice.</p>
 
-  <!-- PRO GATE -->
+  <!-- SOFT GATE -->
   <div class="pro-gate">
-    <p class="locked-msg">🔒 Extra results, CSV export & save-scenario are Pro features.</p>
+    <p class="locked-msg">🔒 Extra results, CSV export &amp; save-scenario are Pro features.</p>
     <button id="unlockPro" class="btn-primary">Unlock Pro (A$9)</button>
   </div>
 </main>
 
-<!-- FOOTER -->
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
 
-<!-- JS LIBRARIES -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- LIBS & CALC LOGIC -->
 <script src="/js/property_vs_shares_calc.js"></script>
 
-<!-- MAIN SCRIPT -->
 <script>
-  // Mobile nav toggle
-  document.getElementById('menuToggle').onclick = () =>
-    document.getElementById('navMenu').classList.toggle('show');
+/* ─── 1. Mobile menu ─── */
+document.getElementById('menuToggle').onclick =
+  () => document.getElementById('navMenu').classList.toggle('show');
 
-  // Stripe checkout function
-  async function startCheckout () {
-    const btn = document.getElementById('unlockPro');
-    btn.disabled = true;
-    try {
-      const res = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
-      const json = await res.json();
-      if (json.url) {
-        window.location.href = json.url;
-      } else {
-        alert("Stripe checkout failed.");
-        btn.disabled = false;
-      }
-    } catch (e) {
-      console.error("Stripe checkout error:", e);
-      alert("An error occurred while launching checkout.");
-      btn.disabled = false;
-    }
-  }
-
-  // Soft gate logic (temporary: localStorage, to be replaced by user metadata)
-  const FREE_LIMIT = 3;
-  const uses = +localStorage.getItem('pvUses') || 0;
-  const paid = localStorage.getItem('pvPaid') === 'yes';
-
-  const runBtn = document.getElementById('runCalc');
-  const proBtn = document.getElementById('unlockPro');
-
-  runBtn.onclick = () => {
-    if (paid || uses < FREE_LIMIT) {
-      window.calculate();
-      if (!paid) {
-        localStorage.setItem('pvUses', uses + 1);
-        if (uses + 1 >= FREE_LIMIT) {
-          document.querySelector('.pro-gate').style.display = 'block';
-        }
-      }
-    } else {
-      document.querySelector('.pro-gate').style.display = 'block';
-    }
-  };
-
-  if (paid) {
-    document.querySelector('.pro-gate').style.display = 'none';
-  }
-
-  proBtn.onclick = startCheckout;
-</script>
-<script>
-  /* Stripe Checkout launch */
+/* ─── 2. Stripe Checkout ─── */
+async function startCheckout () {
   const btn = document.getElementById('unlockPro');
-  if (btn) {
-    btn.onclick = async () => {
-      btn.disabled = true;
-      try {
-        const res  = await fetch('/.netlify/functions/createCheckout', { method:'POST' });
-        const json = await res.json();
-        if (json.url) {
-          window.location.href = json.url;   // takes user to Stripe
-        } else {
-          alert('Checkout session error.');
-          btn.disabled = false;
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Network error—try again.');
-        btn.disabled = false;
-      }
-    };
+  btn.disabled = true;
+  try {
+    const res  = await fetch('/.netlify/functions/createCheckout',{method:'POST'});
+    const json = await res.json();
+    if (json.url) window.location.href = json.url;
+    else { alert('Stripe error.'); btn.disabled = false; }
+  } catch (err) {
+    console.error(err);
+    alert('Network error. Try again.');
+    btn.disabled = false;
   }
+}
+
+/* ─── 3. Soft-gate (temporary localStorage) ─── */
+const FREE_LIMIT = 3;
+let   uses  = +localStorage.getItem('pvUses') || 0;
+const paid  = localStorage.getItem('pvPaid') === 'yes';
+
+const runBtn = document.getElementById('runCalc');
+const gate   = document.querySelector('.pro-gate');
+
+runBtn.onclick = () => {
+  if (paid || uses < FREE_LIMIT) {
+    window.calculate();
+    if (!paid) {
+      uses++; localStorage.setItem('pvUses', uses);
+      if (uses >= FREE_LIMIT) gate.style.display = 'block';
+    }
+  } else {
+    gate.style.display = 'block';
+  }
+};
+
+if (paid) gate.style.display = 'none';
+document.getElementById('unlockPro').onclick = startCheckout;
 </script>
 
-<!-- In-page style for pro gate -->
+<!-- minimal in-page style – keeps gate neat -->
 <style>
-  .pro-gate {
-    margin-top: 32px;
-    padding: 24px;
-    border: 2px dashed #aaa;
-    border-radius: 8px;
-    text-align: center;
-    background: #fafafa;
-  }
-  .pro-gate .locked-msg {
-    margin: 0 0 14px;
-    font-weight: 600;
-  }
-  .chart-wrap,
-  main.blur {
-    transition: 0.3s;
-  }
+  .pro-gate{margin-top:32px;padding:24px;border:2px dashed #aaa;border-radius:8px;text-align:center;background:#fafafa}
+  .pro-gate .locked-msg{margin:0 0 14px;font-weight:600}
 </style>
-
 </body>
 </html>

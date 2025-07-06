@@ -59,9 +59,13 @@
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
 <!-- █████  tiny JS to toggle mobile menu  █████ -->
 <script>
-  const toggleBtn = document.getElementById('menuToggle');
-  const navMenu  = document.getElementById('navMenu');
-  toggleBtn.addEventListener('click', () => {
+  /* old */
+  /* navMenu.classList.toggle('open'); */
+
+  /* new – matches the CSS selector */
+  const menuToggle = document.getElementById('menuToggle');
+  const navMenu    = document.getElementById('navMenu');
+  menuToggle.addEventListener('click', () => {
     navMenu.classList.toggle('show');
   });
 </script>
