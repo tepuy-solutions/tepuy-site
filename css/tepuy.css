@@ -181,3 +181,22 @@ footer{background:var(--brand-green);color:var(--text-light);text-align:center;p
   .feature-img{max-width:60%;margin-bottom:20px}
 }
 
+/* --- soft-gate overlay ------------------------------------ */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(3px);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 9999; color: #fff; text-align: center;
+}
+.overlay-card {
+  background: var(--brand-green-dark);
+  padding: 34px 28px; border-radius: 8px; max-width: 420px;
+}
+.overlay-card h3 { margin-top:0; font-size:1.4rem; }
+.blur { filter: blur(4px); pointer-events:none; user-select:none; }
+
+/* === Pro gate === */
+.pro-gate { margin:40px 0; text-align:center; }
+.locked-msg { margin-bottom:14px; font-weight:600; color:#b02d2d; }
+.pro-only.locked { filter: blur(3px); pointer-events:none; }

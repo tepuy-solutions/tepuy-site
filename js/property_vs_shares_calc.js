@@ -145,5 +145,35 @@ function calculate () {
     }
   });
 }
+const FREE_LIMIT = 3;
+const uses = +localStorage.getItem('pvProUses') || 0;
+const paid = localStorage.getItem('pvProPaid') === 'yes';
+
+const runBtn = document.querySelector('.btn-primary');
+runBtn.addEventListener('click', () => {
+  if (paid || uses < FREE_LIMIT) {
+    calculate();
+    if (!paid) localStorage.setItem('pvProUses', uses + 1);
+    if (!paid && uses + 1 >= FREE_LIMIT) showGate();
+  } else {
+    showGate();
+  }
+});
+
+function showGate() {
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.innerHTML = `
+    <div class="overlay-card">
+      <h3>Unlock Advanced Results</h3>
+      <p>You’ve reached your free limit. Get unlimited runs, extra charts, Excel export, and save-your-inputs.</p>
+      <button id="goPro" class="btn">Unlock for AUD&nbsp;14</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.querySelector('main').classList.add('blur');
+
+  document.getElementById('goPro')
+    .addEventListener('click', () => startCheckout());
+}
 
 window.calculate = calculate;
