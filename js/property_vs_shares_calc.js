@@ -144,7 +144,8 @@ async function startCheckout(){
     if (j.url) {
       window.location.href = j.url;
     } else {
-      alert('Checkout link missing');
+      console.error(j);
+      alert('Checkout link missing. See console for details.');
     }
   } catch (e) {
     console.error(e);
@@ -200,7 +201,6 @@ function calculate(){
 }
 
 /* ---------- INIT ---------- */
-// email unlock via ?code=XYZ
 (function checkUnlockCode(){
   const code = new URLSearchParams(location.search).get("code");
   if (code && code === "abc123") {
@@ -208,7 +208,6 @@ function calculate(){
   }
 })();
 
-// button listeners
 $("runCalc")?.addEventListener("click", calculate);
 
 const unlockBtn = $("unlockPro");
@@ -223,5 +222,4 @@ if (unlockBtn) {
   }
 }
 
-// expose for console
 window.calculate = calculate;
