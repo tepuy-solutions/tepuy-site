@@ -109,7 +109,6 @@
   document.querySelectorAll('.sub-toggle').forEach(btn =>
     btn.onclick = () => btn.parentElement.classList.toggle('open'));
 
-  const unlockBtn = document.getElementById('unlockPro');
   if (unlockBtn) {
     if (localStorage.getItem('pvProPaid') === 'yes') {
       unlockBtn.style.display = 'none';
