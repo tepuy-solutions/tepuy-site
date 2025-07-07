@@ -12,8 +12,8 @@ exports.handler = async () => {
           quantity: 1
         }
       ],
-      success_url: `${process.env.PUBLIC_SITE_URL}/thanks.html`,
-      cancel_url : `${process.env.PUBLIC_SITE_URL}/calculators/property_vs_shares.html`
+      success_url: `${process.env.PUBLIC_SITE_URL}/thanks.html?code=tepuy2025`,
+      cancel_url : `${process.env.PUBLIC_	SITE_URL}/calculators/property_vs_shares.html`
     });
 
     /* Return the Checkout URL to the browser */

@@ -203,7 +203,7 @@ function calculate(){
 /* ---------- INIT ---------- */
 (function checkUnlockCode(){
   const code = new URLSearchParams(location.search).get("code");
-  if (code && code === "abc123") {
+  if (code && code === "tepuy2025") {
     localStorage.setItem(paidKey, "yes");
   }
 })();

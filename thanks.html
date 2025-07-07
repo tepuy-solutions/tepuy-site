@@ -9,19 +9,27 @@
     body{
       display:flex;align-items:center;justify-content:center;
       height:100vh;font-family:Inter,Segoe UI,sans-serif;background:#f4f8f6;
+      text-align:center;padding:0 16px;
     }
-    h1{color:#1f4c3b}
+    h1{color:#1f4c3b;margin-bottom:14px}
+    p {color:#444;font-size:1rem;margin:0}
   </style>
 </head>
 <body>
-  <h1>✅ Payment received — unlocking&nbsp;Pro…</h1>
+
+  <div>
+    <h1>✅ Payment received!</h1>
+    <p>Unlocking your <strong>Tepuy&nbsp;Pro</strong> features…</p>
+  </div>
 
   <script>
-    /* persist Pro status */
-    localStorage.setItem('pvProPaid','yes');
+    /* 1. persist Pro status for this browser  */
+    localStorage.setItem('pvProPaid', 'yes');
 
-    /* straight back to the calculator */
-    location.replace('/calculators/property_vs_shares.html');
+    /* 2. after a short pause, return to calculator with unlock code */
+    const next = '/calculators/property_vs_shares.html?code=tepuy2025';
+    setTimeout(() => location.replace(next), 1500);
   </script>
+
 </body>
 </html>
