@@ -6,18 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/img/favicon.png" type="image/png">
   <style>
-    body{display:flex;align-items:center;justify-content:center;
-         height:100vh;font-family:Inter,Segoe UI,sans-serif;background:#f4f8f6;}
+    body{
+      display:flex;align-items:center;justify-content:center;
+      height:100vh;font-family:Inter,Segoe UI,sans-serif;background:#f4f8f6;
+    }
     h1{color:#1f4c3b}
   </style>
 </head>
 <body>
-  <h1>✅ Payment received — unlocking Pro…</h1>
+  <h1>✅ Payment received — unlocking&nbsp;Pro…</h1>
 
   <script>
-    localStorage.setItem('proUnlocked','yes');
-    // bounce back to the calculator after 1.5 s
-    setTimeout(() => location.href='/calculators/property_vs_shares.html', 1500);
+    /* persist Pro status */
+    localStorage.setItem('pvProPaid','yes');
+
+    /* straight back to the calculator */
+    location.replace('/calculators/property_vs_shares.html');
   </script>
 </body>
 </html>

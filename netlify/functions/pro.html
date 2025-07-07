@@ -1,0 +1,15 @@
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
+
+  if (code === "abc123") {
+    document.getElementById("pro-content").style.display = "block";
+  } else {
+    document.body.innerHTML = "<p>Access denied. Please check your Pro link.</p>";
+  }
+</script>
+
+<div id="pro-content" style="display: none;">
+  <!-- Your premium features go here -->
+  <h1>Welcome to Tepuy Pro</h1>
+</div>
