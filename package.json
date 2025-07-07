@@ -18,6 +18,7 @@
   "homepage": "https://github.com/tepuy-solutions/tepuy-site#readme",
   "description": "",
   "dependencies": {
+    "node-fetch": "^3.3.2",
     "stripe": "^18.3.0"
   }
 }
