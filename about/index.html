@@ -1,0 +1,52 @@
+<!-- /about.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Who We Are | Tepuy Solutions</title>
+  <link rel="stylesheet" href="/css/tepuy.css" />
+  <link rel="icon" href="/img/favicon.png" type="image/png" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo-title">
+      <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo">
+      Tepuy Solutions
+    </div>
+    <nav class="nav-links" id="navMenu">
+      <a href="/">Home</a>
+      <div class="has-sub">
+        <button type="button" class="sub-toggle">Calculators ▾</button>
+        <div class="sub-menu">
+          <a href="/calculators/property_vs_shares.html">Property&nbsp;vs&nbsp;Shares</a>
+          <a href="/calculators/retirement.html">Retirement Goal</a>
+        </div>
+      </div>
+      <a href="/blog/">Blog</a>
+      <a href="/store/">Store</a>
+      <a class="active" href="/about.html">Who We Are</a>
+      <a href="/contact.html">Contact Us</a>
+    </nav>
+    <button id="menuToggle" class="hamburger" aria-label="Menu">&#9776;</button>
+  </header>
+
+  <main class="about-us">
+    <div class="container">
+      <h2>Who We Are</h2>
+      <p>
+        Tepuy Solutions is an independent platform committed to empowering investors and engineers with clear, reliable tools and insights. 
+        Our calculators are built with accuracy, transparency, and practical application in mind — helping you make smarter decisions whether you're comparing property vs shares or optimizing artificial lift systems.
+      </p>
+    </div>
+  </main>
+
+  <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
+  <script>
+    document.getElementById('menuToggle').onclick = () =>
+      document.getElementById('navMenu').classList.toggle('show');
+    document.querySelectorAll('.sub-toggle').forEach(btn =>
+      btn.onclick = () => btn.parentElement.classList.toggle('open'));
+  </script>
+</body>
+</html>
