@@ -178,11 +178,12 @@ function recommendPro() {
       <h2 class="modal-title">🚀 Go Pro with Tepuy</h2>
       <p class="modal-subtitle">You've run the calculator <strong>${uses}</strong> times!</p>
       <ul class="modal-benefits">
-        <li>Unlimited year-by-year results</li>
-        <li>CSV export</li>
-        <li>Save & load scenarios</li>
-        <li>Capital Gains Tax toggle</li>
-        <li>NPV & IRR (coming soon)</li>
+  	<li>📈 Full investment results for every year</li>
+ 	<li>📊 CSV export to Excel</li>
+  	<li>💾 Save & reload custom scenarios</li>
+  	<li>💰 Capital Gains Tax + Sale Cost modeling</li>
+  	<li>📉 NPV & IRR (coming soon)</li>
+  	<li>⚖️ Indicative tax impact comparisons</li>
       </ul>
       <button id="goPro" class="btn">Unlock Pro – A$9</button>
       <p><a href="#" id="keepFree" class="text-link">No thanks, keep free version</a></p>
@@ -248,5 +249,14 @@ function init() {
   $("runCalc").addEventListener("click", calculate);
   $("btnSave").addEventListener("click", saveScenario);
   $("btnCSV").addEventListener("click", downloadCSV);
+
+const moreBtn = $("showMoreFeatures");
+  if (moreBtn) {
+    moreBtn.onclick = e => {
+      e.preventDefault();
+      recommendPro();
+    };
+  }
+
 }
 document.addEventListener("DOMContentLoaded", init);

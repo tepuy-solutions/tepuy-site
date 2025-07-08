@@ -208,7 +208,7 @@ footer {
   margin-bottom: 14px; font-weight: 600; color: #b02d2d;
 }
 .pro-only.locked {
-  filter: blur(3px); pointer-events: none;
+  filter: none; pointer-events: auto;
 }
 
 /* --- Pricing modal --------------------------- */
