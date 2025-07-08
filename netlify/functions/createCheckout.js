@@ -1,4 +1,14 @@
 /*  createCheckout.js – NO-EMAIL version  */
+
+console.log("⚡ createCheckout.js invoked");
+
+const stripeKey = process.env.STRIPE_SECRET;
+const priceId = process.env.STRIPE_PRICE_ID;
+const siteUrl = process.env.PUBLIC_SITE_URL;
+
+console.log("🔑 stripeKey begins with:", stripeKey?.slice(0, 6));
+console.log("💲 priceId is:", priceId);
+console.log("🌍 siteUrl is:", siteUrl);
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 exports.handler = async () => {
