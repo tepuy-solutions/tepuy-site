@@ -72,6 +72,7 @@
     <label>Shares Return (%/yr) <input id="stockMarketAppreciation" type="number" value="11" step=".1" /></label>
     <label>Tax Bracket (%) <input id="taxBracket" type="number" value="30" step=".1" /></label>
     <label>Years to Retirement <input id="yearsToRetirement" type="number" value="30" /></label>
+    <label><input type="checkbox" id="sellAtRet"> Sell assets at retirement (apply CGT)</label>
     <label>Building Component (%) <input id="buildingComponent" type="number" value="50" /></label>
   </form>
 
@@ -97,6 +98,11 @@
     <p class="locked-msg">🔒 Extra results, CSV export &amp; save-scenario are Pro features.</p>
     <button id="unlockPro" class="btn-primary">Unlock Pro (A$9)</button>
   </div>
+<div id="proButtons" class="pro-only" style="text-align:center;margin:18px 0;">
+  <button id="btnSave" class="btn-primary" type="button">💾 Save Scenario</button>
+  <button id="btnCSV" class="btn-primary" type="button">⬇️ Download CSV</button>
+</div>
+
 </main>
 
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
@@ -108,7 +114,7 @@
 
   document.querySelectorAll('.sub-toggle').forEach(btn =>
     btn.onclick = () => btn.parentElement.classList.toggle('open'));
-
+  const unlockBtn = document.getElementById('unlockPro');
   if (unlockBtn) {
     if (localStorage.getItem('pvProPaid') === 'yes') {
       unlockBtn.style.display = 'none';
