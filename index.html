@@ -10,20 +10,30 @@
 </head>
 <body>
 
-<!-- ───────── NAVBAR (desktop + mobile) ───────── -->
+<!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
 <header class="navbar">
   <div class="logo-title">
     <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo" />
     Tepuy Solutions
   </div>
+
   <nav class="nav-links" id="navMenu">
     <a class="active" href="/">Home</a>
-    <a href="/calculators/property_vs_shares.html">Calculators</a>
+
+    <div class="has-sub">
+      <button type="button" class="sub-toggle">Calculators ▾</button>
+      <div class="sub-menu">
+        <a href="/calculators/property_vs_shares.html">Property&nbsp;vs&nbsp;Shares</a>
+        <a href="/calculators/retirement.html">Retirement Goal</a>
+      </div>
+    </div>
+
     <a href="/blog/">Blog</a>
     <a href="/store/">Store</a>
     <a href="/about.html">Who We Are</a>
     <a href="/contact.html">Contact Us</a>
   </nav>
+
   <button class="hamburger" id="menuToggle" aria-label="Menu">&#9776;</button>
 </header>
 
@@ -113,17 +123,57 @@
   <p class="tiny">© 2025 Tepuy Solutions. Built with clarity &amp; care.</p>
 </footer>
 
+<!-- ───────── JS: menu toggle & sub-menu ───────── -->
 <script>
-  /* old */
-  /* navMenu.classList.toggle('open'); */
-
-  /* new – matches the CSS selector */
   const menuToggle = document.getElementById('menuToggle');
-  const navMenu    = document.getElementById('navMenu');
+  const navMenu = document.getElementById('navMenu');
   menuToggle.addEventListener('click', () => {
     navMenu.classList.toggle('show');
   });
+
+  document.querySelectorAll('.sub-toggle').forEach(btn =>
+    btn.onclick = () => btn.parentElement.classList.toggle('open'));
 </script>
+
+<!-- ───────── CSS: dropdown menu ───────── -->
+<style>
+  .has-sub { position: relative; }
+  .sub-toggle {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font: inherit;
+    margin-left: 20px;
+  }
+  .sub-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--brand-green-dark);
+    padding: 8px 0;
+    border-radius: 4px;
+    min-width: 180px;
+    z-index: 999;
+  }
+  .sub-menu a {
+    display: block;
+    padding: 8px 18px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .has-sub.open .sub-menu {
+    display: block;
+  }
+  @media(max-width:768px) {
+    .sub-toggle { margin: 10px 0; font-size: 1.1rem; }
+    .sub-menu { position: static; }
+    .nav-links { display: none; flex-direction: column; gap: 14px; }
+    .nav-links.show { display: flex; }
+    .hamburger { display: block; }
+  }
+</style>
 
 </body>
 </html>
