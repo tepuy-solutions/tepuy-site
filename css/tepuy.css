@@ -247,6 +247,7 @@ footer {
 .small-note {
   font-size: .8rem; color: #555; margin-top: 12px;
 }
+
 /* --- Enhanced Upsell Modal ------------------------ */
 .overlay-card {
   background: #fff;
@@ -294,4 +295,23 @@ footer {
 @keyframes slideUp {
   from { transform: translateY(30px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
+}
+@media (max-width: 480px){
+  input {
+    font-size: 0.9rem;
+  }
+}
+.pro-badge {
+  background: #b02d2d;
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.pro-only input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

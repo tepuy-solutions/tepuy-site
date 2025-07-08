@@ -1,10 +1,9 @@
 /* =========================================================================
    Tepuy Solutions – Property-vs-Shares Calculator
    -------------------------------------------------------------------------
-   BASIC : unlimited quick panel + chart
-           + full table for the first 10 runs
-   PRO   : unlimited + Save Scenario + CSV export
-   EXTRA : Optional CGT in retirement year (sellAtRet toggle)
+   BASIC : unlimited quick panel + chart + first-10 tables
+   PRO   : unlimited + Save Scenario + CSV + Sell/CGT toggle
+   EXTRA : property sale costs % (when selling at retirement)
    ------------------------------------------------------------------------- */
 
 /* ---------- helpers ---------- */
@@ -61,10 +60,11 @@ function drawProjection(base, showTable) {
   const buildPct = pct("buildingComponent");
   const taxRate  = pct("taxBracket");
   const yrsRet   = num("yearsToRetirement");
-  const sellFlag = $("sellAtRet").checked;
+  const salePct  = pct("saleCostPct");                 // new %
+  const sellFlag = $("sellAtRet").checked;      // pro toggle
 
-  // If selling at retirement, stop at yrsRet; otherwise run full loan period
-  const lastYear = $("sellAtRet").checked ? yrsRet : base.yrs;
+  /* loop length */
+  const lastYear = sellFlag ? yrsRet : base.yrs;
 
   let propVal = base.price,
       shares  = base.cashUp,
@@ -91,13 +91,16 @@ function drawProjection(base, showTable) {
 
     if (y) shares = Math.round(shares * (1 + rShares) - netCF);
 
-    /* apply CGT in retirement year if toggle is on */
+    /* ----- apply CGT + sale costs in retirement year ----- */
     if (sellFlag && y === yrsRet) {
       const gainProp   = propVal - base.price;
-      const gainShares = shares  - base.cashUp;      // simplified cost base
-      const cgtProp    = Math.max(0, gainProp   * 0.5 * taxRate);
+      const discounted = gainProp * 0.5;
+      const cgtProp    = Math.max(0, discounted * taxRate);
+      const saleCost   = propVal * salePct;            // commission etc.
+      equity -= (cgtProp + saleCost);
+
+      const gainShares = shares - base.cashUp;
       const cgtShares  = Math.max(0, gainShares * 0.5 * taxRate);
-      equity -= cgtProp;
       shares -= cgtShares;
     }
 
@@ -157,20 +160,17 @@ function downloadCSV() {
   a.href = url; a.download = "property_vs_shares.csv"; a.click();
   URL.revokeObjectURL(url);
 }
-
 function saveScenario() {
   if (!paid) { alert("Upgrade to Pro to save scenarios."); return; }
   const data = [...document.querySelectorAll("#investmentForm input")]
-               .reduce((o, i) => (o[i.id] = i.value, o), {});
-  data.sellAtRet = $("sellAtRet").checked;
+               .reduce((o,i)=>(o[i.id]=i.type==="checkbox"?i.checked:i.value,o),{});
   localStorage.setItem("pvLastScenario", JSON.stringify(data));
   alert("Scenario saved in this browser.");
 }
 
-/* ---------- upsell overlay ---------- */
+/* ---------- upsell modal ---------- */
 function recommendPro() {
   if (document.querySelector(".overlay")) return;
-
   const overlay = document.createElement("div");
   overlay.className = "overlay";
   overlay.innerHTML = `
@@ -180,36 +180,30 @@ function recommendPro() {
       <ul class="modal-benefits">
         <li>Unlimited year-by-year results</li>
         <li>CSV export</li>
-        <li>Save and load scenarios</li>
+        <li>Save & load scenarios</li>
         <li>Capital Gains Tax toggle</li>
-        <li>NPV and IRR projection</li>
+        <li>NPV & IRR (coming soon)</li>
       </ul>
       <button id="goPro" class="btn">Unlock Pro – A$9</button>
-      <p><a href="#" id="keepFree" class="text-link">No thanks, continue with free</a></p>
-    </div>
-  `;
-
+      <p><a href="#" id="keepFree" class="text-link">No thanks, keep free version</a></p>
+    </div>`;
   document.body.appendChild(overlay);
   document.querySelector("main").classList.add("blur");
 
-  $("goPro").onclick = () => {
-    overlay.remove();
-    startCheckout();
-  };
-  $("keepFree").onclick = e => {
+  $("goPro").onclick   = () => { overlay.remove(); startCheckout(); };
+  $("keepFree").onclick = e=>{
     e.preventDefault();
     document.querySelector("main").classList.remove("blur");
     overlay.remove();
   };
 }
 
-
 /* ---------- Stripe checkout ---------- */
 async function startCheckout() {
   try {
-    const r = await fetch("/.netlify/functions/createCheckout", { method: "POST" });
-    const { url } = await r.json();
-    if (url) location.href = url;
+    const r  = await fetch("/.netlify/functions/createCheckout",{method:"POST"});
+    const j  = await r.json();
+    if (j.url) location.href = j.url;
   } catch { alert("Checkout failed."); }
 }
 
@@ -217,7 +211,6 @@ async function startCheckout() {
 function calculate() {
   const base = calculateBasic();
   const allowTable = paid || uses < FREE_LIMIT;
-
   drawProjection(base, allowTable);
 
   if (!paid) {
@@ -227,16 +220,31 @@ function calculate() {
 }
 
 function init() {
+  const sellBox = $("sellAtRet");
+
   /* unlock via query code */
   if (new URLSearchParams(location.search).get("code") === "tepuy2025") {
     localStorage.setItem(paidKey, "yes"); paid = true;
   }
 
-  /* gate pro-only buttons */
+  /* gate pro-only UI */
   document.querySelectorAll(".pro-only")
           .forEach(el => el.style.display = paid ? "inline-block" : "none");
-  if (paid) $("unlockPro").style.display = "none";
+  if (paid) {
+    $("unlockPro").style.display = "none";
+    sellBox.disabled = false;
+    sellBox.closest("label").classList.remove("locked");
+  }
 
+  /* soft upsell if free user clicks the disabled sell checkbox */
+  sellBox.closest("label").addEventListener("click", e => {
+    if (sellBox.disabled) {
+      e.preventDefault();
+      recommendPro();
+    }
+  });
+
+  /* listeners */
   $("runCalc").addEventListener("click", calculate);
   $("btnSave").addEventListener("click", saveScenario);
   $("btnCSV").addEventListener("click", downloadCSV);
