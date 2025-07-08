@@ -311,7 +311,20 @@ footer {
   vertical-align: middle;
 }
 
+/* --- Pro-only input gating ------------------- */
 .pro-only input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.pro-only.locked {
+  opacity: 1;            /* Label text remains normal */
+  cursor: pointer;
+  filter: none;          /* No blur */
+  pointer-events: auto;  /* Allows triggering upsell modal */
+}
+
+.pro-only.locked input:disabled {
+  opacity: 0.5;
+  filter: grayscale(100%);  /* Subtle visual cue */
 }
