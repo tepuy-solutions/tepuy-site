@@ -1,15 +1,59 @@
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const code = urlParams.get('code');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pro Unlocked – Tepuy Solutions</title>
+  <link rel="icon" href="/img/favicon.png" type="image/png" />
+  <style>
+    body {
+      font-family: Inter, Segoe UI, sans-serif;
+      background: #f4f8f6;
+      color: #1f4c3b;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      background-color: #1f4c3b;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #163a2b;
+    }
+  </style>
+</head>
+<body>
+  <h1>✅ Pro access unlocked</h1>
+  <p>Your payment was successful.<br/>You now have full access to the Pro features.</p>
+  <button id="continue">Continue to Calculator</button>
 
-  if (code === "abc123") {
-    document.getElementById("pro-content").style.display = "block";
-  } else {
-    document.body.innerHTML = "<p>Access denied. Please check your Pro link.</p>";
-  }
-</script>
+  <script>
+    // Save to localStorage
+    localStorage.setItem('pvProPaid', 'yes');
 
-<div id="pro-content" style="display: none;">
-  <!-- Your premium features go here -->
-  <h1>Welcome to Tepuy Pro</h1>
-</div>
+    // Continue button behavior
+    document.getElementById('continue').addEventListener('click', function () {
+      window.location.href = '/calculators/property_vs_shares.html';
+    });
+  </script>
+</body>
+</html>

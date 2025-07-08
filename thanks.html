@@ -1,35 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Thank you – Tepuy Solutions</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="/img/favicon.png" type="image/png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thanks – Pro Unlocked</title>
+  <link rel="icon" href="/img/favicon.png" type="image/png"/>
   <style>
-    body{
-      display:flex;align-items:center;justify-content:center;
-      height:100vh;font-family:Inter,Segoe UI,sans-serif;background:#f4f8f6;
-      text-align:center;padding:0 16px;
+    body {
+      font-family: Inter, Segoe UI, sans-serif;
+      background: #f4f8f6;
+      color: #1f4c3b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 100vh;
+      padding: 2rem;
+      margin: 0;
     }
-    h1{color:#1f4c3b;margin-bottom:14px}
-    p {color:#444;font-size:1rem;margin:0}
+    h1 { font-size: 1.8rem; margin-bottom: 0.8rem; }
+    p { font-size: 1rem; margin-bottom: 1.5rem; }
+    button {
+      padding: 0.7rem 1.4rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      background: #1f4c3b;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #163a2b;
+    }
   </style>
 </head>
 <body>
-
-  <div>
-    <h1>✅ Payment received!</h1>
-    <p>Unlocking your <strong>Tepuy&nbsp;Pro</strong> features…</p>
-  </div>
+  <h1>✅ Thank you for your purchase!</h1>
+  <p>Your Pro access is now unlocked. Click below to start using the advanced features.</p>
+  <button id="go">Continue to Calculator</button>
 
   <script>
-    /* 1. persist Pro status for this browser  */
     localStorage.setItem('pvProPaid', 'yes');
-
-    /* 2. after a short pause, return to calculator with unlock code */
-    const next = '/calculators/property_vs_shares.html?code=tepuy2025';
-    setTimeout(() => location.replace(next), 1500);
+    document.getElementById('go').onclick = () => {
+      window.location.href = '/calculators/property_vs_shares.html';
+    };
   </script>
-
 </body>
 </html>
