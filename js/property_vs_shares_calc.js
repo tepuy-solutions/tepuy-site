@@ -63,7 +63,9 @@ function drawProjection(base, showTable) {
   const yrsRet   = num("yearsToRetirement");
   const sellFlag = $("sellAtRet").checked;
 
-  const lastYear = Math.max(base.yrs, yrsRet);        // run long enough
+  // If selling at retirement, stop at yrsRet; otherwise run full loan period
+  const lastYear = $("sellAtRet").checked ? yrsRet : base.yrs;
+
   let propVal = base.price,
       shares  = base.cashUp,
       owed    = base.loanAmt;
@@ -168,25 +170,39 @@ function saveScenario() {
 /* ---------- upsell overlay ---------- */
 function recommendPro() {
   if (document.querySelector(".overlay")) return;
+
   const overlay = document.createElement("div");
   overlay.className = "overlay";
   overlay.innerHTML = `
     <div class="overlay-card">
-      <h3>Love the calculator?</h3>
-      <p>You’ve run it <strong>${uses}</strong> times already!<br>
-         Unlock unlimited tables, CSV export &amp; Save-Scenario with <b>Tepuy&nbsp;Pro</b>.</p>
-      <button id="goPro" class="btn">Upgrade – A$9</button>
-      <button id="keepFree" class="btn btn-outline">Keep free version</button>
-    </div>`;
+      <h2 class="modal-title">🚀 Go Pro with Tepuy</h2>
+      <p class="modal-subtitle">You've run the calculator <strong>${uses}</strong> times!</p>
+      <ul class="modal-benefits">
+        <li>Unlimited year-by-year results</li>
+        <li>CSV export</li>
+        <li>Save and load scenarios</li>
+        <li>Capital Gains Tax toggle</li>
+        <li>NPV and IRR projection</li>
+      </ul>
+      <button id="goPro" class="btn">Unlock Pro – A$9</button>
+      <p><a href="#" id="keepFree" class="text-link">No thanks, continue with free</a></p>
+    </div>
+  `;
+
   document.body.appendChild(overlay);
   document.querySelector("main").classList.add("blur");
 
-  $("goPro").onclick   = () => { overlay.remove(); startCheckout(); };
-  $("keepFree").onclick = () => {
+  $("goPro").onclick = () => {
+    overlay.remove();
+    startCheckout();
+  };
+  $("keepFree").onclick = e => {
+    e.preventDefault();
     document.querySelector("main").classList.remove("blur");
     overlay.remove();
   };
 }
+
 
 /* ---------- Stripe checkout ---------- */
 async function startCheckout() {

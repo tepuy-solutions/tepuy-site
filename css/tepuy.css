@@ -247,3 +247,51 @@ footer {
 .small-note {
   font-size: .8rem; color: #555; margin-top: 12px;
 }
+/* --- Enhanced Upsell Modal ------------------------ */
+.overlay-card {
+  background: #fff;
+  padding: 32px;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  animation: slideUp 0.4s ease-out;
+}
+.modal-title {
+  margin-bottom: 8px;
+  font-size: 1.6rem;
+  color: var(--brand-green);
+}
+.modal-subtitle {
+  margin-bottom: 16px;
+  font-size: 1.05rem;
+  color: #333;
+}
+.modal-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  text-align: left;
+  font-size: .95rem;
+}
+.modal-benefits li {
+  margin: 6px 0;
+  padding-left: 1.4em;
+  text-indent: -1.2em;
+}
+.modal-benefits li::before {
+  content: "✓ ";
+  color: var(--accent);
+  font-weight: bold;
+}
+.text-link {
+  font-size: 0.9rem;
+  color: var(--brand-green);
+  text-decoration: underline;
+  cursor: pointer;
+}
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
