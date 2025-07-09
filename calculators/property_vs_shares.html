@@ -76,7 +76,6 @@
       <input type="checkbox" id="sellAtRet" disabled>
       Sell assets at retirement (apply CGT)
     </label>
-
     <label>Building Component (%) <input id="buildingComponent" type="number" value="50" /></label>
     <label>Sale Costs (% of sale price) <input id="saleCostPct" type="number" value="2.5" step=".1"></label>
   </form>
@@ -103,37 +102,33 @@
     <p class="locked-msg">🔒 Extra results, CSV export &amp; save-scenario are Pro features.</p>
     <button id="unlockPro" class="btn-primary">Unlock Pro (A$9)</button>
   </div>
-<div id="proButtons" class="pro-only" style="text-align:center;margin:18px 0;">
-  <button id="btnSave" class="btn-primary" type="button">💾 Save Scenario</button>
-  <button id="btnCSV" class="btn-primary" type="button">⬇️ Download CSV</button>
-</div>
 
+  <div id="proButtons" class="pro-only" style="text-align:center;margin:18px 0;">
+    <button id="btnSave" class="btn-primary" type="button">💾 Save Scenario</button>
+    <button id="btnCSV" class="btn-primary" type="button">⬇️ Download CSV</button>
+  </div>
 </main>
 
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
 
 <script src="/js/property_vs_shares_calc.js"></script>
 <script>
-  /* ── NAV toggle (unchanged) ─────────────────────────────── */
-  document.getElementById('menuToggle').onclick =
-    () => document.getElementById('navMenu').classList.toggle('show');
+  document.getElementById('menuToggle').onclick = () =>
+    document.getElementById('navMenu').classList.toggle('show');
 
   document.querySelectorAll('.sub-toggle').forEach(btn =>
     btn.onclick = () => btn.parentElement.classList.toggle('open'));
 
-  /* ── Unlock Pro button logic (patched) ───────────────────── */
   const unlockBtn = document.getElementById('unlockPro');
 
   if (unlockBtn) {
     unlockBtn.onclick = async () => {
-
-      /* 1️⃣ Already Pro?  Jump straight to Planner */
+      // Always show free version first; only redirect to planner if user is Pro
       if (localStorage.getItem('pvProPaid') === 'yes') {
         window.location.href = '/calculators/planner/index.html';
         return;
       }
 
-      /* 2️⃣ Not Pro yet – start Stripe checkout */
       unlockBtn.disabled = true;
       try {
         const r = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
@@ -149,7 +144,6 @@
     };
   }
 </script>
-
 
 <style>
   .has-sub { position: relative; }
