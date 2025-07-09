@@ -6,22 +6,21 @@ const chartC = document.getElementById('chart');
 let chart;
 
 /* ---------- submit ---------- */
-form.addEventListener('submit', e=>{
+form.addEventListener('submit', e => {
   e.preventDefault();
 
-  const inputs   = readInputs(new FormData(form));
+  const inputs   = readInputs(); // ✅ no FormData now
   const selected = [...form.querySelectorAll('[name="structure"]:checked')]
-                    .map(cb=>cb.value);
+                    .map(cb => cb.value);
 
   const calc = runScenario(inputs);
 
-  const rows = selected.map(code=>{
+  const rows = selected.map(code => {
     const r = calc[code];
-if (!r) {
-  console.error("Missing data for:", code);
-  return [label(code), 0, 0];  // fallback to avoid crash
-}
-
+    if (!r) {
+      console.error("Missing data for:", code);
+      return [label(code), 0, 0];
+    }
     return [label(code), r.tax, r.net];
   });
 
@@ -30,34 +29,29 @@ if (!r) {
 });
 
 /* ---------- helpers ---------- */
-function readInputs(fd){
-  const raw = id=>(fd.get(id)||'').toString();
-  const num = id=>parseFloat(raw(id).replace(/[^0-9.]/g,''))||0;
+function readInputs() {
+  const get = id => document.getElementById(id).value || '';
+  const num = id => parseFloat(get(id).replace(/,/g, '')) || 0;
 
   return {
-    age:       num('age'),
-    retAge:    num('retAge'),
-    taxRate:   num('taxRate'),
-    partner:   fd.get('partner')==='on',
+    age:         num('age'),
+    retAge:      num('retAge'),
+    taxRate:     num('taxRate'),
+    partner:     document.getElementById('partner').checked,
 
     /* property */
-    propPrice:  num('propPrice'),
-    propLVR:    num('propLVR'),
-    loanRate:   num('loanRate'),
-    propGrowth: num('propGrowth'),
-    propDep:    num('propDep'),
-    saleCostPct:num('saleCostPct'),
+    propPrice:   num('propPrice'),
+    propLVR:     num('propLVR'),
+    loanRate:    num('loanRate'),
+    propGrowth:  num('propGrowth'),
+    propDep:     num('propDep'),
+    saleCostPct: num('saleCostPct'),
 
     /* shares */
-    sharesInit: num('sharesInit'),
-    sharesRet:  num('sharesRet')
+    sharesInit:  num('sharesInit'),
+    sharesRet:   num('sharesRet')
   };
 }
-
-/* … renderTable, renderChart, label() unchanged … */
-
-
-
 
 function renderTable(rows) {
   const div = document.getElementById('results');
@@ -92,4 +86,5 @@ function label(code) {
     "SHARES-SMSF":         "Shares SMSF"
   }[code] || code;
 }
+
 const fmt = n => n.toLocaleString('en-AU');
