@@ -19,15 +19,19 @@ form.addEventListener('submit',e=>{
 
 /* ---------- helpers ---------- */
 function readInputs(fd){
-  const g = id=>fd.get(id);
-  const num = id=>+String(g(id)).replace(/[, ]/g,'');
+  const raw = id => fd.get(id) || '';
+  const num = id => +raw(id).replace(/[^0-9.]/g,'');   // strip $ , spaces
   return {
-    age:num('age'),retAge:num('retAge'),taxRate:num('taxRate'),partner:fd.get('partner')==='on',
-    propPrice:num('propPrice'),propLVR:num('propLVR'),loanRate:num('loanRate'),
-    rentYield:num('rentYield'),propGrowth:num('propGrowth'),propExp:num('propExp'),propDep:num('propDep'),
-    sharesInit:num('sharesInit'),sharesRet:num('sharesRet'),divYield:num('divYield')
+    age:num('age'),retAge:num('retAge'),taxRate:num('taxRate'),
+    partner:fd.get('partner')==='on',
+    propPrice:num('propPrice'),propLVR:num('propLVR'),
+    loanRate:num('loanRate'),rentYield:num('rentYield'),
+    propGrowth:num('propGrowth'),propExp:num('propExp'),
+    propDep:num('propDep'),sharesInit:num('sharesInit'),
+    sharesRet:num('sharesRet'),divYield:num('divYield')
   };
 }
+
 
 function renderTable(rows){
   const div=document.getElementById('results');
