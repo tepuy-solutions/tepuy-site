@@ -27,10 +27,8 @@
     <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo">
     Tepuy Solutions
   </div>
-
   <nav class="nav-links" id="navMenu">
     <a class="active" href="/">Home</a>
-
     <div class="has-sub">
       <button type="button" class="sub-toggle">Calculators ▾</button>
       <div class="sub-menu">
@@ -38,13 +36,11 @@
         <a href="/calculators/retirement.html">Retirement Goal</a>
       </div>
     </div>
-
     <a href="/blog/">Blog</a>
     <a href="/store/">Store</a>
     <a href="/about.html">Who We Are</a>
     <a href="/contact.html">Contact Us</a>
   </nav>
-
   <button id="menuToggle" class="hamburger" aria-label="Menu">&#9776;</button>
 </header>
 
@@ -58,6 +54,7 @@
 
 <!-- ─── MAIN ─────────────────────────────────────────── -->
 <main class="calc-wrapper">
+  <!-- ── INPUT FORM ───────────────────────────────── -->
   <form id="investmentForm" class="grid-3col">
     <label>Loan Amount <input id="loanAmount" value="800,000" /></label>
     <label>Down-payment (%) <input id="downpayment" type="number" value="10" step=".1" /></label>
@@ -72,37 +69,37 @@
     <label>Shares Return (%/yr) <input id="stockMarketAppreciation" type="number" value="11" step=".1" /></label>
     <label>Tax Bracket (%) <input id="taxBracket" type="number" value="30" step=".1" /></label>
     <label>Years to Retirement <input id="yearsToRetirement" type="number" value="30" /></label>
-    <label class="pro-only locked">
-      <input type="checkbox" id="sellAtRet" disabled>
-      Sell assets at retirement (apply CGT)
-    </label>
+    <label class="pro-only locked"><input type="checkbox" id="sellAtRet" disabled> Sell assets at retirement (apply CGT)</label>
     <label>Building Component (%) <input id="buildingComponent" type="number" value="50" /></label>
     <label>Sale Costs (% of sale price) <input id="saleCostPct" type="number" value="2.5" step=".1"></label>
   </form>
 
   <button class="btn-primary" id="runCalc">Calculate</button>
 
-  <div class="grid-2col quick-out">
-    <label>LMI (%) <input id="lmiPercentage" readonly /></label>
-    <label>LMI ($) <input id="lmiAmount" readonly /></label>
-    <label>Buy Price <input id="buyPrice" readonly /></label>
-    <label>Total Upfront <input id="totalCashUpfront" readonly /></label>
-    <label>Weekly Payment <input id="weeklyPayment" readonly /></label>
+  <!-- ── QUICK-OUT METRICS ─────────────────────────── -->
+  <div class="grid-2col quick-out" style="margin-top:18px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+    <label>LMI (%)<input id="lmiPercentage" readonly></label>
+    <label>LMI ($)<input id="lmiAmount" readonly></label>
+    <label>Buy Price<input id="buyPrice" readonly></label>
+    <label>Total Upfront<input id="totalCashUpfront" readonly></label>
+    <label>Weekly Payment<input id="weeklyPayment" readonly></label>
   </div>
 
-  <div class="chart-wrap" style="height:320px;">
+  <!-- ── CHART + RESULTS TABLE ────────────────────── -->
+  <div class="chart-wrap" style="height:320px;margin-top:24px;">
     <canvas id="investmentChart"></canvas>
   </div>
-
-  <div id="results" class="table-container"></div>
+  <div id="results" class="table-container" style="margin-top:24px;"></div>
 
   <p class="disclaimer">Figures are estimates only and do not constitute financial advice.</p>
 
-  <div class="pro-gate">
-    <p class="locked-msg">🔒 Extra results, CSV export &amp; save-scenario are Pro features.</p>
+  <!-- ── PRO GATE ─────────────────────────────────── -->
+  <div class="pro-gate" id="proGate" style="margin-top:32px;padding:24px;border:2px dashed #aaa;border-radius:8px;text-align:center;background:#fafafa;">
+    <p class="locked-msg" style="margin:0 0 14px;font-weight:600;">🔒 Extra results, CSV export &amp; save-scenario are Pro features.</p>
     <button id="unlockPro" class="btn-primary">Unlock Pro (A$9)</button>
   </div>
 
+  <!-- ── PRO BUTTONS ───────────────────────────────── -->
   <div id="proButtons" class="pro-only" style="text-align:center;margin:18px 0;">
     <button id="btnSave" class="btn-primary" type="button">💾 Save Scenario</button>
     <button id="btnCSV" class="btn-primary" type="button">⬇️ Download CSV</button>
@@ -113,107 +110,69 @@
 
 <script src="/js/property_vs_shares_calc.js"></script>
 <script>
+  /* NAV toggle */
   document.getElementById('menuToggle').onclick = () =>
     document.getElementById('navMenu').classList.toggle('show');
-
   document.querySelectorAll('.sub-toggle').forEach(btn =>
     btn.onclick = () => btn.parentElement.classList.toggle('open'));
 
-  const unlockBtn = document.getElementById('unlockPro');
+  /* ---- Pro gating logic ---- */
+  const isPro      = localStorage.getItem('pvProPaid') === 'yes';
+  const proGate    = document.getElementById('proGate');
+  const proButtons = document.getElementById('proButtons');
+  const unlockBtn  = document.getElementById('unlockPro');
+
+  if (isPro) {
+    proGate.style.display = 'none';
+    proButtons.style.display = 'block';
+    unlockBtn.textContent = 'Go to Planner';
+  } else {
+    proButtons.style.display = 'none';
+  }
 
   if (unlockBtn) {
     unlockBtn.onclick = async () => {
-      // Always show free version first; only redirect to planner if user is Pro
-      if (localStorage.getItem('pvProPaid') === 'yes') {
-        window.location.href = '/calculators/planner/index.html';
+      if (isPro) {
+        location.href = '/calculators/planner/index.html';
         return;
       }
-
       unlockBtn.disabled = true;
       try {
         const r = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
         const j = await r.json();
         if (j.url) {
-          window.location.href = j.url;
+          location.href = j.url;
         } else {
-          alert('Checkout link missing'); unlockBtn.disabled = false;
+          alert('Checkout link missing');
+          unlockBtn.disabled = false;
         }
-      } catch (e) {
-        alert('Checkout error'); unlockBtn.disabled = false;
+      } catch (err) {
+        alert('Checkout error');
+        unlockBtn.disabled = false;
       }
     };
   }
 </script>
 
+<!-- existing styles preserved -->
 <style>
-  .has-sub { position: relative; }
-  .sub-toggle {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    cursor: pointer;
-    font: inherit;
-    margin-left: 20px;
+  .has-sub{position:relative}
+  .sub-toggle{background:none;border:none;color:var(--text-light);cursor:pointer;font:inherit;margin-left:20px}
+  .sub-menu{display:none;position:absolute;top:100%;left:0;background:var(--brand-green-dark);padding:8px 0;border-radius:4px;min-width:180px;z-index:999}
+  .sub-menu a{display:block;padding:8px 18px;color:#fff;white-space:nowrap}
+  .has-sub.open .sub-menu{display:block}
+  @media(max-width:768px){
+    .sub-toggle{margin:10px 0;font-size:1.1rem}
+    .sub-menu{position:static}
+    .nav-links{display:none;flex-direction:column;gap:14px}
+    .nav-links.show{display:flex}
+    .hamburger{display:block}
   }
-  .sub-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: var(--brand-green-dark);
-    padding: 8px 0;
-    border-radius: 4px;
-    min-width: 180px;
-    z-index: 999;
-  }
-  .sub-menu a {
-    display: block;
-    padding: 8px 18px;
-    color: #fff;
-    white-space: nowrap;
-  }
-  .has-sub.open .sub-menu {
-    display: block;
-  }
-  @media(max-width:768px) {
-    .sub-toggle { margin: 10px 0; font-size: 1.1rem; }
-    .sub-menu { position: static; }
-    .nav-links { display: none; flex-direction: column; gap: 14px; }
-    .nav-links.show { display: flex; }
-    .hamburger { display: block; }
-  }
-  .pro-gate {
-    margin-top: 32px;
-    padding: 24px;
-    border: 2px dashed #aaa;
-    border-radius: 8px;
-    text-align: center;
-    background: #fafafa;
-  }
-  .pro-gate .locked-msg {
-    margin: 0 0 14px;
-    font-weight: 600;
-  }
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,.55);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-  }
-  .overlay-card {
-    background: #fff;
-    padding: 28px 32px;
-    border-radius: 10px;
-    max-width: 380px;
-    text-align: center;
-    box-shadow: 0 12px 30px rgba(0,0,0,.25);
-  }
-  main.blur {
-    filter: blur(4px);
-  }
+  .pro-gate{margin-top:32px;padding:24px;border:2px dashed #aaa;border-radius:8px;text-align:center;background:#fafafa}
+  .pro-gate .locked-msg{margin:0 0 14px;font-weight:600}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .overlay-card{background:#fff;padding:28px 32px;border-radius:10px;max-width:380px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+  main.blur{filter:blur(4px)}
 </style>
 
 </body>
