@@ -28,17 +28,18 @@ export function runScenario(code,inputs){
 
   /* dispatch tax variation */
   const out = {};
-  const scenarios = {
-    "IND-NG":       taxModels.IND_NG(grossGain,taxRate),
-    "IND-SELL-TO-SUPER":taxModels.IND_SELL_TO_SUPER(grossGain,taxRate),
-    "IND-HOLD-TILL-DEATH":0,
-    "F-TRUST":      taxModels.F_TRUST(grossGain,taxRate,partner?2:1),
-    "COMP":         taxModels.COMP(grossGain),
-    "SMSF-ACC":     taxModels.SMSF_ACC(grossGain),
-    "SMSF-PENS":    0,
-    "SHARES-IND":   taxModels.SHARES_IND(shares,taxRate),
-    "SHARES-SMSF":  taxModels.SHARES_SMSF(shares)
-  };
+const scenarios = {
+  "IND-NG":            taxModels["IND-NG"](grossGain, taxRate),
+  "IND-SELL-TO-SUPER": taxModels["IND-SELL-TO-SUPER"](grossGain, taxRate),
+  "IND-HOLD-TILL-DEATH": taxModels["IND-HOLD-TILL-DEATH"](grossGain, taxRate),
+  "F-TRUST":           taxModels["F-TRUST"](grossGain, taxRate, partner ? 2 : 1),
+  "COMP":              taxModels["COMP"](grossGain),
+  "SMSF-ACC":          taxModels["SMSF-ACC"](grossGain),
+  "SMSF-PENS":         taxModels["SMSF-PENS"](grossGain),
+  "SHARES-IND":        taxModels["SHARES-IND"](shares, taxRate),
+  "SHARES-SMSF":       taxModels["SHARES-SMSF"](shares)
+};
+
   Object.entries(scenarios).forEach(([k,v])=>{
     out[k] = {
       tax:v,
