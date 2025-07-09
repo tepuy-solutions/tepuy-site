@@ -1,32 +1,28 @@
-// ui.js  – wires form → runScenario → render
+/* ui.js  – Planner Edition */
 import { runScenario } from './scenario_models.js';
 
-const form   = document.getElementById('plannerForm');   // exact id in HTML
+const form   = document.getElementById('plannerForm');   // id in HTML
 const chartC = document.getElementById('chart');
 let   chart;
 
-/* ---------- form submit ---------- */
+/* ------------- submit ------------- */
 form.addEventListener('submit', e => {
   e.preventDefault();
 
-  const inputs = readInputs(new FormData(form));
+  const inputs    = readInputs(new FormData(form));
+  const selected  = [...form.querySelectorAll('[name="structure"]:checked')]
+                     .map(cb => cb.value);
 
-  // which structures are ticked
-  const selected = [...form.querySelectorAll('[name="structure"]:checked')]
-                    .map(cb => cb.value);
-
-  // compute once, then pull each scenario
-  const fullResult = runScenario(inputs);
+  const fullCalc  = runScenario(inputs);   // <-- ONE call
 
   const rows = selected.map(code => {
-    const r = fullResult[code];
+    const r = fullCalc[code];
     return [label(code), r.tax, r.net];
   });
 
   renderTable(rows);
   renderChart(rows);
 });
-
 
 /* ---------- helpers ---------- */
 function readInputs(fd) {
@@ -67,10 +63,7 @@ function renderChart(rows) {
   if (chart) chart.destroy();
   chart = new Chart(chartC, {
     type: 'bar',
-    data: {
-      labels,
-      datasets: [{ label: 'Net wealth at retirement', data }]
-    },
+    data: { labels, datasets: [{ label: 'Net wealth at retirement', data }] },
     options: { plugins: { legend: { display: false } } }
   });
 }
@@ -88,5 +81,4 @@ function label(code) {
     "SHARES-SMSF":         "Shares SMSF"
   }[code] || code;
 }
-
 const fmt = n => n.toLocaleString('en-AU');
