@@ -39,17 +39,19 @@ export function runScenario(inputs){
 
   /* helper */
   function set(code,tax){
-    if(code.startsWith('SHARES')){
-      /* cash-in-hand = 4 % (after tax) + 96 % still invested  */
-      const cash4 = 0.04*shares - tax;
-      const left  = 0.96*shares;
-      out[code]={ tax, net: cash4+left };
-    }else{
-      /* property sold outright */
-      const netProp = house - loan - saleCost - tax;
-      out[code]={ tax, net: netProp };
-    }
+function set(code, tax){
+  if(code.startsWith('SHARES')){
+    const cash4 = 0.04*shares - tax;
+    const left  = 0.96*shares;
+    out[code] = { tax, net: cash4 + left };
+  } else {
+    const netProp = house - loan - saleCost - tax;
+    out[code] = { tax, net: netProp };
   }
+  console.log(`Scenario ${code}: tax=${tax}, net=${out[code].net}`);
+}
+console.log("Gross gain:", grossGain);
+console.log("IND-NG tax:", taxModels["IND-NG"](grossGain, taxRate));
 
   /* property scenarios */
   set('IND-NG',              taxModels['IND-NG'](grossGain, taxRate));

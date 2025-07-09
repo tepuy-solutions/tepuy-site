@@ -17,6 +17,11 @@ form.addEventListener('submit', e=>{
 
   const rows = selected.map(code=>{
     const r = calc[code];
+if (!r) {
+  console.error("Missing data for:", code);
+  return [label(code), 0, 0];  // fallback to avoid crash
+}
+
     return [label(code), r.tax, r.net];
   });
 
