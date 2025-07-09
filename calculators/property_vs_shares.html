@@ -104,6 +104,11 @@
     <button id="btnSave" class="btn-primary" type="button">💾 Save Scenario</button>
     <button id="btnCSV" class="btn-primary" type="button">⬇️ Download CSV</button>
   </div>
+  <!-- Go-to-Planner shortcut (always visible) -->
+  <div id="plannerShortcut" style="text-align:center;margin:24px 0;">
+    <button id="goPlanner" class="btn-primary" disabled>📈 Go to Planner</button>
+  </div>
+
 </main>
 
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
@@ -121,6 +126,8 @@
   const proGate    = document.getElementById('proGate');
   const proButtons = document.getElementById('proButtons');
   const unlockBtn  = document.getElementById('unlockPro');
+  const plannerBtn = document.getElementById('goPlanner');
+
 
   if (isPro) {
     proGate.style.display = 'none';
@@ -128,6 +135,18 @@
     unlockBtn.textContent = 'Go to Planner';
   } else {
     proButtons.style.display = 'none';
+  }
+  /* --- Planner shortcut button --- */
+  if (plannerBtn) {
+    if (isPro) {
+      plannerBtn.disabled = false;
+      plannerBtn.onclick  = () => location.href = '/calculators/planner/index.html';
+    } else {
+      plannerBtn.disabled = true;
+      plannerBtn.title    = 'Unlock Pro to access the Planner';
+      plannerBtn.style.opacity = 0.5;
+      plannerBtn.style.cursor  = 'not-allowed';
+    }
   }
 
   if (unlockBtn) {
