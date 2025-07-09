@@ -1,10 +1,11 @@
 /* =========================================================================
-   Tepuy Solutions – Property-vs-Shares Calculator
+   Tepuy Solutions – Property-vs-Shares Calculator  (basic + Pro)
    -------------------------------------------------------------------------
    BASIC : unlimited quick panel + chart + first-10 tables
-   PRO   : unlimited + Save Scenario + CSV + Sell/CGT toggle
-   EXTRA : property sale costs % (when selling at retirement)
-   ------------------------------------------------------------------------- */
+   PRO   : unlimited + save scenario + CSV + sell/CGT toggle
+   EXTRA : property sale-cost % (when selling at retirement)
+   + NEW : Go-to-Planner button for Pro users, passing inputs via URL
+   ========================================================================= */
 
 /* ---------- helpers ---------- */
 const $   = id => document.getElementById(id);
@@ -60,10 +61,9 @@ function drawProjection(base, showTable) {
   const buildPct = pct("buildingComponent");
   const taxRate  = pct("taxBracket");
   const yrsRet   = num("yearsToRetirement");
-  const salePct  = pct("saleCostPct");                 // new %
-  const sellFlag = $("sellAtRet").checked;      // pro toggle
+  const salePct  = pct("saleCostPct");
+  const sellFlag = $("sellAtRet").checked;
 
-  /* loop length */
   const lastYear = sellFlag ? yrsRet : base.yrs;
 
   let propVal = base.price,
@@ -96,7 +96,7 @@ function drawProjection(base, showTable) {
       const gainProp   = propVal - base.price;
       const discounted = gainProp * 0.5;
       const cgtProp    = Math.max(0, discounted * taxRate);
-      const saleCost   = propVal * salePct;            // commission etc.
+      const saleCost   = propVal * salePct;
       equity -= (cgtProp + saleCost);
 
       const gainShares = shares - base.cashUp;
@@ -120,9 +120,11 @@ function drawProjection(base, showTable) {
       labels,
       datasets: [
         { label: "Property Equity", data: equityArr,
-          borderColor: "#28a745", backgroundColor: "rgba(40,167,69,.15)", fill: true, tension: .35 },
+          borderColor: "#28a745", backgroundColor: "rgba(40,167,69,.15)",
+          fill: true, tension: .35 },
         { label: "Shares Value", data: sharesArr,
-          borderColor: "#007bff", backgroundColor: "rgba(0,123,255,.15)", fill: true, tension: .35 }
+          borderColor: "#007bff", backgroundColor: "rgba(0,123,255,.15)",
+          fill: true, tension: .35 }
       ]
     },
     options: {
@@ -178,12 +180,12 @@ function recommendPro() {
       <h2 class="modal-title">🚀 Go Pro with Tepuy</h2>
       <p class="modal-subtitle">You've run the calculator <strong>${uses}</strong> times!</p>
       <ul class="modal-benefits">
-  	<li>📈 Full investment results for every year</li>
- 	<li>📊 CSV export to Excel</li>
-  	<li>💾 Save & reload custom scenarios</li>
-  	<li>💰 Capital Gains Tax + Sale Cost modeling</li>
-  	<li>📉 NPV & IRR (coming soon)</li>
-  	<li>⚖️ Indicative tax impact comparisons</li>
+        <li>📈 Full investment results for every year</li>
+        <li>📊 CSV export to Excel</li>
+        <li>💾 Save & reload custom scenarios</li>
+        <li>💰 Capital Gains Tax + Sale Cost modeling</li>
+        <li>📉 NPV & IRR (coming soon)</li>
+        <li>⚖️ Indicative tax impact comparisons</li>
       </ul>
       <button id="goPro" class="btn">Unlock Pro – A$9</button>
       <p><a href="#" id="keepFree" class="text-link">No thanks, keep free version</a></p>
@@ -191,8 +193,8 @@ function recommendPro() {
   document.body.appendChild(overlay);
   document.querySelector("main").classList.add("blur");
 
-  $("goPro").onclick   = () => { overlay.remove(); startCheckout(); };
-  $("keepFree").onclick = e=>{
+  $("goPro").onclick    = () => { overlay.remove(); startCheckout(); };
+  $("keepFree").onclick = e => {
     e.preventDefault();
     document.querySelector("main").classList.remove("blur");
     overlay.remove();
@@ -202,8 +204,8 @@ function recommendPro() {
 /* ---------- Stripe checkout ---------- */
 async function startCheckout() {
   try {
-    const r  = await fetch("/.netlify/functions/createCheckout",{method:"POST"});
-    const j  = await r.json();
+    const r = await fetch("/.netlify/functions/createCheckout",{method:"POST"});
+    const j = await r.json();
     if (j.url) location.href = j.url;
   } catch { alert("Checkout failed."); }
 }
@@ -220,43 +222,70 @@ function calculate() {
   }
 }
 
-function init() {
-  const sellBox = $("sellAtRet");
+/* ----- NEW: send basic-form values to Planner (Pro users) ----- */
+function goToPlanner() {
+  const f = document.getElementById("investmentForm");
+  const q = new URLSearchParams({
 
-  /* unlock via query code */
+    /* user profile */
+    age:       45,                                    // default estimate
+    retAge:    67,
+    taxRate:   f.taxBracket.value.replace(/[^0-9.]/g,""),
+
+    /* property */
+    propPrice: ( +f.loanAmount.value.replace(/[^0-9.]/g,"") +
+                 +f.buyingCosts.value.replace(/[^0-9.]/g,"") ),
+    propLVR:   100 - parseFloat(f.downpayment.value || 0),
+    loanRate:  f.loanInterestRate.value,
+    rentYield: f.rentalIncome.value,
+    propGrowth:f.propertyAppreciation.value,
+    propExp:   f.owningCosts.value,
+    propDep:   200000,                               // simple placeholder
+
+    /* shares */
+    sharesInit:f.loanAmount.value.replace(/[^0-9.]/g,""),
+    sharesRet: f.stockMarketAppreciation.value,
+    divYield:  4
+  });
+
+  location.href = `/calculators/planner/index.html?${q.toString()}`;
+}
+
+function init() {
+  const sellBox  = $("sellAtRet");
+  const unlockBtn = $("unlockPro");
+
+  /* unlock via ?code=tepuy2025 */
   if (new URLSearchParams(location.search).get("code") === "tepuy2025") {
-    localStorage.setItem(paidKey, "yes"); paid = true;
+    localStorage.setItem(paidKey,"yes");
+    paid = true;
   }
 
   /* gate pro-only UI */
   document.querySelectorAll(".pro-only")
           .forEach(el => el.style.display = paid ? "inline-block" : "none");
+
+  /* button behaviour */
   if (paid) {
-    $("unlockPro").style.display = "none";
+    unlockBtn.textContent = "Go to Planner";
+    unlockBtn.classList.remove("btn-disabled");
+    unlockBtn.onclick = goToPlanner;
     sellBox.disabled = false;
     sellBox.closest("label").classList.remove("locked");
+  } else {
+    unlockBtn.classList.add("btn-disabled");
+    unlockBtn.onclick = startCheckout;
   }
 
-  /* soft upsell if free user clicks the disabled sell checkbox */
+  /* soft upsell click on disabled CGT box */
   sellBox.closest("label").addEventListener("click", e => {
-    if (sellBox.disabled) {
-      e.preventDefault();
-      recommendPro();
-    }
+    if (sellBox.disabled) { e.preventDefault(); recommendPro(); }
   });
 
-  /* listeners */
+  /* main listeners */
   $("runCalc").addEventListener("click", calculate);
   $("btnSave").addEventListener("click", saveScenario);
   $("btnCSV").addEventListener("click", downloadCSV);
-
-const moreBtn = $("showMoreFeatures");
-  if (moreBtn) {
-    moreBtn.onclick = e => {
-      e.preventDefault();
-      recommendPro();
-    };
-  }
-
 }
+
 document.addEventListener("DOMContentLoaded", init);
