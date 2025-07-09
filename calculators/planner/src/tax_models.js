@@ -1,33 +1,61 @@
-/* tax_models.js – AU tax helpers (still simplified) */
-export function incomeTax(t){
-  const bands=[[0,18200,0],[18200,45000,.16],[45000,135000,.30],
-               [135000,190000,.37],[190000,1e12,.45]];
-  let tax=0;
-  for(const [min,max,r] of bands){
-    if(t>min){ tax+=(Math.min(t,max)-min)*r; if(t<max)break; }
+/* tax_models.js – AU tax + depreciation helpers (Planner Pro) */
+
+/* ---------- marginal tax table (FY24) ---------- */
+export function incomeTax(t) {
+  const bands = [
+    [0, 18200, 0],
+    [18200, 45000, .16],
+    [45000, 135000, .30],
+    [135000, 190000, .37],
+    [190000, 1e12, .45]
+  ];
+  let tax = 0;
+  for (const [min, max, r] of bands) {
+    if (t > min) {
+      tax += (Math.min(t, max) - min) * r;
+      if (t < max) break;
+    }
   }
   return tax;
 }
-export const medicare = t => t*0.02;
+export const medicare = t => t * 0.02;
 
-/* 50 % CGT discount for individuals & trusts */
-const cgtDisc = (gain,mtr)=>
-  incomeTax(gain*0.5) + medicare(gain*0.5);
+/* ---------- depreciation ---------- */
+export function div43(buildingCost) {
+  /* 2.5 % straight-line – division 43 */
+  return buildingCost * 0.025;
+}
+export function div40(plantCost, year) {
+  /* 10 % diminishing-value – division 40 */
+  return plantCost * 0.10 * Math.pow(0.90, year);
+}
 
-/* --- scenarios ---------------------------------------------------- */
-export const taxModels = {
-  /* property held directly ---------------------------------------- */
-  "IND-NG":            (g,mtr)=>cgtDisc(g,mtr),              // negative-geared rental
-  "IND-SELL-TO-SUPER": (g,mtr)=>cgtDisc(g,mtr)+13500,        // $30 k concessional + $15 k NCC cap
-  "IND-HOLD-TILL-DEATH":()=>0,                               // CGT reset on death
+/* ---------- entity-specific annual tax ---------- */
+export const taxEngines = {
+  IND: ({ taxableIncome }) => incomeTax(taxableIncome) + medicare(taxableIncome),
 
-  /* other ownership wrappers -------------------------------------- */
-  "F-TRUST": (g,mtr,splits=2)=>splits*cgtDisc(g/splits,mtr), // family trust, split 2 ways
-  "COMP":    g=>g*0.25,                                      // company 25 %
-  "SMSF-ACC":g=>g*(2/3)*0.15,                                // SMSF accumulation (⅔ gain taxed @15 %)
-  "SMSF-PENS":()=>0,                                         // SMSF pension phase (no CGT)
+  TRUST: ({ taxableIncome, splits = 2 }) =>
+    splits > 0 ? splits *
+      (incomeTax(taxableIncome / splits) + medicare(taxableIncome / splits)) : 0,
 
-  /* shares: only the FIRST 4 % is crystallised at retirement ------ */
-  "SHARES-IND":  (v,mtr)=>0.04*v*0.5*(mtr/100),   // 50 % disc on 4 % sale
-  "SHARES-SMSF": v     =>0.04*v*0.15              // SMSF 15 % on 4 % sale
+  COMPANY: ({ taxableIncome }) => taxableIncome * 0.25,  // small-biz rate
+
+  SMSF_ACC: ({ taxableIncome }) => taxableIncome * 0.15, // accumulation
+
+  SMSF_PENS: () => 0                                     // pension phase
 };
+
+/* ---------- capital-gains tax at sale ---------- */
+export function cgt(entity, gain) {
+  switch (entity) {
+    case "IND":
+    case "TRUST":
+      return (incomeTax(gain * 0.5) + medicare(gain * 0.5));
+    case "COMP":
+      return gain * 0.25;
+    case "SMSF_ACC":
+      return gain * (2 / 3) * 0.15;   // 2/3 taxed @15 %
+    case "SMSF_PENS":
+      return 0;
+  }
+}

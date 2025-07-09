@@ -1,70 +1,122 @@
-/* scenario_models.js – yearly simulator (Planner) */
-import { taxModels } from './tax_models.js';
+/* scenario_models.js – structure-aware simulator */
+import { taxEngines, cgt, div43, div40 } from './tax_models.js';
 
-export function runScenario(inputs){
+export function runScenario(inputs) {
   const {
-    age, retAge,
-    /* property --------------- */
+    age, retAge, salary,
+    /* property */
     propPrice, propLVR, loanRate,
-    propGrowth, propDep, saleCostPct,
-    /* tax / splits ----------- */
-    taxRate, partner,
-    /* shares ----------------- */
+    propGrowth, rentYield, propExp,
+    buildPct, plantPct,
+    saleCostPct,
+    /* shares */
     sharesInit, sharesRet
   } = inputs;
 
-  /* years until retirement */
   const yrs = retAge - age;
+  const buildingCost = propPrice * (buildPct / 100);
+  const plantCost    = propPrice * (plantPct  / 100);
 
-  /* ---- PROPERTY PATH ------------------------------------------- */
-  let house = propPrice;
-  let loan  = propPrice * (propLVR / 100);     // interest-only, principal unchanged
+  /* ---------- arrays to collect yearly rows ---------- */
+  const rows = Array.from({ length: yrs + 1 }, () => ({}));
 
-  for (let y = 0; y < yrs; y++) {
-    house *= 1 + propGrowth / 100;
-  }
-
-  const saleCost    = house * (saleCostPct / 100);
-  const capitalGain = house - propPrice - saleCost - propDep; // simplified cost base
-  const grossGain   = Math.max(0, capitalGain);               // guard negative CG
-
-  console.log("Gross gain:", grossGain);
-  console.log("IND-NG tax:", taxModels["IND-NG"](grossGain, taxRate));
-
-  /* ---- SHARES PATH --------------------------------------------- */
-  let shares = sharesInit;
-  for (let y = 0; y < yrs; y++) {
-    shares *= 1 + sharesRet / 100;
-  }
-
-  /* ---- OUTPUT BUCKET ------------------------------------------- */
+  /* ---------- results bucket ---------- */
   const out = {};
 
-  /* helper */
-  function set(code, tax) {
-    if (code.startsWith('SHARES')) {
-      const cash4 = 0.04 * shares - tax;
-      const left  = 0.96 * shares;
-      out[code] = { tax, net: cash4 + left };
-    } else {
-      const netProp = house - loan - saleCost - tax;
-      out[code] = { tax, net: netProp };
+  /* ---------- run each structure independently ---------- */
+  const structures = ["IND", "TRUST", "COMP", "SMSF_ACC", "SMSF_PENS"];
+
+  for (const code of structures) {
+    let house   = propPrice;
+    let loan    = propPrice * (propLVR / 100);
+    let shares  = sharesInit;
+    let lossCF  = 0;                 // carried-forward rental loss
+    const table = [];
+
+    for (let y = 0; y < yrs; y++) {
+      /* grow values */
+      house  *= 1 + propGrowth / 100;
+      shares *= 1 + sharesRet  / 100;
+
+      /* rental cash-flow */
+      const rent   = house * rentYield / 100;
+      const ownExp = house * propExp   / 100;
+      const intExp = loan * loanRate   / 100;
+      const dep43  = div43(buildingCost);
+      const dep40  = div40(plantCost, y);
+      const deprec = dep43 + dep40;
+
+      /* taxable income for this wrapper */
+      let taxable = rent - ownExp - intExp - deprec;
+
+      /* IND negative gearing offsets salary in same year */
+      let personalTax = 0;
+      if (code === "IND") {
+        const totalIncome = Math.max(0, salary + taxable);
+        personalTax       = taxEngines.IND({ taxableIncome: totalIncome });
+        if (taxable < 0) taxable = 0;   // loss already used
+      }
+
+      /* carry losses for others */
+      if (taxable < 0) {
+        lossCF += -taxable;
+        taxable = 0;
+      } else if (lossCF > 0) {
+        const offset = Math.min(taxable, lossCF);
+        taxable -= offset;
+        lossCF  -= offset;
+      }
+
+      const entityTax = taxEngines[code]({ taxableIncome: taxable });
+      const cashFlow  = rent - ownExp - intExp;   // real cash, deprec non-cash
+      const afterTax  = cashFlow - entityTax - personalTax;
+
+      /* lifestyle parity:  
+         – if property CF < 0  ⇒ buy shares with the shortfall  
+         – if property CF > 0  ⇒ sell shares to fund lifestyle  */
+      if (afterTax < 0) {
+        shares += -afterTax;   // invest extra
+      } else {
+        shares -= afterTax;
+      }
+
+      table.push({
+        year: y,
+        house: Math.round(house),
+        rent:  Math.round(rent),
+        intExp: Math.round(intExp),
+        ownExp: Math.round(ownExp),
+        deprec: Math.round(deprec),
+        taxable,
+        entityTax: Math.round(entityTax),
+        personalTax: Math.round(personalTax),
+        cashAfterTax: Math.round(afterTax),
+        shares: Math.round(shares),
+        loan: Math.round(loan)
+      });
     }
-    console.log(`Scenario ${code}: tax=${tax}, net=${out[code].net}`);
+
+    /* ---------- sale at retirement ---------- */
+    const salePrice = house;
+    const saleCost  = salePrice * (saleCostPct / 100);
+    const gain      = salePrice - propPrice - saleCost - buildingCost - plantCost;
+    const cgtPay    = cgt(code, Math.max(0, gain));
+    const netProp   = salePrice - loan - saleCost - cgtPay;
+
+    out[code] = {
+      tax:   Math.round(cgtPay),
+      net:   Math.round(netProp),
+      table  // year-by-year detail for audit
+    };
   }
 
-  /* property scenarios */
-  set('IND-NG',              taxModels['IND-NG'](grossGain, taxRate));
-  set('IND-SELL-TO-SUPER',   taxModels['IND-SELL-TO-SUPER'](grossGain, taxRate));
-  set('IND-HOLD-TILL-DEATH', taxModels['IND-HOLD-TILL-DEATH'](grossGain, taxRate));
-  set('F-TRUST',             taxModels['F-TRUST'](grossGain, taxRate, partner ? 2 : 1));
-  set('COMP',                taxModels['COMP'](grossGain));
-  set('SMSF-ACC',            taxModels['SMSF-ACC'](grossGain));
-  set('SMSF-PENS',           taxModels['SMSF-PENS'](grossGain));
-
-  /* shares scenarios */
-  set('SHARES-IND',  taxModels['SHARES-IND'](shares, taxRate));
-  set('SHARES-SMSF', taxModels['SHARES-SMSF'](shares));
+  /* ---------- shares-only path as a baseline ---------- */
+  {
+    let shares = sharesInit;
+    for (let y = 0; y < yrs; y++) shares *= 1 + sharesRet / 100;
+    const tax   = 0;     // no CG realised yet
+    out.SHARES = { tax, net: Math.round(shares), table: [] };
+  }
 
   return out;
 }
