@@ -114,30 +114,42 @@
 
 <script src="/js/property_vs_shares_calc.js"></script>
 <script>
-  document.getElementById('menuToggle').onclick = () =>
-    document.getElementById('navMenu').classList.toggle('show');
+  /* ── NAV toggle (unchanged) ─────────────────────────────── */
+  document.getElementById('menuToggle').onclick =
+    () => document.getElementById('navMenu').classList.toggle('show');
 
   document.querySelectorAll('.sub-toggle').forEach(btn =>
     btn.onclick = () => btn.parentElement.classList.toggle('open'));
+
+  /* ── Unlock Pro button logic (patched) ───────────────────── */
   const unlockBtn = document.getElementById('unlockPro');
+
   if (unlockBtn) {
-    if (localStorage.getItem('pvProPaid') === 'yes') {
-      unlockBtn.style.display = 'none';
-    } else {
-      unlockBtn.onclick = async () => {
-        unlockBtn.disabled = true;
-        try {
-          const r = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
-          const j = await r.json();
-          if (j.url) window.location.href = j.url;
-          else { alert('Checkout link missing'); unlockBtn.disabled = false; }
-        } catch (e) {
-          alert('Checkout error'); unlockBtn.disabled = false;
+    unlockBtn.onclick = async () => {
+
+      /* 1️⃣ Already Pro?  Jump straight to Planner */
+      if (localStorage.getItem('pvProPaid') === 'yes') {
+        window.location.href = '/calculators/planner/index.html';
+        return;
+      }
+
+      /* 2️⃣ Not Pro yet – start Stripe checkout */
+      unlockBtn.disabled = true;
+      try {
+        const r = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
+        const j = await r.json();
+        if (j.url) {
+          window.location.href = j.url;
+        } else {
+          alert('Checkout link missing'); unlockBtn.disabled = false;
         }
-      };
-    }
+      } catch (e) {
+        alert('Checkout error'); unlockBtn.disabled = false;
+      }
+    };
   }
 </script>
+
 
 <style>
   .has-sub { position: relative; }
