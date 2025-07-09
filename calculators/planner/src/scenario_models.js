@@ -18,7 +18,7 @@ export function runScenario(code,inputs){
     loan = loan*(1+loanRate/100) - (loanRate/100*loan); // interest-only, fast
   }
   const grossGain = house - propPrice + propDep;
-  const propNetProceeds = house - loan - taxModels.IND_NG(grossGain,taxRate);
+const propNetProceeds = house - loan - taxModels["IND-NG"](grossGain, taxRate);
 
   /* ----- SHARES path ----- */
   let shares=sharesInit;
