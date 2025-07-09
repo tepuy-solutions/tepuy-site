@@ -71,5 +71,27 @@
 <!-- libs + app -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2"></script>
 <script type="module" src="src/ui.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val !== null) el.value = val;
+  };
+
+  set("age", params.get("age"));
+  set("retAge", params.get("retAge"));
+  set("taxRate", params.get("taxRate"));
+  set("propPrice", params.get("propPrice"));
+  set("propLVR", params.get("propLVR"));
+  set("loanRate", params.get("loanRate"));
+  set("rentYield", params.get("rentYield"));
+  set("propGrowth", params.get("propGrowth"));
+  set("propExp", params.get("propExp"));
+  set("propDep", params.get("propDep"));
+  set("sharesInit", params.get("sharesInit"));
+  set("sharesRet", params.get("sharesRet"));
+  set("divYield", params.get("divYield"));
+</script>
+
 </body>
 </html>

@@ -150,26 +150,45 @@
   }
 
   if (unlockBtn) {
-    unlockBtn.onclick = async () => {
-      if (isPro) {
-        location.href = '/calculators/planner/index.html';
-        return;
-      }
-      unlockBtn.disabled = true;
-      try {
-        const r = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
-        const j = await r.json();
-        if (j.url) {
-          location.href = j.url;
-        } else {
-          alert('Checkout link missing');
-          unlockBtn.disabled = false;
-        }
-      } catch (err) {
-        alert('Checkout error');
-        unlockBtn.disabled = false;
-      }
-    };
+unlockBtn.onclick = async () => {
+  if (isPro) {
+    const formData = new FormData(document.getElementById("investmentForm"));
+    const queryParams = new URLSearchParams();
+
+    queryParams.set("age", formData.get("yearsToRetirement") ? (65 - parseInt(formData.get("yearsToRetirement"))) : 45);
+    queryParams.set("retAge", 65);
+    queryParams.set("taxRate", formData.get("taxBracket"));
+    queryParams.set("propPrice", parseFloat(formData.get("loanAmount")) + parseFloat(formData.get("buyingCosts")));
+    queryParams.set("propLVR", 100 - parseFloat(formData.get("downpayment")));
+    queryParams.set("loanRate", formData.get("loanInterestRate"));
+    queryParams.set("rentYield", formData.get("rentalIncome"));
+    queryParams.set("propGrowth", formData.get("propertyAppreciation"));
+    queryParams.set("propExp", formData.get("owningCosts"));
+    queryParams.set("propDep", 200000); // Placeholder, you can change
+    queryParams.set("sharesInit", parseFloat(formData.get("loanAmount")) + parseFloat(formData.get("buyingCosts")));
+    queryParams.set("sharesRet", formData.get("stockMarketAppreciation"));
+    queryParams.set("divYield", 4); // You can pass a fixed or input value
+
+    location.href = `/calculators/planner/index.html?${queryParams.toString()}`;
+    return;
+  }
+  // Non-Pro user → send to Stripe
+  unlockBtn.disabled = true;
+  try {
+    const r = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
+    const j = await r.json();
+    if (j.url) {
+      location.href = j.url;
+    } else {
+      alert('Checkout link missing');
+      unlockBtn.disabled = false;
+    }
+  } catch (err) {
+    alert('Checkout error');
+    unlockBtn.disabled = false;
+  }
+};
+
   }
 </script>
 
