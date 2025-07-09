@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tepuy Planner – Property vs Shares (Pro)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="/img/favicon.png" />
+  <link rel="stylesheet" href="planner.css" />
+  <script>
+    /* gate: redirect non-Pro users */
+    if (localStorage.getItem('pvProPaid') !== 'yes') {
+      location.replace('/store.html');  /* or pricing page */
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Property vs Shares — Planner Edition</h1>
+
+    <!-- -------- INPUT FORM -------- -->
+    <form id="planner-form">
+      <fieldset>
+        <legend>User profile</legend>
+        <label>Current age
+          <input type="number" id="age" value="45" min="18" max="75">
+        </label>
+        <label>Marginal tax rate (%)
+          <input type="number" id="taxRate" value="47" min="0" max="47">
+        </label>
+        <label>
+          <input type="checkbox" id="partner"> Include partner (split trust gains)
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Compare scenarios (tick any)</legend>
+
+        <label><input type="checkbox" name="structure" value="IND-NG" checked>
+          Individual – negatively geared
+        </label>
+
+        <label><input type="checkbox" name="structure" value="IND-SELL-TO-SUPER">
+          Sell &amp; contribute to super
+        </label>
+
+        <label><input type="checkbox" name="structure" value="IND-HOLD-TILL-DEATH">
+          Hold until death (CGT reset)
+        </label>
+
+        <label><input type="checkbox" name="structure" value="F-TRUST">
+          Family trust (2 beneficiaries)
+        </label>
+
+        <label><input type="checkbox" name="structure" value="COMP">
+          Company-owned property
+        </label>
+
+        <label><input type="checkbox" name="structure" value="SMSF-ACC">
+          SMSF – accumulation phase
+        </label>
+
+        <label><input type="checkbox" name="structure" value="SMSF-PENS">
+          SMSF – pension phase
+        </label>
+
+        <label><input type="checkbox" name="structure" value="SHARES-IND">
+          Shares – taxable account
+        </label>
+
+        <label><input type="checkbox" name="structure" value="SHARES-SMSF">
+          Shares – inside SMSF
+        </label>
+      </fieldset>
+
+      <button type="submit">Run comparison</button>
+    </form>
+
+    <!-- -------- RESULTS -------- -->
+    <div id="results"></div>
+  </div>
+
+  <script src="tax_models.js"></script>
+  <script src="planner.js"></script>
+</body>
+</html>
