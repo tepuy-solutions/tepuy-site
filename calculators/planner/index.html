@@ -2,83 +2,74 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tepuy Planner – Property vs Shares (Pro)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Property vs Shares – Planner Pro | Tepuy</title>
   <link rel="icon" href="/img/favicon.png" />
   <link rel="stylesheet" href="planner.css" />
+  <!-- gate -->
   <script>
-    /* gate: redirect non-Pro users */
-    if (localStorage.getItem('pvProPaid') !== 'yes') {
-      location.replace('/store.html');  /* or pricing page */
-    }
+    if (localStorage.getItem('pvProPaid') !== 'yes') location.replace('/store.html');
   </script>
 </head>
 <body>
-  <div class="container">
-    <h1>📊 Property vs Shares — Planner Edition</h1>
+<div class="container">
+  <h1>📊 Property vs Shares — Planner Edition</h1>
 
-    <!-- -------- INPUT FORM -------- -->
-    <form id="planner-form">
-      <fieldset>
-        <legend>User profile</legend>
-        <label>Current age
-          <input type="number" id="age" value="45" min="18" max="75">
-        </label>
-        <label>Marginal tax rate (%)
-          <input type="number" id="taxRate" value="47" min="0" max="47">
-        </label>
-        <label>
-          <input type="checkbox" id="partner"> Include partner (split trust gains)
-        </label>
-      </fieldset>
+  <form id="plannerForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- ─── USER PROFILE ─────────────────────────── -->
+    <fieldset class="md:col-span-3">
+      <legend>User profile</legend>
+      <label>Current age <input id="age"          type="number" value="45"></label>
+      <label>Retire age  <input id="retAge"       type="number" value="67"></label>
+      <label>Marginal tax rate (%) <input id="taxRate" type="number" value="47"></label>
+      <label><input id="partner" type="checkbox"> Include partner (split trust gains)</label>
+    </fieldset>
 
-      <fieldset>
-        <legend>Compare scenarios (tick any)</legend>
+    <!-- ─── PROPERTY INPUTS ───────────────────────── -->
+    <fieldset>
+      <legend>Property</legend>
+      <label>Purchase price ($)       <input id="propPrice"    value="1,000,000"></label>
+      <label>LVR (%)                  <input id="propLVR"      type="number" value="90"></label>
+      <label>Loan interest rate (%)   <input id="loanRate"     type="number" value="6.5" step=".1"></label>
+      <label>Rental yield (%/yr)      <input id="rentYield"    type="number" value="4.5" step=".1"></label>
+      <label>Appreciation (%/yr)      <input id="propGrowth"   type="number" value="6"   step=".1"></label>
+      <label>Expenses (%/yr)          <input id="propExp"      type="number" value="2"   step=".1"></label>
+      <label>Depreciation claimed ($) <input id="propDep"      value="200,000"></label>
+    </fieldset>
 
-        <label><input type="checkbox" name="structure" value="IND-NG" checked>
-          Individual – negatively geared
-        </label>
+    <!-- ─── SHARES INPUTS ─────────────────────────── -->
+    <fieldset>
+      <legend>Shares</legend>
+      <label>Lump sum invested ($)   <input id="sharesInit" value="1,000,000"></label>
+      <label>Total return (%/yr)     <input id="sharesRet" type="number" value="9" step=".1"></label>
+      <label>Dividend yield (%/yr)   <input id="divYield"  type="number" value="4" step=".1"></label>
+    </fieldset>
 
-        <label><input type="checkbox" name="structure" value="IND-SELL-TO-SUPER">
-          Sell &amp; contribute to super
-        </label>
+    <!-- ─── SCENARIOS ─────────────────────────────── -->
+    <fieldset class="md:col-span-3">
+      <legend>Compare scenarios (tick any)</legend>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+        <label><input type="checkbox" name="structure" value="IND-NG" checked> Individual – neg geared</label>
+        <label><input type="checkbox" name="structure" value="IND-SELL-TO-SUPER"> Sell → contribute to super</label>
+        <label><input type="checkbox" name="structure" value="IND-HOLD-TILL-DEATH"> Hold till death (CG reset)</label>
+        <label><input type="checkbox" name="structure" value="F-TRUST"> Family trust (2 bene.)</label>
+        <label><input type="checkbox" name="structure" value="COMP"> Company-owned</label>
+        <label><input type="checkbox" name="structure" value="SMSF-ACC"> SMSF – accumulation</label>
+        <label><input type="checkbox" name="structure" value="SMSF-PENS"> SMSF – pension</label>
+        <label><input type="checkbox" name="structure" value="SHARES-IND"> Shares – taxable</label>
+        <label><input type="checkbox" name="structure" value="SHARES-SMSF"> Shares – inside SMSF</label>
+      </div>
+    </fieldset>
 
-        <label><input type="checkbox" name="structure" value="IND-HOLD-TILL-DEATH">
-          Hold until death (CGT reset)
-        </label>
+    <button id="runBtn" type="submit" class="md:col-span-3">Run comparison</button>
+  </form>
 
-        <label><input type="checkbox" name="structure" value="F-TRUST">
-          Family trust (2 beneficiaries)
-        </label>
+  <canvas id="chart" class="chart"></canvas>
+  <div id="results"></div>
+</div>
 
-        <label><input type="checkbox" name="structure" value="COMP">
-          Company-owned property
-        </label>
-
-        <label><input type="checkbox" name="structure" value="SMSF-ACC">
-          SMSF – accumulation phase
-        </label>
-
-        <label><input type="checkbox" name="structure" value="SMSF-PENS">
-          SMSF – pension phase
-        </label>
-
-        <label><input type="checkbox" name="structure" value="SHARES-IND">
-          Shares – taxable account
-        </label>
-
-        <label><input type="checkbox" name="structure" value="SHARES-SMSF">
-          Shares – inside SMSF
-        </label>
-      </fieldset>
-
-      <button type="submit">Run comparison</button>
-    </form>
-
-    <!-- -------- RESULTS -------- -->
-    <div id="results"></div>
-  </div>
-
-   <script type="module" src="planner.js"></script>
+<!-- libs + app -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2"></script>
+<script type="module" src="src/ui.js"></script>
 </body>
 </html>
