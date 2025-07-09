@@ -1,7 +1,7 @@
 // ui.js  – wires form → runScenario → render
 import { runScenario } from './scenario_models.js';
 
-const form   = document.getElementById('planner-form');   // exact id in HTML
+const form   = document.getElementById('plannerForm');   // exact id in HTML
 const chartC = document.getElementById('chart');
 let   chart;
 
