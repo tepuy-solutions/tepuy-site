@@ -1,70 +1,68 @@
-/* scenario_models.js
-   Very simplified yearly simulator — refine later
-*/
+/* scenario_models.js – yearly simulator (Planner) */
 import { taxModels } from './tax_models.js';
 
-export function runScenario(inputs) {
+export function runScenario(inputs){
   const {
-    age,         // current age
-    retAge,      // retirement age
-    propPrice,   // purchase price
-    propLVR,     // loan-to-value %
-    loanRate,    // loan interest %
-    propGrowth,  // capital growth %
-    propDep,     // depreciation claimed $
-    taxRate,     // marginal tax rate %
-    partner,     // boolean (split trust gains)
-    sharesInit,  // initial share lump sum
-    sharesRet    // shares total return %
+    age, retAge,
+    /* property --------------- */
+    propPrice, propLVR, loanRate,
+    propGrowth, propDep, saleCostPct,
+    /* tax / splits ----------- */
+    taxRate, partner,
+    /* shares ----------------- */
+    sharesInit, sharesRet
   } = inputs;
 
-  /* ---- years until retirement ---- */
-  const years = retAge - age;
+  /* years until retirement */
+  const yrs = retAge - age;
 
-  /* ----- PROPERTY path (value + loan) ----- */
+  /* ---- PROPERTY PATH ------------------------------------------- */
   let house = propPrice;
-  let loan  = propPrice * (propLVR / 100);
+  let loan  = propPrice * (propLVR/100);     // interest-only, principal unchanged
 
-  for (let y = 0; y < years; y++) {
-    house *= 1 + propGrowth / 100;
-    // simple interest-only repayment model
-    loan   = loan * (1 + loanRate / 100) - (loanRate / 100 * loan);
+  for(let y=0;y<yrs;y++){
+    house *= 1 + propGrowth/100;
   }
 
-  const grossGain = house - propPrice + propDep;   // inflation ignored
-  /* we calculate tax per scenario below */
+  const saleCost   = house * (saleCostPct/100);
+  const capitalGain= house - propPrice - saleCost - propDep; // simplified cost base
+  const grossGain  = Math.max(0,capitalGain);                // guard negative CG
 
-  /* ----- SHARES path ----- */
+  /* ---- SHARES PATH --------------------------------------------- */
   let shares = sharesInit;
-  for (let y = 0; y < years; y++) {
-    shares *= 1 + sharesRet / 100;
+  for(let y=0;y<yrs;y++){
+    shares*= 1 + sharesRet/100;
   }
 
-  /* ----- Generate outputs for each structure ----- */
-  const calc = {};   // { code: { tax, net } }
+  /* ---- OUTPUT BUCKET ------------------------------------------- */
+  const out={};
 
-  // helper to set result for each scenario
-  function set(code, taxDollars) {
-    if (code.startsWith('SHARES')) {
-      calc[code] = { tax: taxDollars, net: shares - taxDollars };
-    } else {
-      const netProp = house - loan - taxDollars;
-      calc[code] = { tax: taxDollars, net: netProp };
+  /* helper */
+  function set(code,tax){
+    if(code.startsWith('SHARES')){
+      /* cash-in-hand = 4 % (after tax) + 96 % still invested  */
+      const cash4 = 0.04*shares - tax;
+      const left  = 0.96*shares;
+      out[code]={ tax, net: cash4+left };
+    }else{
+      /* property sold outright */
+      const netProp = house - loan - saleCost - tax;
+      out[code]={ tax, net: netProp };
     }
   }
 
-  /* PROPERTY-related scenarios */
-  set("IND-NG",              taxModels["IND-NG"](grossGain,      taxRate));
-  set("IND-SELL-TO-SUPER",   taxModels["IND-SELL-TO-SUPER"](grossGain, taxRate));
-  set("IND-HOLD-TILL-DEATH", taxModels["IND-HOLD-TILL-DEATH"](grossGain, taxRate));
-  set("F-TRUST",             taxModels["F-TRUST"](grossGain,     taxRate, partner ? 2 : 1));
-  set("COMP",                taxModels["COMP"](grossGain));
-  set("SMSF-ACC",            taxModels["SMSF-ACC"](grossGain));
-  set("SMSF-PENS",           taxModels["SMSF-PENS"](grossGain));
+  /* property scenarios */
+  set('IND-NG',              taxModels['IND-NG'](grossGain, taxRate));
+  set('IND-SELL-TO-SUPER',   taxModels['IND-SELL-TO-SUPER'](grossGain, taxRate));
+  set('IND-HOLD-TILL-DEATH', taxModels['IND-HOLD-TILL-DEATH'](grossGain, taxRate));
+  set('F-TRUST',             taxModels['F-TRUST'](grossGain, taxRate, partner?2:1));
+  set('COMP',                taxModels['COMP'](grossGain));
+  set('SMSF-ACC',            taxModels['SMSF-ACC'](grossGain));
+  set('SMSF-PENS',           taxModels['SMSF-PENS'](grossGain));
 
-  /* SHARES scenarios */
-  set("SHARES-IND",  taxModels["SHARES-IND"](shares, taxRate));
-  set("SHARES-SMSF", taxModels["SHARES-SMSF"](shares));
+  /* shares scenarios */
+  set('SHARES-IND',  taxModels['SHARES-IND'](shares, taxRate));
+  set('SHARES-SMSF', taxModels['SHARES-SMSF'](shares));
 
-  return calc;   // caller picks the scenario key they need
+  return out;
 }

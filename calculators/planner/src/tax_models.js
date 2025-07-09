@@ -1,4 +1,4 @@
-/* AU income-tax helper (very simplified) */
+/* tax_models.js – AU tax helpers (still simplified) */
 export function incomeTax(t){
   const bands=[[0,18200,0],[18200,45000,.16],[45000,135000,.30],
                [135000,190000,.37],[190000,1e12,.45]];
@@ -8,18 +8,26 @@ export function incomeTax(t){
   }
   return tax;
 }
-export const medicare = t=>t*0.02;
-const cgtDisc = (g,r)=>incomeTax(g*0.5)+(medicare(g*0.5));
+export const medicare = t => t*0.02;
 
-/*  ▸▸  ALL KEYS NOW USE HYPHENS  ◂◂ */
+/* 50 % CGT discount for individuals & trusts */
+const cgtDisc = (gain,mtr)=>
+  incomeTax(gain*0.5) + medicare(gain*0.5);
+
+/* --- scenarios ---------------------------------------------------- */
 export const taxModels = {
-  "IND-NG":            (g,tr)=>cgtDisc(g,tr),
-  "IND-SELL-TO-SUPER": (g,tr)=>cgtDisc(g,tr)+13500,
-  "IND-HOLD-TILL-DEATH": ()=>0,
-  "F-TRUST":           (g,tr,splits=2)=>splits*cgtDisc(g/splits,tr),
-  "COMP":              g=>g*0.25,
-  "SMSF-ACC":          g=>g*(2/3)*0.15,
-  "SMSF-PENS":         ()=>0,
-  "SHARES-IND":        (v,tr,yrs=20)=>yrs*(v*0.04)*0.5*(tr/100),
-  "SHARES-SMSF":       (v,yrs=20)=>yrs*(v*0.04)*0.15
+  /* property held directly ---------------------------------------- */
+  "IND-NG":            (g,mtr)=>cgtDisc(g,mtr),              // negative-geared rental
+  "IND-SELL-TO-SUPER": (g,mtr)=>cgtDisc(g,mtr)+13500,        // $30 k concessional + $15 k NCC cap
+  "IND-HOLD-TILL-DEATH":()=>0,                               // CGT reset on death
+
+  /* other ownership wrappers -------------------------------------- */
+  "F-TRUST": (g,mtr,splits=2)=>splits*cgtDisc(g/splits,mtr), // family trust, split 2 ways
+  "COMP":    g=>g*0.25,                                      // company 25 %
+  "SMSF-ACC":g=>g*(2/3)*0.15,                                // SMSF accumulation (⅔ gain taxed @15 %)
+  "SMSF-PENS":()=>0,                                         // SMSF pension phase (no CGT)
+
+  /* shares: only the FIRST 4 % is crystallised at retirement ------ */
+  "SHARES-IND":  (v,mtr)=>0.04*v*0.5*(mtr/100),   // 50 % disc on 4 % sale
+  "SHARES-SMSF": v     =>0.04*v*0.15              // SMSF 15 % on 4 % sale
 };

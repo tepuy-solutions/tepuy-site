@@ -1,22 +1,22 @@
-/* ui.js  – Planner Edition */
+/* ui.js – Planner Edition */
 import { runScenario } from './scenario_models.js';
 
-const form   = document.getElementById('plannerForm');   // id in HTML
+const form = document.getElementById('plannerForm');
 const chartC = document.getElementById('chart');
-let   chart;
+let chart;
 
-/* ------------- submit ------------- */
-form.addEventListener('submit', e => {
+/* ---------- submit ---------- */
+form.addEventListener('submit', e=>{
   e.preventDefault();
 
-  const inputs    = readInputs(new FormData(form));
-  const selected  = [...form.querySelectorAll('[name="structure"]:checked')]
-                     .map(cb => cb.value);
+  const inputs   = readInputs(new FormData(form));
+  const selected = [...form.querySelectorAll('[name="structure"]:checked')]
+                    .map(cb=>cb.value);
 
-  const fullCalc  = runScenario(inputs);   // <-- ONE call
+  const calc = runScenario(inputs);
 
-  const rows = selected.map(code => {
-    const r = fullCalc[code];
+  const rows = selected.map(code=>{
+    const r = calc[code];
     return [label(code), r.tax, r.net];
   });
 
@@ -25,15 +25,15 @@ form.addEventListener('submit', e => {
 });
 
 /* ---------- helpers ---------- */
-function readInputs(fd) {
-  const raw = id => (fd.get(id) || '').toString();
-  const num = id => parseFloat(raw(id).replace(/[^0-9.]/g, '')) || 0;
+function readInputs(fd){
+  const raw = id=>(fd.get(id)||'').toString();
+  const num = id=>parseFloat(raw(id).replace(/[^0-9.]/g,''))||0;
 
   return {
-    age:        num('age'),
-    retAge:     num('retAge'),
-    taxRate:    num('taxRate'),
-    partner:    fd.get('partner') === 'on',
+    age:       num('age'),
+    retAge:    num('retAge'),
+    taxRate:   num('taxRate'),
+    partner:   fd.get('partner')==='on',
 
     /* property */
     propPrice:  num('propPrice'),
@@ -41,12 +41,18 @@ function readInputs(fd) {
     loanRate:   num('loanRate'),
     propGrowth: num('propGrowth'),
     propDep:    num('propDep'),
+    saleCostPct:num('saleCostPct'),
 
     /* shares */
     sharesInit: num('sharesInit'),
     sharesRet:  num('sharesRet')
   };
 }
+
+/* … renderTable, renderChart, label() unchanged … */
+
+
+
 
 function renderTable(rows) {
   const div = document.getElementById('results');
