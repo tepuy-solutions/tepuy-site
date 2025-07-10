@@ -2,95 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Property vs Shares — Planner Edition</title>
+  <title>Tepuy Planner – Investment Comparison</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Brand-wide Tepuy styling -->
-  <link rel="stylesheet" href="/css/tepuy.css" />
-  <!-- Planner-specific layout -->
-  <link rel="stylesheet" href="planner.css" />
+  <!-- Favicon -->
+  <link rel="icon" href="/img/favicon.png" type="image/png" />
 
+  <!-- Scoped Planner CSS (not global Tepuy style) -->
+  <link rel="stylesheet" href="../planner.css" />
+
+  <!-- Chart.js for bar chart -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="logo-title">
-      <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy Logo">
-      Tepuy Solutions
-    </div>
-    <div class="nav-links">
-      <a href="/index.html">Home</a>
-      <a href="/calculators/property_vs_shares.html">Property vs Shares</a>
-      <a href="/calculators/planner/index.html" class="active">Planner</a>
-      <a href="/store/index.html">Store</a>
-    </div>
-  </nav>
+  <div class="container planner">
+    <!-- Branding Header -->
+    <header style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;">
+      <img src="/img/logo.png" alt="Tepuy Solutions" style="height:40px;" />
+      <h1>Tepuy Planner</h1>
+    </header>
 
-  <!-- Main container -->
-  <main class="container">
-    <h1>Property vs Shares — Planner Edition</h1>
+    <!-- Planner Form -->
     <form id="plannerForm">
-      <div class="grid-3col">
-        <!-- User Profile -->
-        <fieldset>
-          <legend>User profile</legend>
-          <label>Current age <input id="age" type="number" value="45" /></label>
-          <label>Retire age <input id="retAge" type="number" value="67" /></label>
-          <label>Marginal tax rate (%) <input id="taxRate" type="number" value="47" /></label>
-          <label><input id="partner" type="checkbox" /> Include partner (split trust gains)</label>
-          <label>Salary before rental ($/yr) <input id="salary" type="number" value="120000" /></label>
-        </fieldset>
-
-        <!-- Property -->
-        <fieldset>
-          <legend>Property</legend>
-          <label>Purchase price ($) <input id="propPrice" type="number" value="1000000" /></label>
-          <label>LVR (%) <input id="propLVR" type="number" value="90" /></label>
-          <label>Loan interest rate (%) <input id="loanRate" type="number" value="6" /></label>
-          <label>Rental yield (%/yr) <input id="rentYield" type="number" value="4.5" /></label>
-          <label>Appreciation (%/yr) <input id="propGrowth" type="number" value="6" /></label>
-          <label>Expenses (%/yr) <input id="propExp" type="number" value="2" /></label>
-          <label>Depreciation claimed ($) <input id="propDep" type="number" value="200000" /></label>
-          <label>Building cost (% of price) <input id="buildPct" type="number" value="60" /></label>
-          <label>Plant cost (% of price) <input id="plantPct" type="number" value="10" /></label>
-        </fieldset>
-
-        <!-- Shares -->
-        <fieldset>
-          <legend>Shares</legend>
-          <label>Lump sum invested ($) <input id="sharesInit" type="number" value="1000000" /></label>
-          <label>Total return (%/yr) <input id="sharesRet" type="number" value="9" /></label>
-          <label>Dividend yield (%/yr) <input id="divYield" type="number" value="4" /></label>
-        </fieldset>
-      </div>
-
-      <!-- Compare scenarios -->
       <fieldset>
-        <legend>Compare scenarios</legend>
-        <label><input type="checkbox" name="structure" value="IND-NG" checked /> Individual – neg geared</label>
-        <label><input type="checkbox" name="structure" value="IND-SELL-TO-SUPER" /> Sell — contribute to super</label>
-        <label><input type="checkbox" name="structure" value="IND-HOLD-TILL-DEATH" /> Hold till death (CG reset)</label>
-        <label><input type="checkbox" name="structure" value="F-TRUST" /> Family trust (2 bene.)</label>
-        <label><input type="checkbox" name="structure" value="COMP" /> Company-owned</label>
-        <label><input type="checkbox" name="structure" value="SMSF_ACC" /> SMSF – accumulation</label>
-        <label><input type="checkbox" name="structure" value="SMSF_PENS" /> SMSF – pension</label>
-        <label><input type="checkbox" name="structure" value="SHARES-SMSF" /> Shares – inside SMSF</label>
-        <label>Sale costs (% of price) <input id="saleCostPct" type="number" value="2.5" /></label>
+        <legend>General Info</legend>
+        <label>Age: <input type="number" id="age" value="42" /></label>
+        <label>Retirement Age: <input type="number" id="retAge" value="67" /></label>
+        <label>Annual Salary ($): <input type="number" id="salary" value="130000" /></label>
+        <label><input type="checkbox" id="partner" /> Partner (split income for trust)</label>
       </fieldset>
 
-      <button type="submit" class="btn-primary">Run comparison</button>
-      <div style="margin-top: 1rem;">
-        <button type="button" id="btnSave" style="display: none;">💾 Save Scenario</button>
-        <button type="button" id="btnCSV" style="display: none;">⬇️ Download CSV</button>
-      </div>
+      <fieldset>
+        <legend>Property Investment</legend>
+        <label>Purchase Price ($): <input type="number" id="propPrice" value="800000" /></label>
+        <label>LVR (%): <input type="number" id="propLVR" value="80" /></label>
+        <label>Loan Interest Rate (%): <input type="number" id="loanRate" value="6.5" /></label>
+        <label>Capital Growth (%/yr): <input type="number" id="propGrowth" value="4" /></label>
+        <label>Rent Yield (%/yr): <input type="number" id="rentYield" value="4" /></label>
+        <label>Expenses (% of value): <input type="number" id="propExp" value="1.5" /></label>
+        <label>Building Component (%): <input type="number" id="buildPct" value="60" /></label>
+        <label>Plant/Fixtures (%): <input type="number" id="plantPct" value="10" /></label>
+        <label>Sale Costs (%): <input type="number" id="saleCostPct" value="2.5" /></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Shares Investment</legend>
+        <label>Initial Shares ($): <input type="number" id="sharesInit" value="200000" /></label>
+        <label>Annual Return (%): <input type="number" id="sharesRet" value="7" /></label>
+        <label>Dividend Yield (%): <input type="number" id="divYield" value="4" /></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Structures to Compare</legend>
+        <label><input type="checkbox" name="structure" value="IND" checked /> Individual</label>
+        <label><input type="checkbox" name="structure" value="TRUST" /> Family Trust</label>
+        <label><input type="checkbox" name="structure" value="COMP" /> Company</label>
+        <label><input type="checkbox" name="structure" value="SMSF_ACC" disabled /> SMSF – Accum.</label>
+        <label><input type="checkbox" name="structure" value="SMSF_PENS" disabled /> SMSF – Pension</label>
+        <label><input type="checkbox" name="structure" value="SHARES" /> Shares Baseline</label>
+      </fieldset>
+
+      <!-- Compare Button -->
+      <button type="submit">Compare</button>
+      <!-- Pro-only buttons -->
+      <button type="button" id="btnSave" style="display:none;">💾 Save</button>
+      <button type="button" id="btnCSV" style="display:none;">⬇️ Export CSV</button>
     </form>
 
-    <div id="results" class="table-container"></div>
-    <canvas id="chart" style="margin-top: 2rem;"></canvas>
-  </main>
+    <!-- Chart and Result Table -->
+    <canvas id="chart" style="margin-top:3rem;"></canvas>
+    <div id="results"></div>
+  </div>
 
-  <!-- JavaScript -->
+  <!-- JS Modules -->
   <script type="module" src="./src/ui.js"></script>
 </body>
 </html>
