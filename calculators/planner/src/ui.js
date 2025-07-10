@@ -98,7 +98,12 @@ function readInputs() {
 
 // Get numeric value from input field
 function num(id) {
-  return parseFloat(document.getElementById(id).value.replace(/,/g, '')) || 0;
+  const el = document.getElementById(id);
+  if (!el) {
+    console.warn(`Missing input: #${id}`);
+    return 0;
+  }
+  return parseFloat(el.value.replace(/,/g, '')) || 0;
 }
 
 // Scenario label mapping
