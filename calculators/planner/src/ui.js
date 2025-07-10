@@ -16,9 +16,15 @@ form.addEventListener('submit', e => {
   const inputs   = readInputs();
   const selected = [...form.querySelectorAll('[name="structure"]:checked')].map(cb => cb.value);
   const calc     = runScenario(inputs);
-  csvRows        = generateCSV(selected, calc);
 
-  renderChart(selected.map(s => [label(s), calc[s].net]));
+  // Filter out any undefined results
+  const validResults = selected
+    .filter(s => calc[s] && typeof calc[s].net === 'number')
+    .map(s => [label(s), calc[s].net]);
+
+  csvRows = generateCSV(selected, calc);
+
+  renderChart(validResults);
   renderTable(csvRows);
 });
 
@@ -127,10 +133,12 @@ function renderTable(rows) {
 function generateCSV(selected, calc) {
   const rows = [["Scenario", "Net Wealth", "Tax"]];
   for (const code of selected) {
-    const labelName = label(code);
-    const net = calc[code]?.net || 0;
-    const tax = calc[code]?.tax || 0;
-    rows.push([labelName, net, tax]);
+    if (calc[code]) {
+      const labelName = label(code);
+      const net = calc[code].net ?? 0;
+      const tax = calc[code].tax ?? 0;
+      rows.push([labelName, net, tax]);
+    }
   }
   return rows;
 }
