@@ -6,7 +6,6 @@
   <title>Property vs Shares – Planner Pro | Tepuy</title>
   <link rel="icon" href="/img/favicon.png" />
   <link rel="stylesheet" href="planner.css" />
-  <!-- gate -->
   <script>
     if (localStorage.getItem('pvProPaid') !== 'yes') location.replace('/store.html');
   </script>
@@ -19,8 +18,8 @@
     <!-- ─── USER PROFILE ─────────────────────────── -->
     <fieldset class="md:col-span-3">
       <legend>User profile</legend>
-      <label>Current age <input id="age"          type="number" value="45"></label>
-      <label>Retire age  <input id="retAge"       type="number" value="67"></label>
+      <label>Current age <input id="age" type="number" value="45"></label>
+      <label>Retire age <input id="retAge" type="number" value="67"></label>
       <label>Marginal tax rate (%) <input id="taxRate" type="number" value="47"></label>
       <label><input id="partner" type="checkbox"> Include partner (split trust gains)</label>
       <label>Salary before rental ($/yr) <input id="salary" value="120,000"></label>
@@ -29,23 +28,23 @@
     <!-- ─── PROPERTY INPUTS ───────────────────────── -->
     <fieldset>
       <legend>Property</legend>
-      <label>Purchase price ($)       <input id="propPrice"    value="1,000,000"></label>
-      <label>LVR (%)                  <input id="propLVR"      type="number" value="90"></label>
-      <label>Loan interest rate (%)   <input id="loanRate"     type="number" value="6.5" step=".1"></label>
-      <label>Rental yield (%/yr)      <input id="rentYield"    type="number" value="4.5" step=".1"></label>
-      <label>Appreciation (%/yr)      <input id="propGrowth"   type="number" value="6"   step=".1"></label>
-      <label>Expenses (%/yr)          <input id="propExp"      type="number" value="2"   step=".1"></label>
-      <label>Depreciation claimed ($) <input id="propDep"      value="200,000"></label>
+      <label>Purchase price ($) <input id="propPrice" value="1,000,000"></label>
+      <label>LVR (%) <input id="propLVR" type="number" value="90"></label>
+      <label>Loan interest rate (%) <input id="loanRate" type="number" value="6.5" step=".1"></label>
+      <label>Rental yield (%/yr) <input id="rentYield" type="number" value="4.5" step=".1"></label>
+      <label>Appreciation (%/yr) <input id="propGrowth" type="number" value="6" step=".1"></label>
+      <label>Expenses (%/yr) <input id="propExp" type="number" value="2" step=".1"></label>
+      <label>Depreciation claimed ($) <input id="propDep" value="200,000"></label>
       <label>Building cost (% of price) <input id="buildPct" type="number" value="60" step=".1"></label>
-      <label>Plant cost (% of price)    <input id="plantPct" type="number" value="10" step=".1"></label>
+      <label>Plant cost (% of price) <input id="plantPct" type="number" value="10" step=".1"></label>
     </fieldset>
 
     <!-- ─── SHARES INPUTS ─────────────────────────── -->
     <fieldset>
       <legend>Shares</legend>
-      <label>Lump sum invested ($)   <input id="sharesInit" value="1,000,000"></label>
-      <label>Total return (%/yr)     <input id="sharesRet" type="number" value="9" step=".1"></label>
-      <label>Dividend yield (%/yr)   <input id="divYield"  type="number" value="4" step=".1"></label>
+      <label>Lump sum invested ($) <input id="sharesInit" value="1,000,000"></label>
+      <label>Total return (%/yr) <input id="sharesRet" type="number" value="9" step=".1"></label>
+      <label>Dividend yield (%/yr) <input id="divYield" type="number" value="4" step=".1"></label>
     </fieldset>
 
     <!-- ─── SCENARIOS ─────────────────────────────── -->
@@ -57,17 +56,26 @@
         <label><input type="checkbox" name="structure" value="IND-HOLD-TILL-DEATH"> Hold till death (CG reset)</label>
         <label><input type="checkbox" name="structure" value="F-TRUST"> Family trust (2 bene.)</label>
         <label><input type="checkbox" name="structure" value="COMP"> Company-owned</label>
-        <label><input type="checkbox" name="structure" value="SMSF-ACC"> SMSF – accumulation</label>
-        <label><input type="checkbox" name="structure" value="SMSF-PENS"> SMSF – pension</label>
-        <label><input type="checkbox" name="structure" value="SHARES-IND"> Shares – taxable</label>
-        <label><input type="checkbox" name="structure" value="SHARES-SMSF"> Shares – inside SMSF</label>
-	<label>Sale costs (% of price) <input id="saleCostPct" type="number" value="2.5" step=".1"></label>
-
+        <label title="Coming soon: SMSF support for high-income professionals">
+          <input type="checkbox" name="structure" value="SMSF-ACC" disabled> SMSF – accumulation
+        </label>
+        <label title="Coming soon: SMSF support for high-income professionals">
+          <input type="checkbox" name="structure" value="SMSF-PENS" disabled> SMSF – pension
+        </label>
+        <label title="Coming soon: SMSF support for high-income professionals">
+          <input type="checkbox" name="structure" value="SHARES-SMSF" disabled> Shares – inside SMSF
+        </label>
+        <label>Sale costs (% of price) <input id="saleCostPct" type="number" value="2.5" step=".1"></label>
       </div>
     </fieldset>
 
     <button id="runBtn" type="submit" class="md:col-span-3">Run comparison</button>
   </form>
+
+  <div style="margin:16px 0; display:flex; gap:1rem;">
+    <button id="btnSave" class="btn-primary" style="display:none;">💾 Save Scenario</button>
+    <button id="btnCSV" class="btn-primary" style="display:none;">⬇️ Download CSV</button>
+  </div>
 
   <canvas id="chart" class="chart"></canvas>
   <div id="results"></div>
@@ -76,6 +84,7 @@
 <!-- libs + app -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2"></script>
 <script type="module" src="src/ui.js"></script>
+<script type="module" src="src/storage.js"></script>
 <script>
   const params = new URLSearchParams(window.location.search);
   const set = (id, val) => {
@@ -97,6 +106,5 @@
   set("sharesRet", params.get("sharesRet"));
   set("divYield", params.get("divYield"));
 </script>
-
 </body>
 </html>
