@@ -24,7 +24,7 @@ export function runScenario(inputs) {
   const out = {};
 
   /* ---------- run each structure independently ---------- */
-  const structures = ["IND", "TRUST", "COMP", "SMSF_ACC", "SMSF_PENS"];
+  const structures = ["IND", "TRUST", "COMPANY", "SMSF_ACC", "SMSF_PENS"];
 
   for (const code of structures) {
     let house   = propPrice;

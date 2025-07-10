@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Property vs Shares – Planner Pro | Tepuy</title>
   <link rel="icon" href="/img/favicon.png" />
-  <link rel="stylesheet" href="planner.css" />
+  <link rel="stylesheet" href="/css/tepuy.css" />
   <script>
     if (localStorage.getItem('pvProPaid') !== 'yes') location.replace('/store.html');
   </script>
 </head>
 <body>
-<div class="container">
+<div class="calc-wrapper">
   <h1>📊 Property vs Shares — Planner Edition</h1>
 
-  <form id="plannerForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <form id="plannerForm" class="grid-3col">
     <!-- ─── USER PROFILE ─────────────────────────── -->
-    <fieldset class="md:col-span-3">
+    <fieldset>
       <legend>User profile</legend>
       <label>Current age <input id="age" type="number" value="45"></label>
       <label>Retire age <input id="retAge" type="number" value="67"></label>
@@ -48,14 +48,14 @@
     </fieldset>
 
     <!-- ─── SCENARIOS ─────────────────────────────── -->
-    <fieldset class="md:col-span-3">
-      <legend>Compare scenarios (tick any)</legend>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+    <fieldset class="wide">
+      <legend>Compare scenarios</legend>
+      <div class="scenario-grid">
         <label><input type="checkbox" name="structure" value="IND-NG" checked> Individual – neg geared</label>
         <label><input type="checkbox" name="structure" value="IND-SELL-TO-SUPER"> Sell → contribute to super</label>
         <label><input type="checkbox" name="structure" value="IND-HOLD-TILL-DEATH"> Hold till death (CG reset)</label>
         <label><input type="checkbox" name="structure" value="F-TRUST"> Family trust (2 bene.)</label>
-        <label><input type="checkbox" name="structure" value="COMP"> Company-owned</label>
+        <label><input type="checkbox" name="structure" value="COMPANY"> Company-owned</label>
         <label title="Coming soon: SMSF support for high-income professionals">
           <input type="checkbox" name="structure" value="SMSF-ACC" disabled> SMSF – accumulation
         </label>
@@ -69,10 +69,10 @@
       </div>
     </fieldset>
 
-    <button id="runBtn" type="submit" class="md:col-span-3">Run comparison</button>
+    <button id="runBtn" type="submit" class="btn-primary full-width">Run comparison</button>
   </form>
 
-  <div style="margin:16px 0; display:flex; gap:1rem;">
+  <div class="pro-toolbar">
     <button id="btnSave" class="btn-primary" style="display:none;">💾 Save Scenario</button>
     <button id="btnCSV" class="btn-primary" style="display:none;">⬇️ Download CSV</button>
   </div>
