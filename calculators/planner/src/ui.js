@@ -32,9 +32,9 @@ function readInputs() {
     propGrowth: num("propGrowth") / 100,
     rentYield: num("rentYield") / 100,
     propExp: num("propExp") / 100,
-    propDep: num("propDep") / 100,
-    propPlant: num("propPlant") / 100,
-    saleCost: num("saleCost") / 100,
+    propDep: num("buildPct") / 100,
+    propPlant: num("plantPct") / 100,
+    saleCost: num("saleCostPct") / 100,
 
     sharesInit: num("sharesInit"),
     sharesRet: num("sharesRet") / 100,
@@ -76,7 +76,7 @@ function runPlanner() {
 
   // Chart
   if (chart) chart.destroy();
-  chart = new Chart($("resultsChart"), {
+  chart = new Chart($("chart"), {
     type: "bar",
     data: {
       labels,
@@ -123,8 +123,10 @@ function toggleTable() {
 
 // Init
 document.addEventListener("DOMContentLoaded", () => {
-  ["propPrice", "propLVR"].forEach(id => $(id).addEventListener("input", updateSharesInit));
+  ["propPrice", "propLVR"].forEach(id =>
+    $(id).addEventListener("input", updateSharesInit)
+  );
   $("runPlanner").addEventListener("click", runPlanner);
-  $("btnShowTable").addEventListener("click", toggleTable);
+  $("btnTable").addEventListener("click", toggleTable);
   updateSharesInit();
 });
