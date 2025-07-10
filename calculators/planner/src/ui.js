@@ -1,141 +1,130 @@
-// ui.js — Full detail logic for Planner
+// ui.js — Tepuy Planner Logic
 
-const $   = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
-const num = id => parseFloat($(id).value.replace(/,/g, "")) || 0;
-const pct = id => num(id) / 100;
+const num = id => parseFloat($(id)?.value.replace(/,/g, "")) || 0;
+let chart;
 
+// Auto-calculate Shares Capital from property cashUpfront
+function updateSharesInit() {
+  const loan = num("propPrice") * (num("propLVR") / 100);
+  const dpPct = 1 - (num("propLVR") / 100);
+  const lmiPct = dpPct >= 0.2 ? 0 : -(0.046 - 0.01) / (0.196 - 0.05) * dpPct + 0.058;
+  const price = loan / ((1 - dpPct) * (1 + lmiPct));
+  const costs = num("propPrice") * 0.06; // estimate (stamp duty etc.)
+  const cashUp = dpPct * price + costs;
+  $("sharesInit").value = Math.round(cashUp);
+  return Math.round(cashUp);
+}
+
+// Read all form values
 function readInputs() {
-  const age = num("age");
-  const retAge = num("retAge");
+  updateSharesInit(); // ensure it's synced
   return {
-    age,
-    retAge,
+    age: num("age"),
+    retAge: num("retAge"),
     salary: num("salary"),
     partner: $("partner").checked,
-    retYears: retAge - age,
 
-    // Property
     propPrice: num("propPrice"),
-    propLVR: pct("propLVR"),
-    loanRate: pct("loanRate"),
-    capitalGrowth: pct("propGrowth"),
-    rentYield: pct("rentYield"),
-    propExpenses: pct("propExp"),
-    buildPct: pct("buildPct"),
-    plantPct: pct("plantPct"),
-    saleCost: pct("saleCostPct"),
+    propLVR: num("propLVR"),
+    loanRate: num("loanRate") / 100,
+    propGrowth: num("propGrowth") / 100,
+    rentYield: num("rentYield") / 100,
+    propExp: num("propExp") / 100,
+    propDep: num("propDep") / 100,
+    propPlant: num("propPlant") / 100,
+    saleCost: num("saleCost") / 100,
 
-    // Shares
     sharesInit: num("sharesInit"),
-    sharesReturn: pct("sharesRet"),
-    divYield: pct("divYield")
+    sharesRet: num("sharesRet") / 100,
+    divYield: num("divYield") / 100,
+
+    yearsToRet: num("retAge") - num("age")
   };
 }
 
+// Run full planner simulation
 function runPlanner() {
-  const i = readInputs();
-  const yrs = i.retYears;
-  const rows = [];
+  const input = readInputs();
 
-  let propVal = i.propPrice;
-  let owed = i.propPrice * i.propLVR;
-  let shares = i.sharesInit;
-  let sharesAdj = 0;
-  const depr = i.propPrice * i.buildPct / 40;
+  const labels = [];
+  const shares = [];
+  const equity = [];
 
-  for (let y = 0; y <= yrs; y++) {
-    const rent = y ? propVal * i.rentYield : 0;
-    const ownCost = y ? propVal * i.propExpenses : 0;
-    const interest = y ? owed * i.loanRate : 0;
-    const amort = y ? Math.min(owed, rent - interest - ownCost - depr) : 0;
-    const netCF = rent - ownCost - interest - depr - amort;
+  let propVal = input.propPrice;
+  let owed = input.propPrice * (input.propLVR / 100);
+  let shareVal = input.sharesInit;
 
-    if (y > 0) propVal *= (1 + i.capitalGrowth);
-    if (y > 0) owed = Math.max(0, owed + owed * i.loanRate - amort);
+  const table = [["Year", "Prop Value", "Shares Value", "Owed", "Equity"]];
 
-    if (y > 0) {
-      sharesAdj = -netCF;
-      shares = shares * (1 + i.sharesReturn) + sharesAdj;
-    }
+  for (let y = 0; y <= input.yearsToRet; y++) {
+    const propEquity = propVal - owed;
+    labels.push(`Yr ${y}`);
+    shares.push(Math.round(shareVal));
+    equity.push(Math.round(propEquity));
+    table.push([
+      y, Math.round(propVal), Math.round(shareVal),
+      Math.round(owed), Math.round(propEquity)
+    ]);
 
-    rows.push({
-      y,
-      propVal,
-      owed,
-      equity: propVal - owed,
-      ownCost,
-      rent,
-      interest,
-      depr,
-      amort,
-      netCF,
-      shares,
-      sharesAdj
-    });
+    // next year projection
+    propVal *= 1 + input.propGrowth;
+    owed = Math.max(0, owed * (1 + input.loanRate) - 30000); // simple amortization
+    shareVal *= 1 + input.sharesRet;
   }
 
-  drawChart(rows);
-  addFullTableButton(rows);
-}
-
-function drawChart(rows) {
-  const labels = rows.map(r => "Yr " + r.y);
-  const prop = rows.map(r => r.equity);
-  const shares = rows.map(r => r.shares);
-
-  if (window.chart) window.chart.destroy();
-  window.chart = new Chart($("chart"), {
+  // Chart
+  if (chart) chart.destroy();
+  chart = new Chart($("resultsChart"), {
     type: "bar",
     data: {
       labels,
       datasets: [
-        { label: "Property", data: prop, backgroundColor: "#1f4c3b" },
-        { label: "Shares", data: shares, backgroundColor: "#397d71" }
+        {
+          label: "Property Equity",
+          data: equity,
+          backgroundColor: "rgba(40,167,69,0.6)"
+        },
+        {
+          label: "Shares Value",
+          data: shares,
+          backgroundColor: "rgba(0,123,255,0.6)"
+        }
       ]
     },
     options: {
-      plugins: { legend: { position: "bottom" } },
       responsive: true,
-      scales: {
-        y: { ticks: { callback: v => fmt(v) } }
-      }
+      plugins: { legend: { position: "bottom" } }
     }
   });
+
+  // Store rows for table
+  $("resultsTable").dataset.rows = JSON.stringify(table);
+  $("resultsTable").innerHTML = ""; // clear
 }
 
-function addFullTableButton(rows) {
-  let btn = $("fullTableBtn");
-  if (!btn) {
-    btn = document.createElement("button");
-    btn.id = "fullTableBtn";
-    btn.className = "btn";
-    btn.textContent = "Show Full Table";
-    btn.onclick = () => showFullTable(rows);
-    $("results").appendChild(btn);
-  }
+// Show/hide CSV Table
+function toggleTable() {
+  const rows = JSON.parse($("resultsTable").dataset.rows || "[]");
+  if (!rows.length) return;
+
+  $("resultsTable").innerHTML = `
+    <div class="table-container">
+      <table>
+        <thead><tr>${rows[0].map(h => `<th>${h}</th>`).join("")}</tr></thead>
+        <tbody>
+          ${rows.slice(1).map(r => `<tr>${r.map(c => `<td>${fmt(c)}</td>`).join("")}</tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
-function showFullTable(rows) {
-  const table = document.createElement("table");
-  table.innerHTML = `
-    <thead><tr>
-      <th>Yr</th><th>Property</th><th>Owed</th><th>Equity</th>
-      <th>Own Cost</th><th>Rent</th><th>Interest</th><th>Depr.</th>
-      <th>Amort.</th><th>Net CF</th><th>Shares</th><th>Adj. Capital</th>
-    </tr></thead>
-    <tbody>
-      ${rows.map(r => `
-        <tr>
-          <td>${r.y}</td><td>${fmt(r.propVal)}</td><td>${fmt(r.owed)}</td><td>${fmt(r.equity)}</td>
-          <td>${fmt(r.ownCost)}</td><td>${fmt(r.rent)}</td><td>${fmt(r.interest)}</td><td>${fmt(r.depr)}</td>
-          <td>${fmt(r.amort)}</td><td>${fmt(r.netCF)}</td><td>${fmt(r.shares)}</td><td>${fmt(r.sharesAdj)}</td>
-        </tr>
-      `).join("")}
-    </tbody>`;
-  $("results").appendChild(table);
-}
-
+// Init
 document.addEventListener("DOMContentLoaded", () => {
-  $("runCompare").addEventListener("click", runPlanner);
+  ["propPrice", "propLVR"].forEach(id => $(id).addEventListener("input", updateSharesInit));
+  $("runPlanner").addEventListener("click", runPlanner);
+  $("btnShowTable").addEventListener("click", toggleTable);
+  updateSharesInit();
 });

@@ -2,81 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tepuy Planner – Investment Comparison</title>
+  <title>Tepuy Planner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Favicon -->
-  <link rel="icon" href="/img/favicon.png" type="image/png" />
-
-  <!-- Scoped Planner CSS -->
-  <link rel="stylesheet" href="./planner.css" />
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="planner.css" />
 </head>
 <body>
-  <div class="container planner">
-    <!-- Header -->
-    <header style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;">
-      <img src="/img/tepuy_logo.png" alt="Tepuy Solutions" style="height:40px;" />
-      <h1>Tepuy Planner</h1>
-    </header>
+  <main>
+    <img src="/img/tepuy_logo.png" alt="Tepuy Logo" width="80" />
+    <h1>Tepuy Planner</h1>
 
-    <!-- Results & Chart -->
-    <div id="results"></div>
-    <canvas id="chart" height="300"></canvas>
-
-    <!-- Run Comparison -->
-    <button id="runCompare" class="btn">Compare</button>
-
-    <!-- Planner Form -->
     <form id="plannerForm">
-      <fieldset>
-        <legend>General Info</legend>
-        <label>Age: <input type="number" id="age" value="42" /></label>
-        <label>Retirement Age: <input type="number" id="retAge" value="67" /></label>
-        <label>Annual Salary ($): <input type="number" id="salary" value="130000" /></label>
-        <label><input type="checkbox" id="partner" /> Partner (split income for trust)</label>
-      </fieldset>
+      <section>
+        <h3>General Info</h3>
+        <label>Age: <input id="age" type="number" value="42" /></label>
+        <label>Retirement Age: <input id="retAge" type="number" value="67" /></label>
+        <label>Annual Salary ($): <input id="salary" type="number" value="130000" /></label>
+        <label><input id="partner" type="checkbox" /> Partner (split income for trust)</label>
+      </section>
 
-      <fieldset>
-        <legend>Property Investment</legend>
-        <label>Purchase Price ($): <input type="number" id="propPrice" value="800000" /></label>
-        <label>LVR (%): <input type="number" id="propLVR" value="80" /></label>
-        <label>Loan Interest Rate (%): <input type="number" id="loanRate" value="6.5" /></label>
-        <label>Capital Growth (%/yr): <input type="number" id="propGrowth" value="4" /></label>
-        <label>Rent Yield (%/yr): <input type="number" id="rentYield" value="4" /></label>
-        <label>Expenses (% of value): <input type="number" id="propExp" value="1.5" /></label>
-        <label>Building Component (%): <input type="number" id="buildPct" value="60" /></label>
-        <label>Plant/Fixtures (%): <input type="number" id="plantPct" value="10" /></label>
-        <label>Sale Costs (%): <input type="number" id="saleCostPct" value="2.5" /></label>
-      </fieldset>
+      <section>
+        <h3>Property Investment</h3>
+        <label>Purchase Price ($): <input id="propPrice" type="number" value="800000" /></label>
+        <label>LVR (%): <input id="propLVR" type="number" value="80" /></label>
+        <label>Loan Interest Rate (%): <input id="loanRate" type="number" value="6.5" /></label>
+        <label>Capital Growth (%/yr): <input id="propGrowth" type="number" value="4" /></label>
+        <label>Rent Yield (%/yr): <input id="rentYield" type="number" value="4" /></label>
+        <label>Expenses (% of value): <input id="propExp" type="number" value="1.5" /></label>
+        <label>Building Component (%): <input id="propDep" type="number" value="60" /></label>
+        <label>Plant/Fixtures (%): <input id="propPlant" type="number" value="10" /></label>
+        <label>Sale Costs (%): <input id="saleCost" type="number" value="2.5" /></label>
+      </section>
 
-      <fieldset>
-        <legend>Shares Investment</legend>
-        <label>Initial Shares ($): <input type="number" id="sharesInit" value="200000" /></label>
-        <label>Annual Return (%): <input type="number" id="sharesRet" value="7" /></label>
-        <label>Dividend Yield (%): <input type="number" id="divYield" value="4" /></label>
-      </fieldset>
+      <section>
+        <h3>Shares Investment</h3>
+        <label>
+          Initial Shares ($): 
+          <input id="sharesInit" type="number" readonly />
+          <small style="color:gray;font-style:italic">Auto-calculated from property investor’s upfront cash</small>
+        </label>
+        <label>Annual Return (%): <input id="sharesRet" type="number" value="7" /></label>
+        <label>Dividend Yield (%): <input id="divYield" type="number" value="4" /></label>
+      </section>
 
-      <fieldset>
-        <legend>Structures to Compare</legend>
-        <label><input type="checkbox" name="structure" value="IND" checked /> Individual</label>
-        <label><input type="checkbox" name="structure" value="TRUST" /> Family Trust</label>
-        <label><input type="checkbox" name="structure" value="COMP" /> Company</label>
-        <label><input type="checkbox" name="structure" value="SMSF_ACC" disabled /> SMSF – Accum.</label>
-        <label><input type="checkbox" name="structure" value="SMSF_PENS" disabled /> SMSF – Pension</label>
-        <label><input type="checkbox" name="structure" value="SHARES" /> Shares Baseline</label>
-      </fieldset>
+      <section>
+        <h3>Structures to Compare</h3>
+        <label><input type="checkbox" id="structIndividual" checked /> Individual</label>
+        <label><input type="checkbox" id="structTrust" checked /> Family Trust</label>
+        <label><input type="checkbox" id="structCompany" checked /> Company</label>
+        <label><input type="checkbox" id="structSMSFAccum" /> SMSF – Accum.</label>
+        <label><input type="checkbox" id="structSMSFPension" /> SMSF – Pension</label>
+        <label><input type="checkbox" id="structShares" /> Shares Baseline</label>
+      </section>
 
-      <!-- Save/Export (Pro) -->
-      <button type="submit">Compare</button>
-      <button type="button" id="btnSave" style="display:none;">💾 Save</button>
-      <button type="button" id="btnCSV" style="display:none;">⬇️ Export CSV</button>
+      <button type="button" id="runPlanner">Compare</button>
+      <button type="button" id="btnShowTable">Show Table</button>
     </form>
-  </div>
 
-  <!-- UI Script -->
-  <script type="module" src="./src/ui.js"></script>
+    <canvas id="resultsChart" height="300"></canvas>
+    <div id="resultsTable"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="ui.js"></script>
 </body>
 </html>
