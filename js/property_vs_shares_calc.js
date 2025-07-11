@@ -85,10 +85,10 @@ function drawProjection(base, showTable) {
 
     let equity = propVal - owed;
 
-    const cashFlowBeforeTax = rent - ownCost - interest;
-    const taxableIncome = cashFlowBeforeTax - depr;
-    const tax = taxableIncome * taxRate; // can be negative (tax benefit) or positive (tax bill)
-    const netCF = Math.round(cashFlowBeforeTax - tax - amort);
+    const cashFlowBeforeTax = rent - ownCost - interest; // -34994
+    const taxableIncome = cashFlowBeforeTax - depr; // -34994-10753=-45747
+    const tax = taxableIncome * taxRate; // can be negative (tax benefit) or positive (tax bill)  -21501
+    const netCF = Math.round(cashFlowBeforeTax - tax - amort); // -34994 +21501-8679
 
 
     if (y) shares = Math.round(shares * (1 + rShares) - netCF);
