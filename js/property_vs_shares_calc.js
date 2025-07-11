@@ -84,7 +84,11 @@ function drawProjection(base, showTable) {
     if (y) owed    = Math.max(0, Math.round(owed * (1 + base.rLoan) - base.wkPay * 52));
 
     let equity = propVal - owed;
-    const cashFlow = rent - (ownCost + interest + depr);
+    const cashFlowBeforeTax = rent - ownCost - interest;
+    const taxBenefit = depr * taxRate;
+    const netCF = (cashFlowBeforeTax < 0 && y < yrsRet && y)
+      ? Math.round(cashFlowBeforeTax * (1 - taxRate) - amort + taxBenefit)
+      : Math.round(cashFlowBeforeTax - amort + taxBenefit);
     const netCF = (cashFlow < 0 && y < yrsRet && y)
                 ? Math.round(cashFlow * (1 - taxRate) - amort)
                 : Math.round(rent - (ownCost + interest) - amort);
