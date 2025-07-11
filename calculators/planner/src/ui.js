@@ -1,132 +1,110 @@
-// ui.js — Tepuy Planner Logic
-
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
 const num = id => parseFloat($(id)?.value.replace(/,/g, "")) || 0;
 let chart;
+let tableRows = [];
 
-// Auto-calculate Shares Capital from property cashUpfront
 function updateSharesInit() {
-  const loan = num("propPrice") * (num("propLVR") / 100);
-  const dpPct = 1 - (num("propLVR") / 100);
+  const price = num("propPrice");
+  const dpPct = num("depositPct") / 100;
+  const costs = price * (num("buyCostsPct") / 100);
+  const loanAmt = price * (1 - dpPct);
   const lmiPct = dpPct >= 0.2 ? 0 : -(0.046 - 0.01) / (0.196 - 0.05) * dpPct + 0.058;
-  const price = loan / ((1 - dpPct) * (1 + lmiPct));
-  const costs = num("propPrice") * 0.06; // estimate (stamp duty etc.)
-  const cashUp = dpPct * price + costs;
-  $("sharesInit").value = Math.round(cashUp);
-  return Math.round(cashUp);
+  const lmi = loanAmt * lmiPct / (1 + lmiPct);
+  const upfront = dpPct * price + costs + lmi;
+  $("sharesInit").value = Math.round(upfront);
+  return Math.round(upfront);
 }
 
-// Read all form values
 function readInputs() {
-  updateSharesInit(); // ensure it's synced
+  const years = num("retAge") - num("age");
+  updateSharesInit();
   return {
-    age: num("age"),
-    retAge: num("retAge"),
-    salary: num("salary"),
-    partner: $("partner").checked,
-
+    years,
     propPrice: num("propPrice"),
-    propLVR: num("propLVR"),
+    depositPct: num("depositPct") / 100,
     loanRate: num("loanRate") / 100,
+    loanPeriod: num("loanPeriod"),
     propGrowth: num("propGrowth") / 100,
     rentYield: num("rentYield") / 100,
+    occRate: num("occRate") / 100,
     propExp: num("propExp") / 100,
-    propDep: num("buildPct") / 100,
-    propPlant: num("plantPct") / 100,
-    saleCost: num("saleCostPct") / 100,
-
-    sharesInit: num("sharesInit"),
+    buildPct: num("buildPct") / 100,
+    buyCostsPct: num("buyCostsPct") / 100,
+    saleCostPct: num("saleCostPct") / 100,
     sharesRet: num("sharesRet") / 100,
-    divYield: num("divYield") / 100,
-
-    yearsToRet: num("retAge") - num("age")
+    sharesInit: num("sharesInit"),
+    structures: [...document.querySelectorAll("input[name='structure']:checked")].map(e => e.value)
   };
 }
 
-// Run full planner simulation
 function runPlanner() {
   const input = readInputs();
-
   const labels = [];
-  const shares = [];
-  const equity = [];
+  const datasetMap = {};
+  tableRows = [];
 
-  let propVal = input.propPrice;
-  let owed = input.propPrice * (input.propLVR / 100);
-  let shareVal = input.sharesInit;
-
-  const table = [["Year", "Prop Value", "Shares Value", "Owed", "Equity"]];
-
-  for (let y = 0; y <= input.yearsToRet; y++) {
-    const propEquity = propVal - owed;
+  for (let y = 0; y <= input.years; y++) {
     labels.push(`Yr ${y}`);
-    shares.push(Math.round(shareVal));
-    equity.push(Math.round(propEquity));
-    table.push([
-      y, Math.round(propVal), Math.round(shareVal),
-      Math.round(owed), Math.round(propEquity)
-    ]);
+    const row = [y];
 
-    // next year projection
-    propVal *= 1 + input.propGrowth;
-    owed = Math.max(0, owed * (1 + input.loanRate) - 30000); // simple amortization
-    shareVal *= 1 + input.sharesRet;
+    for (let struct of input.structures) {
+      let val = 0;
+      if (struct === "SHARES") {
+        val = input.sharesInit * Math.pow(1 + input.sharesRet, y);
+      } else {
+        const price = input.propPrice * Math.pow(1 + input.propGrowth, y);
+        let owed = input.propPrice * (1 - input.depositPct);
+        for (let i = 0; i < y && i < input.loanPeriod; i++) {
+          owed = Math.max(0, owed * (1 + input.loanRate) - 30000); // dummy amort
+        }
+        val = price - owed;
+      }
+
+      datasetMap[struct] = datasetMap[struct] || [];
+      datasetMap[struct].push(Math.round(val));
+      row.push(Math.round(val));
+    }
+
+    tableRows.push(row);
   }
 
-  // Chart
   if (chart) chart.destroy();
   chart = new Chart($("chart"), {
     type: "bar",
     data: {
       labels,
-      datasets: [
-        {
-          label: "Property Equity",
-          data: equity,
-          backgroundColor: "rgba(40,167,69,0.6)"
-        },
-        {
-          label: "Shares Value",
-          data: shares,
-          backgroundColor: "rgba(0,123,255,0.6)"
-        }
-      ]
+      datasets: Object.entries(datasetMap).map(([label, data], i) => ({
+        label,
+        data,
+        backgroundColor: `rgba(${[40, 167, 69, 0.6, 255, 193, 7, 0.6, 220, 53, 69, 0.6, 0, 123, 255, 0.6].slice(i * 4, i * 4 + 3).join(",")},0.6)`
+      }))
     },
     options: {
       responsive: true,
-      plugins: { legend: { position: "bottom" } }
+      plugins: { legend: { position: "bottom" } },
+      scales: { x: { stacked: true }, y: { stacked: false } }
     }
   });
 
-  // Store rows for table
-  $("resultsTable").dataset.rows = JSON.stringify(table);
-  $("resultsTable").innerHTML = ""; // clear
+  $("results").innerHTML = "<em>Done.</em>";
 }
 
-// Show/hide CSV Table
 function toggleTable() {
-  const rows = JSON.parse($("resultsTable").dataset.rows || "[]");
-  if (!rows.length) return;
+  if (!tableRows.length) return;
 
+  const header = ["Year", ...document.querySelectorAll("input[name='structure']:checked")].map(e => e.value);
   $("resultsTable").innerHTML = `
-    <div class="table-container">
-      <table>
-        <thead><tr>${rows[0].map(h => `<th>${h}</th>`).join("")}</tr></thead>
-        <tbody>
-          ${rows.slice(1).map(r => `<tr>${r.map(c => `<td>${fmt(c)}</td>`).join("")}</tr>`).join("")}
-        </tbody>
-      </table>
-    </div>
+    <table><thead><tr>${header.map(h => `<th>${h}</th>`).join("")}</tr></thead>
+    <tbody>${tableRows.map(r => `<tr>${r.map(c => `<td>${fmt(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>
   `;
 }
 
-// Init
 document.addEventListener("DOMContentLoaded", () => {
-  ["propPrice", "propLVR"].forEach(id =>
+  ["propPrice", "depositPct", "buyCostsPct"].forEach(id =>
     $(id).addEventListener("input", updateSharesInit)
   );
   $("runPlanner").addEventListener("click", runPlanner);
-  $("btnTable").addEventListener("click", toggleTable);
+  $("btnShowTable").addEventListener("click", toggleTable);
   updateSharesInit();
 });

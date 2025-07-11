@@ -4,38 +4,21 @@
   <meta charset="UTF-8" />
   <title>Tepuy Planner – Investment Comparison</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Favicon -->
   <link rel="icon" href="/img/favicon.png" type="image/png" />
-
-  <!-- Scoped Planner CSS -->
-  <link rel="stylesheet" href="./planner.css" />
-
-  <!-- Chart.js -->
+  <link rel="stylesheet" href="../planner.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container planner">
-    <!-- Header -->
     <header style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;">
       <img src="/img/tepuy_logo.png" alt="Tepuy Solutions" style="height:40px;" />
       <h1>Tepuy Planner</h1>
     </header>
 
-    <!-- Chart Output -->
+    <div id="results"></div>
     <canvas id="chart" height="300"></canvas>
 
-    <!-- Table and Results -->
-    <div id="resultsTable"></div>
-
-    <!-- Run Comparison Buttons -->
-    <div style="margin-top:1rem;">
-      <button id="runPlanner" class="btn">Compare</button>
-      <button type="button" id="btnTable">Show Table</button>
-    </div>
-
-    <!-- Planner Form -->
-    <form id="plannerForm" style="margin-top:2rem;">
+    <form id="plannerForm">
       <fieldset>
         <legend>General Info</legend>
         <label>Age: <input type="number" id="age" value="42" /></label>
@@ -46,24 +29,22 @@
 
       <fieldset>
         <legend>Property Investment</legend>
-        <label>Purchase Price ($): <input type="number" id="propPrice" value="800000" /></label>
-        <label>LVR (%): <input type="number" id="propLVR" value="80" /></label>
+        <label>Property Price ($): <input type="number" id="propPrice" value="800000" /></label>
+        <label>Down Payment (%): <input type="number" id="depositPct" value="20" /></label>
+        <label>Loan Period (yrs): <input type="number" id="loanPeriod" value="30" /></label>
         <label>Loan Interest Rate (%): <input type="number" id="loanRate" value="6.5" /></label>
         <label>Capital Growth (%/yr): <input type="number" id="propGrowth" value="4" /></label>
         <label>Rent Yield (%/yr): <input type="number" id="rentYield" value="4" /></label>
+        <label>Occupancy Rate (%): <input type="number" id="occRate" value="95" /></label>
         <label>Expenses (% of value): <input type="number" id="propExp" value="1.5" /></label>
         <label>Building Component (%): <input type="number" id="buildPct" value="60" /></label>
-        <label>Plant/Fixtures (%): <input type="number" id="plantPct" value="10" /></label>
+        <label>Buying Costs (%): <input type="number" id="buyCostsPct" value="6" /></label>
         <label>Sale Costs (%): <input type="number" id="saleCostPct" value="2.5" /></label>
       </fieldset>
 
       <fieldset>
         <legend>Shares Investment</legend>
-        <label>
-          Initial Shares ($): 
-          <input type="number" id="sharesInit" disabled />
-          <small style="font-style:italic;">Auto-calculated from property investor’s upfront cash</small>
-        </label>
+        <label>Shares Capital (auto): <input type="number" id="sharesInit" disabled /></label>
         <label>Annual Return (%): <input type="number" id="sharesRet" value="7" /></label>
         <label>Dividend Yield (%): <input type="number" id="divYield" value="4" /></label>
       </fieldset>
@@ -73,14 +54,18 @@
         <label><input type="checkbox" name="structure" value="IND" checked /> Individual</label>
         <label><input type="checkbox" name="structure" value="TRUST" /> Family Trust</label>
         <label><input type="checkbox" name="structure" value="COMP" /> Company</label>
-        <label><input type="checkbox" name="structure" value="SMSF_ACC" disabled /> SMSF – Accum.</label>
-        <label><input type="checkbox" name="structure" value="SMSF_PENS" disabled /> SMSF – Pension</label>
-        <label><input type="checkbox" name="structure" value="SHARES" /> Shares Baseline</label>
+        <label><input type="checkbox" name="structure" value="SHARES" /> Shares Only</label>
       </fieldset>
+
+      <button type="button" id="runPlanner">Compare</button>
+      <button type="button" id="btnShowTable">Show Table</button>
+      <button type="button" id="btnSave">💾 Save</button>
+      <button type="button" id="btnCSV">⬇️ Export CSV</button>
     </form>
+
+    <div id="resultsTable" class="table-container"></div>
   </div>
 
-  <!-- UI Script -->
   <script type="module" src="./src/ui.js"></script>
 </body>
 </html>
