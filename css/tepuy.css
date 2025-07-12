@@ -212,7 +212,16 @@ footer {
 }
 
 .footer-cta {
-  text-align: right;
+  text-align: center;
+}
+.footer-cta .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;         /* ensures a consistent button height */
+  padding: 0 24px;       /* horizontal padding */
+  font-size: 1rem;
+  text-align: center;
 }
 
 footer .tiny {
