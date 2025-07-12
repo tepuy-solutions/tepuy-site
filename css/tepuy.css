@@ -112,6 +112,10 @@ th, td {
   padding: 10px; border: 1px solid #d0d0d0; text-align: right;
 }
 tr:nth-child(even) { background: #fafafa; }
+.results-table td.highlight,
+.results-table th.highlight {
+  background-color: var(--brand-green-light);
+  font-weight: 600;
 
 /* --- blog grid ------------------------------ */
 .blog-grid {

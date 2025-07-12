@@ -71,8 +71,10 @@ function drawProjection(base, showTable) {
       owed    = base.loanAmt;
 
   const labels = [], equityArr = [], sharesArr = [];
-  csvRows = [["Year","Property","Shares","Owed","Equity",
-              "OwnCosts","Rent","Interest","Depr","Amort","NetCF"]];
+  csvRows = [["Year","Property","Owed","Equity",
+            "OwnCosts","Rent","Interest","Depr","Amort","NetCF", "Shares"]];
+
+
 
   for (let y = 0; y <= lastYear; y++) {
     const rent     = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -110,8 +112,9 @@ function drawProjection(base, showTable) {
     equityArr.push(equity);
     sharesArr.push(shares);
 
-    csvRows.push([y, propVal, shares, owed, equity,
-                  ownCost, rent, interest, depr, amort, netCF]);
+    csvRows.push([y, propVal, owed, equity,
+              ownCost, rent, interest, depr, amort, netCF, shares]);
+
   }
 
   /* ---- chart ---- */
@@ -141,14 +144,24 @@ function drawProjection(base, showTable) {
 
   /* ---- table ---- */
   if (showTable) {
-    const rows = csvRows.slice(1)
-      .map(r => `<tr>${r.map(c => `<td>${fmt(c)}</td>`).join("")}</tr>`).join("");
-    $("results").innerHTML =
-      `<div class="table-container"><table>
-         <thead><tr><th>Yr</th><th>Property Value</th><th>Shares Value</th>
-         <th>Capital Owed</th><th>Equity</th><th>Own Costs</th><th>Rent</th>
-         <th>Interest</th><th>Depr.</th><th>Amort.</th><th>Net CF</th></tr></thead>
-         <tbody>${rows}</tbody></table></div>`;
+const rows = csvRows.slice(1)
+  .map(r => `<tr>${r.map((c, i) => {
+    const highlightCols = [3, 10]; // 3 = Equity, 10 = Shares Value
+    const cls = highlightCols.includes(i) ? ' class="highlight"' : '';
+    return `<td${cls}>${fmt(c)}</td>`;
+  }).join("")}</tr>`).join("");
+
+$("results").innerHTML =
+  `<div class="table-container"><table class="results-table">
+     <thead><tr>
+       <th>Yr</th><th>Property Value</th><th>Capital Owed</th>
+       <th class="highlight">Equity</th>
+       <th>Own Costs</th><th>Rent</th><th>Interest</th>
+       <th>Depr.</th><th>Amort.</th><th>Net CF</th>
+       <th class="highlight">Shares Value</th>
+     </tr></thead>
+     <tbody>${rows}</tbody></table></div>`;
+
   } else {
     $("results").innerHTML = "";
   }
