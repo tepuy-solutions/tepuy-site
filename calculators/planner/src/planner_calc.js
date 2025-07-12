@@ -121,7 +121,9 @@ function runPlanner() {
         const unitPrice = sharesValue / unitsHeld;
         unitsBought = sharesAdj / unitPrice;
         unitsHeld += unitsBought;
-        shareHistory.push({ value: sharesAdj, cost: sharesAdj });
+        const costOfBuy = unitsBought * unitPrice;
+        shareHistory.push({ value: sharesAdj, cost: costOfBuy });
+
       }
     }
 
