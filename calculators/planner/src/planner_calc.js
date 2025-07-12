@@ -31,6 +31,8 @@ function calculatePlanner() {
   const cashUp = Math.round(dpPct * price + costs);
   const wkPay = (((rLoan / 12) * loanAmt * Math.pow(1 + rLoan / 12, yrs * 12)) /
     (Math.pow(1 + rLoan / 12, yrs * 12) - 1)) * 12 / 52;
+  $("lmiOutput").textContent = fmt(lmiAmt);
+  $("mortgageOutput").textContent = fmt(Math.round(wkPay));
 
   let propVal = price, sharesValue = cashUp, owed = loanAmt;
   const shareHistory = [];
@@ -182,13 +184,14 @@ function calculatePlanner() {
 
   // Table
   const htmlRows = rows.slice(1).map(r => `<tr>${r.map((c, i) => {
-    const cls = [3, 24, 20].includes(i) ? ' class="highlight"' : "";
+    const cls = (i === 3 || i === 24) ? ' class="highlight"' : "";
+
     return `<td${cls}>${fmt(c)}</td>`;
   }).join("")}</tr>`).join("");
 
   $("results").innerHTML = `<table class="results-table">
     <thead><tr>${rows[0].map((h, i) => {
-      const cls = [3, 22].includes(i) ? ' class="highlight"' : "";
+      const cls = (i === 3 || i === 24) ? ' class="highlight"' : "";
       return `<th${cls}>${h}</th>`;
     }).join("")}</tr></thead>
     <tbody>${htmlRows}</tbody>
