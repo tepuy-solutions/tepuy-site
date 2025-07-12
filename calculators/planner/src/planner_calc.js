@@ -42,13 +42,16 @@ function calculatePlanner() {
 
   const labels = [], equityArr = [], sharesArr = [], rows = [];
 
-  rows.push([
-    "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
-    "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
-    "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
-    "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
-    "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held", "Avg Unit Cost", "Value of Shares Owned, "Total Cost Base (Shares)", "CGT if All Shares Sold"
-  ]);
+rows.push([
+  "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
+  "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
+  "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
+  "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
+  "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held",
+  "Avg Unit Cost", "Value of Shares Owned", // ✅ Fix was here
+  "Total Cost Base (Shares)", "CGT if All Shares Sold" // ✅ now it's valid
+]);
+
 
   for (let y = 0; y <= yrsRet; y++) {
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -190,14 +193,14 @@ function calculatePlanner() {
 
   // Table
   const htmlRows = rows.slice(1).map(r => `<tr>${r.map((c, i) => {
-    const cls = (i === 3 || i === 24) ? ' class="highlight"' : "";
+    const cls = [3, 24, 25, 26].includes(i) ? ' class="highlight"' : "";
 
     return `<td${cls}>${fmt(c)}</td>`;
   }).join("")}</tr>`).join("");
 
   $("results").innerHTML = `<table class="results-table">
     <thead><tr>${rows[0].map((h, i) => {
-      const cls = (i === 3 || i === 24) ? ' class="highlight"' : "";
+      const cls = [3, 24, 25, 26].includes(i) ? ' class="highlight"' : "";
       return `<th${cls}>${h}</th>`;
     }).join("")}</tr></thead>
     <tbody>${htmlRows}</tbody>
