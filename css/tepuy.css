@@ -693,6 +693,19 @@ input[type="text"]:focus {
     display: none;
   }
 }
+.contact-form {
+  padding: 60px 0;
+  background-color: #f5f8f5;
+}
+.contact-form h1,
+.contact-form p {
+  text-align: center;
+}
+.contact-form iframe {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 
 
 
