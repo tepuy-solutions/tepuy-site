@@ -29,12 +29,16 @@ function runPlanner() {
   const wkPay = (((rLoan / 12) * loanAmt * Math.pow(1 + rLoan / 12, yrs * 12)) /
     (Math.pow(1 + rLoan / 12, yrs * 12) - 1)) * 12 / 52;
 
-  let propVal = price,
-    shares = cashUp,
-    owed = loanAmt;
+  let propVal = price, owed = loanAmt;
+  let shares = 0, sharesOwned = 0;
+  const parcels = []; // track share parcels [{qty, price}]
 
   const labels = [], equityArr = [], sharesArr = [], rows = [];
-  rows.push(["Year", "Prop Value", "Owed", "Equity", "Rent", "Own Costs", "Interest", "Depr.", "CashFlow Before Tax", "Taxable Income", "Tax", "Net CF", "Shares", "Cap Gain", "CGT if Sold"]);
+  rows.push([
+    "Year", "Prop Value", "Owed", "Equity", "Rent", "Own Costs", "Interest", "Depr.",
+    "CF Before Tax", "Taxable Income", "Tax", "Net CF",
+    "Shares Value", "Shares Traded", "Shares Owned", "Capital Gain", "CGT if Sold", "Sale Cost"
+  ]);
 
   for (let y = 0; y <= yrsRet; y++) {
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -46,15 +50,48 @@ function runPlanner() {
     if (y) owed = Math.max(0, Math.round(owed * (1 + rLoan) - wkPay * 52));
 
     const equity = propVal - owed;
-    const cashFlowBeforeTax = rent - ownCost - interest;
-    const taxableIncome = cashFlowBeforeTax - depr;
-    const tax = Math.round(taxableIncome * taxRate);
-    const netCF = Math.round(cashFlowBeforeTax - tax - amort);
+    const cfBeforeTax = rent - ownCost - interest;
+    const taxable = cfBeforeTax - depr;
+    const tax = Math.round(taxable * taxRate);
+    const netCF = Math.round(cfBeforeTax - tax - amort);
 
-    if (y) shares = Math.round(shares * (1 + rShares) - netCF);
+    // share price = 1 initially, grows 11% annually
+    const sharePrice = Math.pow(1 + rShares, y);
+    let sharesTraded = 0;
 
-    const capGain = y ? propVal - price : 0;
-    const cgt = y ? Math.round(Math.max(0, capGain * 0.5 * taxRate)) : 0;
+    if (y === 0) {
+      sharesOwned = Math.round(cashUp / sharePrice);
+      shares = sharesOwned * sharePrice;
+      parcels.push({ qty: sharesOwned, price: sharePrice });
+    } else {
+      if (netCF > 0) {
+        const qty = Math.round(netCF / sharePrice);
+        sharesOwned += qty;
+        parcels.push({ qty, price: sharePrice });
+        sharesTraded = qty;
+      } else {
+        let toSell = Math.round(Math.abs(netCF) / sharePrice);
+        sharesTraded = -toSell;
+        for (let i = 0; i < parcels.length && toSell > 0; i++) {
+          const p = parcels[i];
+          if (p.qty === 0) continue;
+          const sellQty = Math.min(p.qty, toSell);
+          p.qty -= sellQty;
+          sharesOwned -= sellQty;
+          toSell -= sellQty;
+        }
+      }
+      shares = Math.round(sharesOwned * sharePrice);
+    }
+
+    // Capital gain = sum of (qty * (currPrice - buyPrice)) for remaining parcels
+    let totalGain = 0;
+    parcels.forEach(p => {
+      totalGain += p.qty * (sharePrice - p.price);
+    });
+
+    const cgtIfSold = y === yrsRet ? Math.round(0.5 * totalGain * taxRate) : 0;
+    const propSaleCost = y === yrsRet ? Math.round(propVal * salePct) : 0;
 
     labels.push(`Yr ${y}`);
     equityArr.push(equity);
@@ -62,7 +99,8 @@ function runPlanner() {
 
     rows.push([
       y, propVal, owed, equity, rent, ownCost, interest, depr,
-      cashFlowBeforeTax, taxableIncome, tax, netCF, shares, capGain, cgt
+      cfBeforeTax, taxable, tax, netCF,
+      shares, sharesTraded, sharesOwned, Math.round(totalGain), cgtIfSold, propSaleCost
     ]);
   }
 
