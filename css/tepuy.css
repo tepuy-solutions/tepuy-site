@@ -104,10 +104,6 @@ table {
   width: 100%; border-collapse: collapse;
   font-size: .93rem; background: #fff;
 }
-thead {
-  background: var(--accent); color: #fff;
-  position: sticky; top: 0;
-}
 th, td {
   padding: 10px; border: 1px solid #d0d0d0; text-align: right;
 }
@@ -340,12 +336,6 @@ footer {
   margin-bottom: 1.5rem;
 }
 
-fieldset {
-  border: 1px solid #ccc;
-  padding: 1rem;
-  border-radius: 8px;
-  background: #fdfdfd;
-}
 
 legend {
   font-weight: bold;
@@ -378,25 +368,9 @@ legend {
   border: 1px solid #ccc;
 }
 
-/* --- Sticky Header for Planner Table --- */
-.results-table thead th {
-  position: sticky;
-  top: 0;
-  background-color: #ffffff; /* Match table background */
-  z-index: 2;
-}
 
-/* --- Visual Separator Between Property and Shares Columns --- */
-.results-table td:nth-child(17),
-.results-table td:nth-child(24),
-.results-table td:nth-child(28),
-.results-table th:nth-child(17),
-.results-table th:nth-child(24),
-.results-table th:nth-child(28) {
-  border-left: 3px solid var(--brand-green);
-}
-/* === Sticky First Column === */
-/* === Sticky Header Row === */
+
+/* === Sticky Table Header Row === */
 .results-table thead th {
   position: sticky;
   top: 0;
@@ -413,10 +387,11 @@ legend {
   z-index: 1;
 }
 
-/* === Top-left corner cell (Year header) fix === */
+/* === Sticky Top-Left Corner Fix === */
 .results-table thead th:first-child {
-  z-index: 3; /* Highest priority to sit above both sticky row and col */
+  z-index: 3; /* Stays on top of everything */
 }
+
 
 /* === Column Shading === */
 .results-table td.property,
@@ -454,11 +429,13 @@ legend {
 }
 /* === Enhanced Input Aesthetics === */
 fieldset {
-  border: none;
+  border-left: 6px solid var(--accent);
   background: #ffffff;
   padding: 1.5rem;
   border-radius: 12px;
+  margin-top: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease;
 }
 
 legend {
