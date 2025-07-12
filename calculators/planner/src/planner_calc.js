@@ -42,7 +42,7 @@ function runPlanner() {
     "Year", "Prop Value", "Owed", "Equity", "Rent", "Own Costs", "Interest", "Depr.",
     "CF Before Tax", "Taxable Income", "Tax", "Net CF",
     "Value of Shares Added/Reduced", "Total Value of Shares Owned", "CGT of Shares Sold",
-    "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)"
+    "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)"
   ]);
 
   for (let y = 0; y <= yrsRet; y++) {
@@ -111,7 +111,7 @@ function runPlanner() {
       y, propVal, owed, equity, rent, ownCost, interest, depr,
       cfBeforeTax, taxableIncome, tax, netCF,
       sharesAdj, sharesValue, cgtSharesSold,
-      propCapGain, propCGT, saleCost
+      propCapGain, propCGT, saleCost, netProfitProp
     ]);
   }
 
