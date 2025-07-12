@@ -1,5 +1,4 @@
-// Tepuy Planner Calculator (Premium)
-// Tracks share value with buy/sell to match property cashflow and models CGT
+// Tepuy Planner Calculator (Premium) – FIFO CGT, Share Units, and Property vs Shares logic
 
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
@@ -34,18 +33,21 @@ function runPlanner() {
     (Math.pow(1 + rLoan / 12, yrs * 12) - 1)) * 12 / 52;
 
   let propVal = price, sharesValue = cashUp, owed = loanAmt;
-  let prevSharesOwned = 0;
   const shareHistory = [];
 
+  let totalUnits = cashUp; // $1/share in Year 0
+  let unitsHeld = cashUp;
+  let avgCost = 1;
+
   const labels = [], equityArr = [], sharesArr = [], rows = [];
+
   rows.push([
     "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
     "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
     "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
-    "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold", "Total Value of Shares"
+    "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
+    "Units Bought", "Units Sold", "Units Held", "Avg Unit Cost", "Value of Shares Owned"
   ]);
-
-
 
   for (let y = 0; y <= yrsRet; y++) {
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -62,64 +64,81 @@ function runPlanner() {
     const tax = Math.round(taxableIncome * taxRate);
     const netCF = Math.round(cfBeforeTax - tax - amort);
 
-    let sharesAdj = 0;
-    let cgtSharesSold = 0;
-    if (y) {
-      sharesAdj = -netCF;
-      if (sharesAdj < 0) {
-        // Selling shares → calculate CGT for that sale
-        const sellAmount = -sharesAdj;
-        let gain = 0;
-        let remainingToSell = sellAmount;
-        const newHistory = [];
-
-        for (const lot of shareHistory) {
-          if (remainingToSell <= 0) {
-            newHistory.push(lot);
-            continue;
-          }
-          const amountToSell = Math.min(remainingToSell, lot.value);
-          gain += amountToSell - lot.cost * (amountToSell / lot.value);
-          remainingToSell -= amountToSell;
-
-          if (amountToSell < lot.value) {
-            newHistory.push({
-              value: lot.value - amountToSell,
-              cost: lot.cost
-            });
-          }
-        }
-        cgtSharesSold = Math.round(gain * 0.5 * taxRate);
-        shareHistory.length = 0;
-        shareHistory.push(...newHistory);
-      } else {
-        // Buying new shares
-        shareHistory.push({ value: sharesAdj, cost: sharesAdj });
-      }
-    }
-
-    // Update sharesValue after gain and trade
-    sharesValue = y ? Math.round(sharesValue * (1 + rShares) + sharesAdj) : sharesValue;
-
+    // Property side
     const propCapGain = y ? propVal - price : 0;
     const propCGT = y ? Math.round(Math.max(0, propCapGain * 0.5 * taxRate)) : 0;
     const saleCost = y ? Math.round(propVal * salePct) : 0;
     const netProfitProp = (y === yrsRet) ? equity - propCGT - saleCost : 0;
 
+    // Shares logic
+    let sharesAdj = 0;
+    let cgtSharesSold = 0;
+    let unitsBought = 0;
+    let unitsSold = 0;
+
+    if (y) {
+      sharesAdj = -netCF;
+
+      if (sharesAdj < 0) {
+        // Selling shares to cover property CF
+        const sellAmount = -sharesAdj;
+        let gain = 0;
+        let amountToSell = sellAmount;
+        const newHistory = [];
+
+        for (const lot of shareHistory) {
+          if (amountToSell <= 0) {
+            newHistory.push(lot);
+            continue;
+          }
+          const sellThis = Math.min(amountToSell, lot.value);
+          const unitPrice = sharesValue / unitsHeld;
+          const units = sellThis / unitPrice;
+          unitsSold += units;
+
+          gain += (sellThis - (lot.cost * (sellThis / lot.value)));
+          amountToSell -= sellThis;
+
+          if (sellThis < lot.value) {
+            newHistory.push({
+              value: lot.value - sellThis,
+              cost: lot.cost
+            });
+          }
+        }
+
+        cgtSharesSold = Math.round(gain * 0.5 * taxRate);
+        shareHistory.length = 0;
+        shareHistory.push(...newHistory);
+
+        unitsHeld -= unitsSold;
+      } else {
+        // Buying shares
+        const unitPrice = sharesValue / unitsHeld;
+        unitsBought = sharesAdj / unitPrice;
+        unitsHeld += unitsBought;
+        shareHistory.push({ value: sharesAdj, cost: sharesAdj });
+      }
+    }
+
+    // Shares value grows with return and trading
+    sharesValue = y ? Math.round(sharesValue * (1 + rShares) + sharesAdj) : sharesValue;
+    avgCost = unitsHeld ? Math.round(sharesValue / unitsHeld) : 0;
 
     labels.push(`Yr ${y}`);
     equityArr.push(equity);
     sharesArr.push(sharesValue);
-    
+
     rows.push([
       y, propVal, owed, equity, rent, ownCost, interest,
       cfBeforeTax, depr, taxableIncome, tax, netCF,
       propCapGain, propCGT, saleCost, netProfitProp,
-      sharesAdj, cgtSharesSold, sharesValue
+      sharesAdj, cgtSharesSold,
+      Math.round(unitsBought), Math.round(unitsSold), Math.round(unitsHeld), avgCost, sharesValue
     ]);
-
   }
 
+  // Chart
   if (chart) chart.destroy();
   chart = new Chart($("plannerChart"), {
     type: "line",
@@ -155,14 +174,15 @@ function runPlanner() {
     }
   });
 
+  // Table
   const htmlRows = rows.slice(1).map(r => `<tr>${r.map((c, i) => {
-    const cls = [3, 13, 18].includes(i) ? ' class="highlight"' : "";
+    const cls = [3, 22].includes(i) ? ' class="highlight"' : "";
     return `<td${cls}>${fmt(c)}</td>`;
   }).join("")}</tr>`).join("");
 
   $("results").innerHTML = `<table class="results-table">
     <thead><tr>${rows[0].map((h, i) => {
-      const cls = [3, 13].includes(i) ? ' class="highlight"' : "";
+      const cls = [3, 22].includes(i) ? ' class="highlight"' : "";
       return `<th${cls}>${h}</th>`;
     }).join("")}</tr></thead>
     <tbody>${htmlRows}</tbody>
