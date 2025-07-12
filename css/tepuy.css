@@ -507,3 +507,8 @@ fieldset label:not(:last-child) {
   font-weight: 700;
 }
 
+.btn-toggle.inactive {
+  opacity: 0.6;
+  background-color: #555;
+}
+

@@ -234,10 +234,22 @@ function exportPlannerCSV() {
 }
 
 // === Toggle Columns ===
+const colStates = { property: true, shares: true };
+
 function toggleCols(section) {
   const className = section === "property" ? "property" : "shares";
+  const buttonId = section === "property" ? "toggleProp" : "toggleShares";
+  const button = document.getElementById(buttonId);
   const cells = document.querySelectorAll(`.${className}`);
+
+  colStates[section] = !colStates[section];
+  const show = colStates[section];
+
   cells.forEach(td => {
-    td.style.display = (td.style.display === "none") ? "" : "none";
+    td.style.display = show ? "" : "none";
   });
+
+  button.classList.toggle("inactive", !show);
 }
+
+
