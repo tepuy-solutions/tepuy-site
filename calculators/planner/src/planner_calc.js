@@ -46,8 +46,10 @@ function runPlanner() {
     "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
     "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
     "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
-    "Units Bought", "Units Sold", "Units Held", "Avg Unit Cost", "Value of Shares Owned"
+    "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held", "Avg Unit Cost", "Value of Shares Owned"
   ]);
+
+ 	 	
 
   for (let y = 0; y <= yrsRet; y++) {
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -75,6 +77,7 @@ function runPlanner() {
     let cgtSharesSold = 0;
     let unitsBought = 0;
     let unitsSold = 0;
+    let costBaseSold = 0;
 
     if (y) {
       sharesAdj = -netCF;
@@ -92,6 +95,7 @@ function runPlanner() {
             continue;
           }
           const sellThis = Math.min(amountToSell, lot.value);
+          costBaseSold += lot.cost * (sellThis / lot.value);
           const unitPrice = sharesValue / unitsHeld;
           const units = sellThis / unitPrice;
           unitsSold += units;
@@ -134,8 +138,11 @@ function runPlanner() {
       cfBeforeTax, depr, taxableIncome, tax, netCF,
       propCapGain, propCGT, saleCost, netProfitProp,
       sharesAdj, cgtSharesSold,
-      Math.round(unitsBought), Math.round(unitsSold), Math.round(unitsHeld), avgCost, sharesValue
+      Math.round(costBaseSold), Math.round(unitsBought), Math.round(unitsSold),
+      Math.round(unitsHeld), avgCost.toFixed(1), sharesValue
     ]);
+
+
   }
 
   // Chart
@@ -176,7 +183,7 @@ function runPlanner() {
 
   // Table
   const htmlRows = rows.slice(1).map(r => `<tr>${r.map((c, i) => {
-    const cls = [3, 22].includes(i) ? ' class="highlight"' : "";
+    const cls = [3, 24, 20].includes(i) ? ' class="highlight"' : "";
     return `<td${cls}>${fmt(c)}</td>`;
   }).join("")}</tr>`).join("");
 
