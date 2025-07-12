@@ -35,7 +35,6 @@ function calculatePlanner() {
   let propVal = price, sharesValue = cashUp, owed = loanAmt;
   const shareHistory = [];
 
-  let totalUnits = cashUp; // $1/share in Year 0
   let unitsHeld = cashUp;
   let avgCost = 1;
 
@@ -48,8 +47,6 @@ function calculatePlanner() {
     "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
     "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held", "Avg Unit Cost", "Value of Shares Owned"
   ]);
-
- 	 	
 
   for (let y = 0; y <= yrsRet; y++) {
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -83,54 +80,33 @@ function calculatePlanner() {
       sharesAdj = -netCF;
 
       if (sharesAdj < 0) {
-        // Selling shares to cover property CF
+        // Selling shares
         const sellAmount = -sharesAdj;
+        const unitPrice = sharesValue / unitsHeld;
+        const unitsToSell = sellAmount / unitPrice;
+        let unitsRemainingToSell = unitsToSell;
         let gain = 0;
-        let amountToSell = sellAmount;
         const newHistory = [];
 
         for (const lot of shareHistory) {
-          if (amountToSell <= 0) {
+          if (unitsRemainingToSell <= 0) {
             newHistory.push(lot);
             continue;
           }
-          const sellThis = Math.min(amountToSell, lot.value);
-const unitPrice = sharesValue / unitsHeld;
-const unitsToSell = sellAmount / unitPrice;
 
-let unitsRemainingToSell = unitsToSell;
+          const sellUnits = Math.min(unitsRemainingToSell, lot.units);
+          const costPortion = lot.cost * (sellUnits / lot.units);
+          costBaseSold += costPortion;
+          unitsSold += sellUnits;
 
-for (const lot of shareHistory) {
-  if (unitsRemainingToSell <= 0) {
-    newHistory.push(lot);
-    continue;
-  }
+          gain += (sellUnits * unitPrice) - costPortion;
+          unitsRemainingToSell -= sellUnits;
 
-  const sellUnits = Math.min(unitsRemainingToSell, lot.units);
-  const costPortion = lot.cost * (sellUnits / lot.units);
-  costBaseSold += costPortion;
-  unitsSold += sellUnits;
-
-  gain += (sellUnits * unitPrice) - costPortion;
-  unitsRemainingToSell -= sellUnits;
-
-  const remainingUnits = lot.units - sellUnits;
-  if (remainingUnits > 0) {
-    newHistory.push({
-      units: remainingUnits,
-      cost: lot.cost * (remainingUnits / lot.units)
-    });
-  }
-}
-
-
-          gain += (sellThis - (lot.cost * (sellThis / lot.value)));
-          amountToSell -= sellThis;
-
-          if (sellThis < lot.value) {
+          const remainingUnits = lot.units - sellUnits;
+          if (remainingUnits > 0) {
             newHistory.push({
-              value: lot.value - sellThis,
-              cost: lot.cost
+              units: remainingUnits,
+              cost: lot.cost * (remainingUnits / lot.units)
             });
           }
         }
@@ -139,6 +115,7 @@ for (const lot of shareHistory) {
         shareHistory.length = 0;
         shareHistory.push(...newHistory);
         unitsHeld -= unitsSold;
+
       } else {
         // Buying shares
         const unitPrice = sharesValue / unitsHeld;
@@ -146,14 +123,12 @@ for (const lot of shareHistory) {
         unitsHeld += unitsBought;
         const costOfBuy = unitsBought * unitPrice;
         shareHistory.push({ units: unitsBought, cost: costOfBuy });
-
       }
     }
 
     // Shares value grows with return and trading
     sharesValue = y ? Math.round(sharesValue * (1 + rShares) + sharesAdj) : sharesValue;
     avgCost = unitsHeld ? sharesValue / unitsHeld : 0;
-
 
     labels.push(`Yr ${y}`);
     equityArr.push(equity);
@@ -167,8 +142,6 @@ for (const lot of shareHistory) {
       Math.round(costBaseSold), Math.round(unitsBought), Math.round(unitsSold),
       Math.round(unitsHeld), avgCost.toFixed(1), sharesValue
     ]);
-
-
   }
 
   // Chart
