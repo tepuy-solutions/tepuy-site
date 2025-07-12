@@ -99,11 +99,14 @@ input, select {
 .quick-out input {
   background: #f3f3f3; color: #333; font-weight: 600;
 }
-.table-container { overflow-x: auto; margin-top: 26px; }
-table {
-  width: 100%; border-collapse: collapse;
-  font-size: .93rem; background: #fff;
+.table-container {
+  max-height: 480px;       /* Or whatever height you want */
+  overflow-y: auto;
+  overflow-x: auto;
+  position: relative;      /* Needed for sticky positioning to anchor */
+  margin-top: 26px;
 }
+
 th, td {
   padding: 10px; border: 1px solid #d0d0d0; text-align: right;
 }
@@ -434,22 +437,7 @@ label {
   color: #333;
 }
 
-input[type="number"],
-input[type="text"] {
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fefefe;
-  font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
 
-input[type="number"]:focus,
-input[type="text"]:focus {
-  border-color: var(--brand-green);
-  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
-  outline: none;
-}
 
 /* Better spacing on grouped fields */
 fieldset label:not(:last-child) {
@@ -485,53 +473,58 @@ fieldset label:not(:last-child) {
 
 /* === Fancy Card Headers for Fieldsets === */
 /* === Modern Fieldset Cards with Accent Borders === */
+/* === Modern Fieldset Cards with Accent Borders === */
 fieldset {
   border-left: 6px solid var(--accent);
   background: #ffffff;
   padding: 1.5rem;
   border-radius: 12px;
   margin-top: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: border-color 0.3s ease;
 }
+/* On hover, make the accent border brighter */
 fieldset:hover {
   border-color: #218838;
 }
 
-
 /* Header tag (legend) styled like a floating label */
 legend {
+  display: inline-block;
+  min-width: 200px;              /* Same width across all */
+  text-align: center;
   font-size: 1rem;
   font-weight: 700;
   color: var(--brand-green-dark);
   background: #ffffff;
-  padding: 0.3rem 1rem;
-  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  border-radius: 22px;
   margin-left: -6px;
   position: relative;
   top: -1.2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* On hover, make the accent border brighter */
-fieldset:hover {
-  border-color: #218838;
-}
+
 
 /* === Animated Input Focus Effect === */
+/* Base state */
 input[type="number"],
 input[type="text"] {
-  padding: 10px 12px;
+  padding: 10px 14px;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fefefe;
+  border-radius: 8px;
+  background-color: #fff;
   font-size: 1rem;
-  transition: all 0.25s ease;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Focus state only */
 input[type="number"]:focus,
 input[type="text"]:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.12);
   outline: none;
-  background-color: #ffffff;
 }
+
