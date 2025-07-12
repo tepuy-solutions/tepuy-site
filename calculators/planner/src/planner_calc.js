@@ -47,7 +47,7 @@ function calculatePlanner() {
     "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
     "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
     "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
-    "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held", "Avg Unit Cost", "Value of Shares Owned"
+    "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held", "Avg Unit Cost", "Value of Shares Owned, "Total Cost Base (Shares)", "CGT if All Shares Sold"
   ]);
 
   for (let y = 0; y <= yrsRet; y++) {
@@ -135,6 +135,12 @@ function calculatePlanner() {
     labels.push(`Yr ${y}`);
     equityArr.push(equity);
     sharesArr.push(sharesValue);
+    const totalCostBase = shareHistory.reduce((sum, lot) => sum + lot.cost, 0);
+    let cgtIfAllSharesSold = 0;
+    if (sharesValue > totalCostBase) {
+      const capitalGain = sharesValue - totalCostBase;
+      cgtIfAllSharesSold = Math.round(capitalGain * 0.5 * taxRate);
+    }
 
     rows.push([
       y, propVal, owed, equity, rent, ownCost, interest,
@@ -142,7 +148,7 @@ function calculatePlanner() {
       propCapGain, propCGT, saleCost, netProfitProp,
       sharesAdj, cgtSharesSold,
       Math.round(costBaseSold), Math.round(unitsBought), Math.round(unitsSold),
-      Math.round(unitsHeld), avgCost.toFixed(1), sharesValue
+      Math.round(unitsHeld), avgCost.toFixed(1), sharesValue, Math.round(totalCostBase), cgtIfAllSharesSold
     ]);
   }
 
