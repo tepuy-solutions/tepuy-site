@@ -31,27 +31,30 @@ function calculatePlanner() {
   const cashUp = Math.round(dpPct * price + costs);
   const wkPay = (((rLoan / 12) * loanAmt * Math.pow(1 + rLoan / 12, yrs * 12)) /
     (Math.pow(1 + rLoan / 12, yrs * 12) - 1)) * 12 / 52;
+
   $("lmiOutput").textContent = fmt(lmiAmt);
   $("mortgageOutput").textContent = fmt(Math.round(wkPay));
 
   let propVal = price, sharesValue = cashUp, owed = loanAmt;
   const shareHistory = [];
 
+  // Initial investment: $1/unit
+  shareHistory.push({ units: cashUp, cost: cashUp });
+
   let unitsHeld = cashUp;
   let avgCost = 1;
 
   const labels = [], equityArr = [], sharesArr = [], rows = [];
 
-rows.push([
-  "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
-  "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
-  "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
-  "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
-  "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held",
-  "Avg Unit Cost", "Value of Shares Owned", // ✅ Fix was here
-  "Total Cost Base (Shares)", "CGT if All Shares Sold" // ✅ now it's valid
-]);
-
+  rows.push([
+    "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
+    "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
+    "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
+    "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
+    "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held",
+    "Avg Unit Cost", "Value of Shares Owned", "Total Cost Base (Shares)",
+    "Capital Gain (Shares)", "CGT if All Shares Sold"
+  ]);
 
   for (let y = 0; y <= yrsRet; y++) {
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -131,19 +134,17 @@ rows.push([
       }
     }
 
-    // Shares value grows with return and trading
+    // Shares value grows
     sharesValue = y ? Math.round(sharesValue * (1 + rShares) + sharesAdj) : sharesValue;
     avgCost = unitsHeld ? sharesValue / unitsHeld : 0;
+
+    const totalCostBase = shareHistory.reduce((sum, lot) => sum + lot.cost, 0);
+    const capitalGainShares = sharesValue - totalCostBase;
+    const cgtIfAllSharesSold = capitalGainShares > 0 ? Math.round(capitalGainShares * 0.5 * taxRate) : 0;
 
     labels.push(`Yr ${y}`);
     equityArr.push(equity);
     sharesArr.push(sharesValue);
-    const totalCostBase = shareHistory.reduce((sum, lot) => sum + lot.cost, 0);
-    let cgtIfAllSharesSold = 0;
-    if (sharesValue > totalCostBase) {
-      const capitalGain = sharesValue - totalCostBase;
-      cgtIfAllSharesSold = Math.round(capitalGain * 0.5 * taxRate);
-    }
 
     rows.push([
       y, propVal, owed, equity, rent, ownCost, interest,
@@ -151,7 +152,8 @@ rows.push([
       propCapGain, propCGT, saleCost, netProfitProp,
       sharesAdj, cgtSharesSold,
       Math.round(costBaseSold), Math.round(unitsBought), Math.round(unitsSold),
-      Math.round(unitsHeld), avgCost.toFixed(1), sharesValue, Math.round(totalCostBase), cgtIfAllSharesSold
+      Math.round(unitsHeld), avgCost.toFixed(1), sharesValue,
+      Math.round(totalCostBase), Math.round(capitalGainShares), cgtIfAllSharesSold
     ]);
   }
 
@@ -194,7 +196,6 @@ rows.push([
   // Table
   const htmlRows = rows.slice(1).map(r => `<tr>${r.map((c, i) => {
     const cls = [3, 24, 25, 26].includes(i) ? ' class="highlight"' : "";
-
     return `<td${cls}>${fmt(c)}</td>`;
   }).join("")}</tr>`).join("");
 
