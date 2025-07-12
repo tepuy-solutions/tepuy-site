@@ -24,17 +24,18 @@ img { max-width: 100%; }
 
 /* --- nav ------------------------------------ */
 .navbar {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 20px; background: var(--brand-green); color: var(--text-light);
   background: var(--brand-green);
   color: var(--text-light);
+  width: 100%;
 }
+
 .navbar-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
- 
+  padding: 10px 0;
 }
+
 .nav-links a { color: var(--text-light); margin-left: 20px; }
 .nav-links a.active {
   font-weight: 600; border-bottom: 2px solid var(--text-light);
