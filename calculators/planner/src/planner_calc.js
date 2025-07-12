@@ -1,3 +1,5 @@
+// Tepuy Planner Calculator (Premium) – FIFO CGT, Share Units, and Property vs Shares logic
+
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
 const num = id => parseFloat($(id).value.replace(/,/g, "")) || 0;
@@ -20,6 +22,8 @@ function calculatePlanner() {
   const buildPct = pct("buildingComponent");
   const taxRate = pct("taxBracket");
   const yrsRet = num("yearsToRetirement");
+  const salePct = pct("saleCostPct");
+  const ageNow = num("currentAge");
 
   const lmiPct = dpPct >= 0.20 ? 0 : -(0.046 - 0.01) / (0.196 - 0.05) * dpPct + 0.058;
   const lmiAmt = Math.round(loanAmt * lmiPct / (1 + lmiPct));
@@ -30,9 +34,13 @@ function calculatePlanner() {
 
   $("lmiOutput").textContent = fmt(lmiAmt);
   $("mortgageOutput").textContent = fmt(Math.round(wkPay));
+  $("buyPriceOutput").textContent = fmt(price);
+  $("cashUpfrontOutput").textContent = fmt(cashUp);
 
   let propVal = price, sharesValue = cashUp, owed = loanAmt;
   const shareHistory = [];
+
+  // Initial investment: $1/unit
   shareHistory.push({ units: cashUp, cost: cashUp });
 
   let unitsHeld = cashUp;
@@ -46,7 +54,7 @@ function calculatePlanner() {
     "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
     "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
     "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held",
-    "Avg Unit Cost", "Value of Shares Owned", 
+    "Avg Unit Cost", "Value of Shares Owned",
     "Total Cost Base (Shares)", "Capital Gain if All Shares Sold", "CGT if All Shares Sold",
     "Net Profit if All Shares Sold"
   ]);
@@ -66,11 +74,13 @@ function calculatePlanner() {
     const tax = Math.round(taxableIncome * taxRate);
     const netCF = Math.round(cfBeforeTax - tax - amort);
 
+    // Property side
     const propCapGain = y ? propVal - price : 0;
     const propCGT = y ? Math.round(Math.max(0, propCapGain * 0.5 * taxRate)) : 0;
-    const saleCost = y ? Math.round(propVal * 0.025) : 0;
+    const saleCost = y ? Math.round(propVal * salePct) : 0;
     const netProfitProp = (y === yrsRet) ? equity - propCGT - saleCost : 0;
 
+    // Shares logic
     let sharesAdj = 0;
     let cgtSharesSold = 0;
     let unitsBought = 0;
@@ -79,6 +89,7 @@ function calculatePlanner() {
 
     if (y) {
       sharesAdj = -netCF;
+
       if (sharesAdj < 0) {
         const sellAmount = -sharesAdj;
         const unitPrice = sharesValue / unitsHeld;
@@ -97,12 +108,16 @@ function calculatePlanner() {
           const costPortion = lot.cost * (sellUnits / lot.units);
           costBaseSold += costPortion;
           unitsSold += sellUnits;
+
           gain += (sellUnits * unitPrice) - costPortion;
           unitsRemainingToSell -= sellUnits;
 
           const remainingUnits = lot.units - sellUnits;
           if (remainingUnits > 0) {
-            newHistory.push({ units: remainingUnits, cost: lot.cost * (remainingUnits / lot.units) });
+            newHistory.push({
+              units: remainingUnits,
+              cost: lot.cost * (remainingUnits / lot.units)
+            });
           }
         }
 
@@ -149,8 +164,22 @@ function calculatePlanner() {
     data: {
       labels,
       datasets: [
-        { label: "Property Equity", data: equityArr, borderColor: "#28a745", backgroundColor: "rgba(40,167,69,.15)", fill: true, tension: .35 },
-        { label: "Shares Value", data: sharesArr, borderColor: "#007bff", backgroundColor: "rgba(0,123,255,.15)", fill: true, tension: .35 }
+        {
+          label: "Property Equity",
+          data: equityArr,
+          borderColor: "#28a745",
+          backgroundColor: "rgba(40,167,69,.15)",
+          fill: true,
+          tension: .35
+        },
+        {
+          label: "Shares Value",
+          data: sharesArr,
+          borderColor: "#007bff",
+          backgroundColor: "rgba(0,123,255,.15)",
+          fill: true,
+          tension: .35
+        }
       ]
     },
     options: {
@@ -164,20 +193,51 @@ function calculatePlanner() {
     }
   });
 
+  const propertyCols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+  const sharesCols = [16,17,18,19,20,21,22,23,24,25,26,27];
+
   const htmlRows = rows.slice(1).map(r => `<tr>${r.map((c, i) => {
-    const cls = (i >= 0 && i <= 15) ? ' class="prop-col"' : (i >= 16 ? ' class="share-col"' : '');
-    return `<td${cls}>${fmt(c)}</td>`;
+    const cls = [3, 24, 25, 26].includes(i) ? ' highlight' : '';
+    const colClass = propertyCols.includes(i) ? 'property' :
+                     sharesCols.includes(i) ? 'shares' : '';
+    return `<td class="${colClass}${cls}">${fmt(c)}</td>`;
   }).join("")}</tr>`).join("");
 
-  $("results").innerHTML = `<div class="results-scroll"><table class="results-table">
+  $("results").innerHTML = `<table class="results-table">
     <thead><tr>${rows[0].map((h, i) => {
-      const cls = (i >= 0 && i <= 15) ? ' class="prop-col"' : (i >= 16 ? ' class="share-col"' : '');
-      return `<th${cls}>${h}</th>`;
+      const cls = [3, 24, 25, 26].includes(i) ? ' highlight' : '';
+      const colClass = propertyCols.includes(i) ? 'property' :
+                       sharesCols.includes(i) ? 'shares' : '';
+      return `<th class="${colClass}${cls}">${h}</th>`;
     }).join("")}</tr></thead>
     <tbody>${htmlRows}</tbody>
-  </table></div>`;
+  </table>`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   $("runPlanner").addEventListener("click", calculatePlanner);
 });
+
+// === CSV Export ===
+function exportPlannerCSV() {
+  const rows = Array.from(document.querySelectorAll(".results-table tr")).map(row =>
+    Array.from(row.querySelectorAll("th,td")).map(cell => cell.innerText.replace(/,/g, ""))
+  );
+  const csv = rows.map(r => r.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "tepuy_planner.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// === Toggle Columns ===
+function toggleCols(section) {
+  const className = section === "property" ? "property" : "shares";
+  const cells = document.querySelectorAll(`.${className}`);
+  cells.forEach(td => {
+    td.style.display = (td.style.display === "none") ? "" : "none";
+  });
+}

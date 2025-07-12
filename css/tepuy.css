@@ -395,3 +395,46 @@ legend {
 .results-table th:nth-child(28) {
   border-left: 3px solid var(--brand-green);
 }
+/* === Sticky First Column === */
+.results-table td:first-child,
+.results-table th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: white;
+}
+
+/* === Column Shading === */
+.results-table td.property,
+.results-table th.property {
+  background-color: #e6f4e6;
+}
+.results-table td.shares,
+.results-table th.shares {
+  background-color: #e6f0fa;
+}
+
+/* === Toggle Buttons === */
+.planner-controls {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+.btn-toggle {
+  background: var(--brand-green-dark);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-toggle:hover {
+  background: var(--brand-green);
+}
+
+/* === Enhanced Wide Summary === */
+.results-summary.wide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 1.5rem;
+}

@@ -75,9 +75,18 @@
 </form>
 
 <!-- Add LMI and Weekly Repayment -->
-<div class="results-summary">
+<!-- 🔧 Updated Planner Controls & Summary -->
+<div class="results-summary wide">
+  <div><strong>Buy Price:</strong> <span id="buyPriceOutput">$0</span></div>
+  <div><strong>Total Cash Upfront:</strong> <span id="cashUpfrontOutput">$0</span></div>
   <div><strong>LMI Estimate:</strong> <span id="lmiOutput">$0</span></div>
   <div><strong>Weekly Mortgage Payment:</strong> <span id="mortgageOutput">$0</span></div>
+</div>
+
+<div class="planner-controls">
+  <button class="btn-toggle" onclick="toggleCols('property')">Toggle Property Columns</button>
+  <button class="btn-toggle" onclick="toggleCols('shares')">Toggle Shares Columns</button>
+  <button class="btn-toggle" onclick="exportPlannerCSV()">Export CSV</button>
 </div>
 
 
