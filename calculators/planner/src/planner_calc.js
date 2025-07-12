@@ -37,13 +37,12 @@ function runPlanner() {
   let prevSharesOwned = 0;
   const shareHistory = [];
 
-  const labels = [], equityArr = [], sharesArr = [], rows = [];
-  rows.push([
-    "Year", "Prop Value", "Owed", "Equity", "Rent", "Own Costs", "Interest", "Depr.",
-    "CF Before Tax", "Taxable Income", "Tax", "Net CF",
-    "Value of Shares Added/Reduced", "Total Value of Shares Owned", "CGT of Shares Sold",
-    "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)"
-  ]);
+rows.push([
+  "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
+  "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
+  "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
+  "Value of Shares Added/Sold", "CGT from Shares Sold", "Total Value of Shares"
+]);
 
   for (let y = 0; y <= yrsRet; y++) {
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -109,12 +108,13 @@ function runPlanner() {
     equityArr.push(equity);
     sharesArr.push(sharesValue);
     
-    rows.push([
-      y, propVal, owed, equity, rent, ownCost, interest, depr,
-      cfBeforeTax, taxableIncome, tax, netCF,
-      sharesAdj, sharesValue, cgtSharesSold,
-      propCapGain, propCGT, saleCost, netProfitProp
-    ]);
+rows.push([
+  y, propVal, owed, equity, rent, ownCost, interest,
+  cfBeforeTax, depr, taxableIncome, tax, netCF,
+  propCapGain, propCGT, saleCost, netProfitProp,
+  sharesAdj, cgtSharesSold, sharesValue
+]);
+
   }
 
   if (chart) chart.destroy();
@@ -153,7 +153,7 @@ function runPlanner() {
   });
 
   const htmlRows = rows.slice(1).map(r => `<tr>${r.map((c, i) => {
-    const cls = [3, 13].includes(i) ? ' class="highlight"' : "";
+    const cls = [3, 13, 18].includes(i) ? ' class="highlight"' : "";
     return `<td${cls}>${fmt(c)}</td>`;
   }).join("")}</tr>`).join("");
 
