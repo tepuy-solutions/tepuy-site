@@ -7,7 +7,7 @@ const pct = id => num(id) / 100;
 
 let chart;
 
-function runPlanner() {
+function calculatePlanner() {
   const loanAmt = num("loanAmount");
   const dpPct = pct("downpayment");
   const costs = num("buyingCosts");
@@ -223,5 +223,5 @@ for (const lot of shareHistory) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  $("runPlanner").addEventListener("click", runPlanner);
+  $("runPlanner").addEventListener("click", calculatePlanner);
 });
