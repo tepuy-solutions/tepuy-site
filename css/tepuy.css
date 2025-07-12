@@ -116,7 +116,7 @@ tr:nth-child(even) { background: #fafafa; }
 .results-table th.highlight {
   background-color: var(--brand-green-light);
   font-weight: 600;
-
+}
 /* --- blog grid ------------------------------ */
 .blog-grid {
   max-width: 1000px; margin: 40px auto; display: grid;
@@ -332,3 +332,44 @@ footer {
   opacity: 0.5;
   filter: grayscale(100%);  /* Subtle visual cue */
 }
+/* --- Planner Layout Enhancements ------------------- */
+.form-sectioned {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-bottom: 1.5rem;
+}
+
+fieldset {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #fdfdfd;
+}
+
+legend {
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+  color: var(--brand-green-dark);
+}
+
+.results-summary {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 640px;
+  margin: 1rem auto 2rem auto;
+  font-size: 1.1rem;
+  padding: 0.75rem 1.25rem;
+  background: #ffffff;
+  border: 2px solid var(--brand-green-light);
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  gap: 10px;
+}
+
+.results-summary div {
+  font-weight: 600;
+}
+

@@ -42,25 +42,44 @@
 </section>
 
 <main class="calc-wrapper">
-  <form id="investmentForm" class="grid-3col">
-    <!-- same inputs as the basic calculator -->
+<form id="investmentForm" class="form-sectioned">
+
+  <fieldset>
+    <legend>Borrowing & Property Details</legend>
     <label>Loan Amount <input id="loanAmount" value="800000" /></label>
-    <label>Current Age <input id="currentAge" type="number" value="35" /></label>
     <label>Down-payment (%) <input id="downpayment" type="number" value="10" /></label>
     <label>Stamp Duty &amp; Costs ($) <input id="buyingCosts" value="48000" /></label>
     <label>Loan Period (yrs) <input id="loanPeriod" type="number" value="30" /></label>
     <label>Interest Rate (%) <input id="loanInterestRate" type="number" value="6.5" /></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Ownership & Rental</legend>
     <label>Owning Costs (%/yr) <input id="owningCosts" type="number" value="2" /></label>
     <label>Agent Fees (%/yr) <input id="agentFees" type="number" value="0.2" /></label>
     <label>Occupancy Rate (%) <input id="occupancyRate" type="number" value="90" /></label>
     <label>Appreciation Rate (%/yr) <input id="propertyAppreciation" type="number" value="6.5" /></label>
     <label>Rental Yield (%/yr) <input id="rentalIncome" type="number" value="4.8" /></label>
-    <label>Shares Return (%/yr) <input id="stockMarketAppreciation" type="number" value="11" /></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Investor & Comparison</legend>
+    <label>Current Age <input id="currentAge" type="number" value="35" /></label>
     <label>Tax Bracket (%) <input id="taxBracket" type="number" value="30" /></label>
     <label>Years to Retirement <input id="yearsToRetirement" type="number" value="30" /></label>
     <label>Building Component (%) <input id="buildingComponent" type="number" value="50" /></label>
-    <label>Sale Costs (% of sale price) <input id="saleCostPct" type="number" value="2.5"></label>
-  </form>
+    <label>Sale Costs (% of sale price) <input id="saleCostPct" type="number" value="2.5" /></label>
+    <label>Shares Return (%/yr) <input id="stockMarketAppreciation" type="number" value="11" /></label>
+  </fieldset>
+
+</form>
+
+<!-- Add LMI and Weekly Repayment -->
+<div class="results-summary">
+  <div><strong>LMI Estimate:</strong> <span id="lmiOutput">$0</span></div>
+  <div><strong>Weekly Mortgage Payment:</strong> <span id="mortgageOutput">$0</span></div>
+</div>
+
 
   <button class="btn-primary" id="runPlanner">Run Planner</button>
 
