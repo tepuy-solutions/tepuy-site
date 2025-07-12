@@ -67,22 +67,26 @@ img { max-width: 100%; }
   text-align: center; padding: 110px 20px; color: var(--text-light);
 }
 .hero-banner {
-  background-image: url('/img/auyantepui.jpg');  /* Adjust path if needed */
+  position: relative;
+  background-image: url('/img/auyantepui.jpg'); /* Adjust path */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   color: white;
   padding: 100px 20px;
   text-align: center;
+  z-index: 0;
 }
+
 .hero-banner::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.4); /* dark overlay */
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
   z-index: 1;
 }
 
+/* Makes text appear above overlay */
 .hero-banner .content-wrapper {
   position: relative;
   z-index: 2;
