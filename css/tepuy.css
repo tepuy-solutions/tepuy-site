@@ -491,17 +491,16 @@ fieldset:hover {
 /* Header tag (legend) styled like a floating label */
 legend {
   display: inline-block;
-  min-width: 200px;              /* Same width across all */
-  text-align: center;
+  white-space: nowrap;             /* ✅ Prevents text wrapping */
   font-size: 1rem;
   font-weight: 700;
   color: var(--brand-green-dark);
   background: #ffffff;
-  padding: 0.4rem 1rem;
+  padding: 0.4rem 1.2rem;
   border-radius: 22px;
-  margin-left: -6px;
   position: relative;
   top: -1.2rem;
+  margin: 0 auto;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -526,5 +525,10 @@ input[type="text"]:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.12);
   outline: none;
+}
+.content-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
