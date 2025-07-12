@@ -102,11 +102,13 @@ function runPlanner() {
     const propCapGain = y ? propVal - price : 0;
     const propCGT = y ? Math.round(Math.max(0, propCapGain * 0.5 * taxRate)) : 0;
     const saleCost = y ? Math.round(propVal * salePct) : 0;
+    const netProfitProp = (y === yrsRet) ? equity - propCGT - saleCost : 0;
+
 
     labels.push(`Yr ${y}`);
     equityArr.push(equity);
     sharesArr.push(sharesValue);
-
+    
     rows.push([
       y, propVal, owed, equity, rent, ownCost, interest, depr,
       cfBeforeTax, taxableIncome, tax, netCF,
