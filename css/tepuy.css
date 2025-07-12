@@ -67,9 +67,27 @@ img { max-width: 100%; }
   text-align: center; padding: 110px 20px; color: var(--text-light);
 }
 .hero-banner {
-  background: rgba(255,255,255,.94); color: var(--text-dark);
-  display: inline-block; padding: 34px 40px; border-radius: 10px; max-width: 680px;
+  background-image: url('/img/auyantepui.jpg');  /* Adjust path if needed */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  padding: 100px 20px;
+  text-align: center;
 }
+.hero-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4); /* dark overlay */
+  z-index: 1;
+}
+
+.hero-banner .content-wrapper {
+  position: relative;
+  z-index: 2;
+}
+
 .hero-buttons { margin-top: 25px; }
 .btn {
   display: inline-block; padding: 12px 22px; margin: 0 6px;
