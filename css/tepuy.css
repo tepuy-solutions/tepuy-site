@@ -60,44 +60,34 @@ img { max-width: 100%; }
   color: var(--text-light); cursor: pointer;
 }
 
-/* --- hero ----------------------------------- */
+/* --- Hero section ------------------------- */
 .hero {
-  background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),
-              url('/img/auyantepui.jpg') center/cover no-repeat;
-  text-align: center; padding: 110px 20px; color: var(--text-light);
-}
-.hero-banner {
   position: relative;
-  background-image: url('/img/auyantepui.jpg'); /* Adjust path */
+  background-image: url('/img/auyantepui.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  color: white;
-  padding: 100px 20px;
+  color: var(--text-light);
+  padding: 120px 20px;
   text-align: center;
   z-index: 0;
 }
 
-.hero-banner::before {
+.hero::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);  /* dark overlay */
   z-index: 1;
 }
 
-/* Makes text appear above overlay */
-.hero-banner .content-wrapper {
+.hero h1,
+.hero p {
   position: relative;
   z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
 }
-
-.hero-buttons { margin-top: 25px; }
-.btn {
-  display: inline-block; padding: 12px 22px; margin: 0 6px;
-  font-weight: 600; background: var(--accent); color: #fff; border-radius: 6px;
-}
-.btn:hover { background: #218838; }
 
 /* --- layout shell ---------------------------- */
 .calc-wrapper {

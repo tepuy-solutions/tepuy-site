@@ -24,23 +24,29 @@
     });
 </script>
 
-  <main class="about-us">
-    <div class="content-wrapper">
-      <h2>Who We Are</h2>
-      <p>
-        Tepuy Solutions is an independent platform committed to empowering investors and engineers with clear, reliable tools and insights. 
-        Our calculators are built with accuracy, transparency, and practical application in mind — helping you make smarter decisions whether you're comparing property vs shares or optimizing artificial lift systems.
-      </p>
-    </div>
-  </main>
+<!-- ───────── HERO BANNER (standardized) ───────── -->
+<section class="hero">
+  <h1>Who We Are</h1>
+  <p>Independent. Practical. Focused on outcomes that matter.</p>
+</section>
 
-  <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
+<main class="about-us">
+  <div class="content-wrapper">
+    <h2>Who We Are</h2>
+    <p>
+      Tepuy Solutions is an independent platform committed to empowering investors and engineers with clear, reliable tools and insights. 
+      Our calculators are built with accuracy, transparency, and practical application in mind — helping you make smarter decisions whether you're comparing property vs shares or optimizing artificial lift systems.
+    </p>
+  </div>
+</main>
 
-  <script>
-    document.getElementById('menuToggle').onclick = () =>
-      document.getElementById('navMenu').classList.toggle('show');
-    document.querySelectorAll('.sub-toggle').forEach(btn =>
-      btn.onclick = () => btn.parentElement.classList.toggle('open'));
-  </script>
+<footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
+
+<script>
+  document.getElementById('menuToggle').onclick = () =>
+    document.getElementById('navMenu').classList.toggle('show');
+  document.querySelectorAll('.sub-toggle').forEach(btn =>
+    btn.onclick = () => btn.parentElement.classList.toggle('open'));
+</script>
 </body>
 </html>
