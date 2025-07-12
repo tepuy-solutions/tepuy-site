@@ -512,3 +512,41 @@ fieldset label:not(:last-child) {
   background-color: #555;
 }
 
+/* === Fancy Card Headers for Fieldsets === */
+fieldset {
+  border: none;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-top: 2rem;
+}
+
+/* Create a floating header effect */
+legend {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--brand-green-dark);
+  background: #ffffff;
+  padding: 0.25rem 1rem;
+  border-radius: 20px;
+  position: absolute;
+  top: -14px;
+  left: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Optional shadow or accent bar */
+fieldset::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background: linear-gradient(to right, #1f4c3b, #28a745);
+}
+
