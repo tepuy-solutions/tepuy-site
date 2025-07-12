@@ -95,10 +95,34 @@ function runPlanner() {
             continue;
           }
           const sellThis = Math.min(amountToSell, lot.value);
-          costBaseSold += lot.cost * (sellThis / lot.value);
-          const unitPrice = sharesValue / unitsHeld;
-          const units = sellThis / unitPrice;
-          unitsSold += units;
+const unitPrice = sharesValue / unitsHeld;
+const unitsToSell = sellAmount / unitPrice;
+
+let unitsRemainingToSell = unitsToSell;
+
+for (const lot of shareHistory) {
+  if (unitsRemainingToSell <= 0) {
+    newHistory.push(lot);
+    continue;
+  }
+
+  const sellUnits = Math.min(unitsRemainingToSell, lot.units);
+  const costPortion = lot.cost * (sellUnits / lot.units);
+  costBaseSold += costPortion;
+  unitsSold += sellUnits;
+
+  gain += (sellUnits * unitPrice) - costPortion;
+  unitsRemainingToSell -= sellUnits;
+
+  const remainingUnits = lot.units - sellUnits;
+  if (remainingUnits > 0) {
+    newHistory.push({
+      units: remainingUnits,
+      cost: lot.cost * (remainingUnits / lot.units)
+    });
+  }
+}
+
 
           gain += (sellThis - (lot.cost * (sellThis / lot.value)));
           amountToSell -= sellThis;
@@ -111,10 +135,9 @@ function runPlanner() {
           }
         }
 
-        cgtSharesSold = Math.round(gain * 0.5 * taxRate);
+        cgtSharesSold = gain > 0 ? Math.round(gain * 0.5 * taxRate) : 0;
         shareHistory.length = 0;
         shareHistory.push(...newHistory);
-
         unitsHeld -= unitsSold;
       } else {
         // Buying shares
@@ -122,14 +145,15 @@ function runPlanner() {
         unitsBought = sharesAdj / unitPrice;
         unitsHeld += unitsBought;
         const costOfBuy = unitsBought * unitPrice;
-        shareHistory.push({ value: sharesAdj, cost: costOfBuy });
+        shareHistory.push({ units: unitsBought, cost: costOfBuy });
 
       }
     }
 
     // Shares value grows with return and trading
     sharesValue = y ? Math.round(sharesValue * (1 + rShares) + sharesAdj) : sharesValue;
-    avgCost = unitsHeld ? Math.round(sharesValue / unitsHeld) : 0;
+    avgCost = unitsHeld ? sharesValue / unitsHeld : 0;
+
 
     labels.push(`Yr ${y}`);
     equityArr.push(equity);
