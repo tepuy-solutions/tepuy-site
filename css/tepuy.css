@@ -438,3 +438,72 @@ legend {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   margin-bottom: 1.5rem;
 }
+/* === Enhanced Input Aesthetics === */
+fieldset {
+  border: none;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+legend {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--brand-green);
+  margin-bottom: 12px;
+}
+
+label {
+  font-weight: 500;
+  font-size: 0.92rem;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  color: #333;
+}
+
+input[type="number"],
+input[type="text"] {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fefefe;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+  outline: none;
+}
+
+/* Better spacing on grouped fields */
+fieldset label:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+/* Responsive form refinement */
+@media (max-width: 768px) {
+  .form-sectioned {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Improve results-summary visuals */
+.results-summary {
+  background: #f9fbfa;
+  border: 2px solid #d4ede1;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  font-size: 1.1rem;
+  color: #1f4c3b;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+}
+
+.results-summary div {
+  font-weight: 700;
+}
+
