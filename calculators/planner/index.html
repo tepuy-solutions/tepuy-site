@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investment Planner | Tepuy Solutions</title>
+
+  <link rel="stylesheet" href="/css/tepuy.css" />
+  <link rel="icon" href="/img/favicon.png" type="image/png" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo-title">
+    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo">
+    Tepuy Solutions
+  </div>
+  <nav class="nav-links" id="navMenu">
+    <a href="/">Home</a>
+    <div class="has-sub">
+      <button type="button" class="sub-toggle">Calculators ▾</button>
+      <div class="sub-menu">
+        <a href="/calculators/property_vs_shares.html">Property&nbsp;vs&nbsp;Shares</a>
+        <a href="/calculators/retirement.html">Retirement Goal</a>
+      </div>
+    </div>
+    <a href="/blog/">Blog</a>
+    <a href="/store/">Store</a>
+    <a href="/about.html">Who We Are</a>
+    <a href="/contact.html">Contact Us</a>
+  </nav>
+  <button id="menuToggle" class="hamburger" aria-label="Menu">&#9776;</button>
+</header>
+
+<section class="hero">
+  <div class="hero-banner">
+    <h1>Premium Investment Planner</h1>
+    <p>Detailed yearly breakdown with tax, cash flow and CGT if sold.</p>
+  </div>
+</section>
+
+<main class="calc-wrapper">
+  <form id="investmentForm" class="grid-3col">
+    <!-- same inputs as the basic calculator -->
+    <label>Loan Amount <input id="loanAmount" value="800000" /></label>
+    <label>Down-payment (%) <input id="downpayment" type="number" value="10" /></label>
+    <label>Stamp Duty &amp; Costs ($) <input id="buyingCosts" value="48000" /></label>
+    <label>Loan Period (yrs) <input id="loanPeriod" type="number" value="30" /></label>
+    <label>Interest Rate (%) <input id="loanInterestRate" type="number" value="6.5" /></label>
+    <label>Owning Costs (%/yr) <input id="owningCosts" type="number" value="2" /></label>
+    <label>Agent Fees (%/yr) <input id="agentFees" type="number" value="0.2" /></label>
+    <label>Occupancy Rate (%) <input id="occupancyRate" type="number" value="90" /></label>
+    <label>Appreciation Rate (%/yr) <input id="propertyAppreciation" type="number" value="6.5" /></label>
+    <label>Rental Yield (%/yr) <input id="rentalIncome" type="number" value="4.8" /></label>
+    <label>Shares Return (%/yr) <input id="stockMarketAppreciation" type="number" value="11" /></label>
+    <label>Tax Bracket (%) <input id="taxBracket" type="number" value="30" /></label>
+    <label>Years to Retirement <input id="yearsToRetirement" type="number" value="30" /></label>
+    <label>Building Component (%) <input id="buildingComponent" type="number" value="50" /></label>
+    <label>Sale Costs (% of sale price) <input id="saleCostPct" type="number" value="2.5"></label>
+  </form>
+
+  <button class="btn-primary" id="runPlanner">Run Planner</button>
+
+  <div class="chart-wrap" style="height:320px;margin-top:24px;">
+    <canvas id="plannerChart"></canvas>
+  </div>
+  <div id="results" class="table-container" style="margin-top:24px;"></div>
+
+  <p class="disclaimer">This tool is for premium users and offers advanced insights including tax breakdowns and sale modeling per year.</p>
+</main>
+
+<footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
+
+<script src="/js/planner_calc.js"></script>
+<script>
+  document.getElementById('menuToggle').onclick = () =>
+    document.getElementById('navMenu').classList.toggle('show');
+  document.querySelectorAll('.sub-toggle').forEach(btn =>
+    btn.onclick = () => btn.parentElement.classList.toggle('open'));
+</script>
+</body>
+</html>
