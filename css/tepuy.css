@@ -372,4 +372,26 @@ legend {
 .results-summary div {
   font-weight: 600;
 }
+.results-scroll {
+  max-height: 480px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
 
+/* --- Sticky Header for Planner Table --- */
+.results-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #ffffff; /* Match table background */
+  z-index: 2;
+}
+
+/* --- Visual Separator Between Property and Shares Columns --- */
+.results-table td:nth-child(17),
+.results-table td:nth-child(24),
+.results-table td:nth-child(28),
+.results-table th:nth-child(17),
+.results-table th:nth-child(24),
+.results-table th:nth-child(28) {
+  border-left: 3px solid var(--brand-green);
+}
