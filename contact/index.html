@@ -7,9 +7,20 @@
   <link rel="stylesheet" href="/css/tepuy.css" />
 </head>
 <body>
-  <header class="navbar">
-    <!-- Your navbar content -->
-  </header>
+<!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
+<div id="navbar-placeholder"></div>
+
+<script>
+  fetch("/includes/navbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("navbar-placeholder").innerHTML = html;
+
+      // Enable mobile toggle after navbar is injected
+      document.getElementById('menuToggle').onclick = () =>
+        document.querySelector('.nav-links').classList.toggle('show');
+    });
+</script>
 
   <main class="calc-wrapper">
     <h1>Contact Us</h1>
