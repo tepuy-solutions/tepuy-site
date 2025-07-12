@@ -1,3 +1,6 @@
+// Tepuy Planner Calculator (Premium)
+// Tracks share value with buy/sell to match property cashflow and models CGT
+
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
 const num = id => parseFloat($(id).value.replace(/,/g, "")) || 0;
@@ -27,25 +30,22 @@ function runPlanner() {
   const lmiAmt = Math.round(loanAmt * lmiPct / (1 + lmiPct));
   const price = Math.round(loanAmt / ((1 - dpPct) * (1 + lmiPct)));
   const cashUp = Math.round(dpPct * price + costs);
-  const wkPay = (((rLoan / 12) * loanAmt * Math.pow(1 + rLoan / 12, yrs * 12)) / (Math.pow(1 + rLoan / 12, yrs * 12) - 1)) * 12 / 52;
+  const wkPay = (((rLoan / 12) * loanAmt * Math.pow(1 + rLoan / 12, yrs * 12)) /
+    (Math.pow(1 + rLoan / 12, yrs * 12) - 1)) * 12 / 52;
 
-  let propVal = price,
-      owed = loanAmt,
-      sharesOwned = 0,
-      sharesValue = 0,
-      parcels = [];
+  let propVal = price, sharesValue = cashUp, owed = loanAmt;
+  let prevSharesOwned = 0;
+  const shareHistory = [];
 
   const labels = [], equityArr = [], sharesArr = [], rows = [];
-
   rows.push([
     "Year", "Prop Value", "Owed", "Equity", "Rent", "Own Costs", "Interest", "Depr.",
     "CF Before Tax", "Taxable Income", "Tax", "Net CF",
-    "Value of Shares Added/Reduced", "Total Value of Shares Owned", "Shares Owned",
-    "CGT of shares sold", "Capital Gain", "CGT if Sold", "Sale Cost"
+    "Value of Shares Added/Reduced", "Total Value of Shares Owned", "CGT of Shares Sold",
+    "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)"
   ]);
 
   for (let y = 0; y <= yrsRet; y++) {
-    const age = ageNow + y;
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
     const interest = y ? Math.round(owed * rLoan) : 0;
     if (y) propVal = Math.round(propVal * (1 + growProp));
@@ -55,56 +55,53 @@ function runPlanner() {
     if (y) owed = Math.max(0, Math.round(owed * (1 + rLoan) - wkPay * 52));
 
     const equity = propVal - owed;
-    const cashFlowBeforeTax = rent - ownCost - interest;
-    const taxableIncome = cashFlowBeforeTax - depr;
+    const cfBeforeTax = rent - ownCost - interest;
+    const taxableIncome = cfBeforeTax - depr;
     const tax = Math.round(taxableIncome * taxRate);
-    const netCF = Math.round(cashFlowBeforeTax - tax - amort);
+    const netCF = Math.round(cfBeforeTax - tax - amort);
 
-    let sharePrice = y === 0 ? 1 : sharePrice * (1 + rShares);
-    let sharesTraded = 0;
-    let valueTraded = 0;
-    let cgtRealised = 0;
-    let capitalGain = 0;
+    let sharesAdj = 0;
+    let cgtSharesSold = 0;
+    if (y) {
+      sharesAdj = -netCF;
+      if (sharesAdj < 0) {
+        // Selling shares → calculate CGT for that sale
+        const sellAmount = -sharesAdj;
+        let gain = 0;
+        let remainingToSell = sellAmount;
+        const newHistory = [];
 
-    // Growth
-    sharesValue = Math.round(sharesValue * (1 + rShares));
+        for (const lot of shareHistory) {
+          if (remainingToSell <= 0) {
+            newHistory.push(lot);
+            continue;
+          }
+          const amountToSell = Math.min(remainingToSell, lot.value);
+          gain += amountToSell - lot.cost * (amountToSell / lot.value);
+          remainingToSell -= amountToSell;
 
-    if (y === 0) {
-      sharesOwned = Math.round(cashUp / sharePrice);
-      valueTraded = sharesOwned * sharePrice;
-      sharesValue = valueTraded;
-      parcels.push({ qty: sharesOwned, price: sharePrice });
-    } else if (netCF > 0) {
-      const qty = Math.round(netCF / sharePrice);
-      sharesOwned += qty;
-      sharesValue += qty * sharePrice;
-      parcels.push({ qty, price: sharePrice });
-      sharesTraded = qty;
-      valueTraded = qty * sharePrice;
-    } else if (netCF < 0) {
-      let toSell = Math.round(Math.abs(netCF) / sharePrice);
-      sharesTraded = -toSell;
-      valueTraded = -toSell * sharePrice;
-      for (let i = 0; i < parcels.length && toSell > 0; i++) {
-        const p = parcels[i];
-        if (p.qty === 0) continue;
-        const sellQty = Math.min(p.qty, toSell);
-        p.qty -= sellQty;
-        sharesOwned -= sellQty;
-        toSell -= sellQty;
-        const gain = (sharePrice - p.price) * sellQty;
-        if (age < 60) {
-          cgtRealised += Math.round(0.5 * gain * taxRate); // 50% discount for individuals
+          if (amountToSell < lot.value) {
+            newHistory.push({
+              value: lot.value - amountToSell,
+              cost: lot.cost
+            });
+          }
         }
+        cgtSharesSold = Math.round(gain * 0.5 * taxRate);
+        shareHistory.length = 0;
+        shareHistory.push(...newHistory);
+      } else {
+        // Buying new shares
+        shareHistory.push({ value: sharesAdj, cost: sharesAdj });
       }
-      sharesValue -= Math.abs(valueTraded);
     }
 
-    // Unrealised CGT
-    capitalGain = parcels.reduce((sum, p) =>
-      sum + p.qty * (sharePrice - p.price), 0);
-    const cgtIfSold = Math.round(0.5 * capitalGain * taxRate);
-    const saleCost = y === yrsRet ? Math.round(propVal * salePct) : 0;
+    // Update sharesValue after gain and trade
+    sharesValue = y ? Math.round(sharesValue * (1 + rShares) + sharesAdj) : sharesValue;
+
+    const propCapGain = y ? propVal - price : 0;
+    const propCGT = y ? Math.round(Math.max(0, propCapGain * 0.5 * taxRate)) : 0;
+    const saleCost = y ? Math.round(propVal * salePct) : 0;
 
     labels.push(`Yr ${y}`);
     equityArr.push(equity);
@@ -112,9 +109,9 @@ function runPlanner() {
 
     rows.push([
       y, propVal, owed, equity, rent, ownCost, interest, depr,
-      cashFlowBeforeTax, taxableIncome, tax, netCF,
-      valueTraded, sharesValue, sharesOwned,
-      cgtRealised, capitalGain, cgtIfSold, saleCost
+      cfBeforeTax, taxableIncome, tax, netCF,
+      sharesAdj, sharesValue, cgtSharesSold,
+      propCapGain, propCGT, saleCost
     ]);
   }
 
@@ -124,12 +121,27 @@ function runPlanner() {
     data: {
       labels,
       datasets: [
-        { label: "Property Equity", data: equityArr, borderColor: "#28a745", backgroundColor: "rgba(40,167,69,.15)", fill: true, tension: .35 },
-        { label: "Shares Value", data: sharesArr, borderColor: "#007bff", backgroundColor: "rgba(0,123,255,.15)", fill: true, tension: .35 }
+        {
+          label: "Property Equity",
+          data: equityArr,
+          borderColor: "#28a745",
+          backgroundColor: "rgba(40,167,69,.15)",
+          fill: true,
+          tension: .35
+        },
+        {
+          label: "Shares Value",
+          data: sharesArr,
+          borderColor: "#007bff",
+          backgroundColor: "rgba(0,123,255,.15)",
+          fill: true,
+          tension: .35
+        }
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: { legend: { position: "bottom" } },
       scales: {
         y: { ticks: { callback: v => fmt(v) } },
