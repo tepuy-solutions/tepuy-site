@@ -46,15 +46,17 @@ function calculatePlanner() {
 
   const labels = [], equityArr = [], sharesArr = [], rows = [];
 
-  rows.push([
-    "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
-    "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
-    "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
-    "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
-    "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held",
-    "Avg Unit Cost", "Value of Shares Owned", "Total Cost Base (Shares)",
-    "Capital Gain (Shares)", "CGT if All Shares Sold"
-  ]);
+rows.push([
+  "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
+  "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
+  "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
+  "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
+  "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held",
+  "Avg Unit Cost", "Value of Shares Owned", 
+  "Total Cost Base (Shares)", "Capital Gain if All Shares Sold", "CGT if All Shares Sold",
+  "Net Profit if All Shares Sold"  // ✅ new column
+]);
+
 
   for (let y = 0; y <= yrsRet; y++) {
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -152,9 +154,12 @@ function calculatePlanner() {
       propCapGain, propCGT, saleCost, netProfitProp,
       sharesAdj, cgtSharesSold,
       Math.round(costBaseSold), Math.round(unitsBought), Math.round(unitsSold),
-      Math.round(unitsHeld), avgCost.toFixed(1), sharesValue,
-      Math.round(totalCostBase), Math.round(capitalGainShares), cgtIfAllSharesSold
+      Math.round(unitsHeld), avgCost.toFixed(2), sharesValue,
+      Math.round(totalCostBase), Math.round(capitalGainShares), cgtIfAllSharesSold,
+      Math.round(sharesValue - cgtIfAllSharesSold)  // ✅ Final column fix
     ]);
+
+
   }
 
   // Chart
