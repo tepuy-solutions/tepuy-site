@@ -11,29 +11,19 @@
 <body>
 
 <!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
-<header class="navbar">
-  <div class="content-wrapper navbar-inner">
-    <div class="logo-title">
-      <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo" />
-      Tepuy Solutions
-    </div>
+<div id="navbar-placeholder"></div>
 
-    <nav class="nav-links">
-      <a href="/">Home</a>
-<div class="has-sub">
-  <button type="button" class="sub-toggle">Calculators ▾</button>
-  <div class="sub-menu">
-    <a href="/calculators/property_vs_shares.html">Property vs Shares</a>
-    <a href="/calculators/retirement.html">Retirement Goal</a>
-  </div>
-</div>
-      <a href="/blog/">Blog</a>
-      <a href="/store/">Store</a>
-      <a href="/about.html">Who We Are</a>
-      <a href="/contact.html">Contact Us</a>
-    </nav>
-  </div>
-</header>
+<script>
+  fetch("/includes/navbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("navbar-placeholder").innerHTML = html;
+
+      // Enable mobile toggle after navbar is injected
+      document.getElementById('menuToggle').onclick = () =>
+        document.querySelector('.nav-links').classList.toggle('show');
+    });
+</script>
 
 
 
