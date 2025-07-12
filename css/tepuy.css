@@ -337,12 +337,6 @@ footer {
 }
 
 
-legend {
-  font-weight: bold;
-  font-size: 1rem;
-  padding: 0 0.5rem;
-  color: var(--brand-green-dark);
-}
 
 .results-summary {
   display: flex;
@@ -366,6 +360,7 @@ legend {
   max-height: 480px;
   overflow-y: auto;
   border: 1px solid #ccc;
+  position: relative;
 }
 
 
@@ -428,22 +423,7 @@ legend {
   margin-bottom: 1.5rem;
 }
 /* === Enhanced Input Aesthetics === */
-fieldset {
-  border-left: 6px solid var(--accent);
-  background: #ffffff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  margin-top: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: border-color 0.3s ease;
-}
 
-legend {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--brand-green);
-  margin-bottom: 12px;
-}
 
 label {
   font-weight: 500;
@@ -513,6 +493,10 @@ fieldset {
   margin-top: 2rem;
   transition: border-color 0.3s ease;
 }
+fieldset:hover {
+  border-color: #218838;
+}
+
 
 /* Header tag (legend) styled like a floating label */
 legend {
