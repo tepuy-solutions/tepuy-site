@@ -33,7 +33,7 @@ img { max-width: 100%; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
+ 
 }
 .nav-links a { color: var(--text-light); margin-left: 20px; }
 .nav-links a.active {
