@@ -396,12 +396,26 @@ legend {
   border-left: 3px solid var(--brand-green);
 }
 /* === Sticky First Column === */
-.results-table td:first-child,
-.results-table th:first-child {
+/* === Sticky Header Row === */
+.results-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 2;
+}
+
+/* === Sticky First Column === */
+.results-table th:first-child,
+.results-table td:first-child {
   position: sticky;
   left: 0;
+  background-color: #ffffff;
   z-index: 1;
-  background: white;
+}
+
+/* === Top-left corner cell (Year header) fix === */
+.results-table thead th:first-child {
+  z-index: 3; /* Highest priority to sit above both sticky row and col */
 }
 
 /* === Column Shading === */
@@ -513,40 +527,50 @@ fieldset label:not(:last-child) {
 }
 
 /* === Fancy Card Headers for Fieldsets === */
+/* === Modern Fieldset Cards with Accent Borders === */
 fieldset {
-  border: none;
-  border-radius: 12px;
+  border-left: 6px solid var(--accent);
   background: #ffffff;
-  padding: 2rem 1.5rem 1.5rem 1.5rem;
-  position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  border-radius: 12px;
   margin-top: 2rem;
+  transition: border-color 0.3s ease;
 }
 
-/* Create a floating header effect */
+/* Header tag (legend) styled like a floating label */
 legend {
   font-size: 1rem;
   font-weight: 700;
   color: var(--brand-green-dark);
   background: #ffffff;
-  padding: 0.25rem 1rem;
+  padding: 0.3rem 1rem;
   border-radius: 20px;
-  position: absolute;
-  top: -14px;
-  left: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-left: -6px;
+  position: relative;
+  top: -1.2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Optional shadow or accent bar */
-fieldset::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 6px;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  background: linear-gradient(to right, #1f4c3b, #28a745);
+/* On hover, make the accent border brighter */
+fieldset:hover {
+  border-color: #218838;
 }
 
+/* === Animated Input Focus Effect === */
+input[type="number"],
+input[type="text"] {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fefefe;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1);
+  outline: none;
+  background-color: #ffffff;
+}
