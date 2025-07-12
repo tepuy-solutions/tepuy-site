@@ -59,30 +59,35 @@ function runPlanner() {
     const sharePrice = Math.pow(1 + rShares, y);
     let sharesTraded = 0;
 
-    if (y === 0) {
-      sharesOwned = Math.round(cashUp / sharePrice);
-      shares = sharesOwned * sharePrice;
-      parcels.push({ qty: sharesOwned, price: sharePrice });
-    } else {
-      if (netCF > 0) {
-        const qty = Math.round(netCF / sharePrice);
-        sharesOwned += qty;
-        parcels.push({ qty, price: sharePrice });
-        sharesTraded = qty;
-      } else {
-        let toSell = Math.round(Math.abs(netCF) / sharePrice);
-        sharesTraded = -toSell;
-        for (let i = 0; i < parcels.length && toSell > 0; i++) {
-          const p = parcels[i];
-          if (p.qty === 0) continue;
-          const sellQty = Math.min(p.qty, toSell);
-          p.qty -= sellQty;
-          sharesOwned -= sellQty;
-          toSell -= sellQty;
-        }
-      }
-      shares = Math.round(sharesOwned * sharePrice);
+if (y === 0) {
+  sharesOwned = Math.round(cashUp / sharePrice);
+  sharesValue = sharesOwned * sharePrice;
+  parcels.push({ qty: sharesOwned, price: sharePrice });
+} else {
+  // First apply growth to previous value
+  sharesValue = Math.round(sharesValue * (1 + rShares));
+
+  if (netCF > 0) {
+    const qty = Math.round(netCF / sharePrice);
+    sharesOwned += qty;
+    sharesTraded = qty;
+    parcels.push({ qty, price: sharePrice });
+    sharesValue += qty * sharePrice;
+  } else {
+    let toSell = Math.round(Math.abs(netCF) / sharePrice);
+    sharesTraded = -toSell;
+    for (let i = 0; i < parcels.length && toSell > 0; i++) {
+      const p = parcels[i];
+      if (p.qty === 0) continue;
+      const sellQty = Math.min(p.qty, toSell);
+      p.qty -= sellQty;
+      sharesOwned -= sellQty;
+      toSell -= sellQty;
     }
+    sharesValue -= Math.abs(sharesTraded) * sharePrice;
+  }
+}
+
 
     // Capital gain = sum of (qty * (currPrice - buyPrice)) for remaining parcels
     let totalGain = 0;
