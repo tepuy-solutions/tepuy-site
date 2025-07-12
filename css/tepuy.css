@@ -568,4 +568,53 @@ input[type="text"]:focus {
   margin: 0 auto;
   padding: 0 20px;
 }
+/* Proper horizontal alignment */
+.navbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Dropdowns show on hover instead of click */
+.has-sub {
+  position: relative;
+}
+.has-sub:hover .sub-menu {
+  display: block;
+}
+
+/* Submenu styles */
+.sub-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  color: black;
+  padding: 10px 0;
+  border-radius: 6px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  z-index: 1000;
+  min-width: 200px;
+}
+.sub-menu a {
+  display: block;
+  padding: 10px 20px;
+  color: var(--text-dark);
+  text-decoration: none;
+}
+.sub-menu a:hover {
+  background-color: #f4f8f6;
+}
+.has-sub > a {
+  position: relative;
+  padding-right: 10px;
+}
+
+/* Prevent layout jumping on hover */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
 
