@@ -705,6 +705,19 @@ input[type="text"]:focus {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+/* --- References section (Sources list) --- */
+.references {
+  margin-top: 40px;
+}
+.references ul {
+  list-style: disc inside;
+  margin-top: 10px;
+}
+.references ul li {
+  margin-bottom: 6px;
+}
+
+
 
 
 
