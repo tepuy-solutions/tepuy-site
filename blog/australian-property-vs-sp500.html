@@ -112,6 +112,18 @@
     © 2025 Tepuy Solutions
   </div>
 </footer>
+<!-- ───────── JS: menu toggle & sub-menu ───────── -->
+<script>
+  const menuToggle = document.getElementById('menuToggle');
+  const navMenu = document.getElementById('navMenu');
+  menuToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('show');
+  });
+
+  document.querySelectorAll('.sub-toggle').forEach(btn =>
+    btn.onclick = () => btn.parentElement.classList.toggle('open'));
+</script>
+
 
 </body>
 </html>
