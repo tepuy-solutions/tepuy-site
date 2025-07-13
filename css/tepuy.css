@@ -82,9 +82,6 @@ img { max-width: 100%; }
   background: rgba(0, 0, 0, 0.5);  /* dark overlay */
   z-index: 1;
 }
-.hero + .feature-card {
-  margin-top: 60px;
-}
 
 .hero h1,
 .hero p {
