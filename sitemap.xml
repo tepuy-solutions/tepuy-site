@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://tepuysolutions.com/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tepuysolutions.com/about/</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://tepuysolutions.com/blog/</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://tepuysolutions.com/store/</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tepuysolutions.com/calculators/property_vs_shares</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tepuysolutions.com/calculators/retirement</loc>
+    <priority>0.9</priority>
+  </url>
+</urlset>
