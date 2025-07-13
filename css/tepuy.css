@@ -221,16 +221,59 @@ footer .tiny {
 }
 
 /* --- responsive tweaks ----------------------- */
-@media (max-width:768px) {
-  .hamburger { display: block; }
-  .nav-links {
-    display: none; flex-direction: column; background: var(--brand-green);
-    position: absolute; top: 60px; left: 0; right: 0;
-    z-index: 1000; padding: 10px 20px;
+@media (max-width: 768px) {
+  .navbar-inner {
+    flex-wrap: wrap;
+    align-items: center;
   }
-  .nav-links a { margin: 10px 0; font-size: 1.1rem; }
-  .nav-links.show { display: flex; }
+
+  .cta-button {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+    font-size: 1.8rem;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: var(--brand-green);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 999;
+    padding: 10px 20px;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .nav-links a {
+    margin: 10px 0;
+    font-size: 1.1rem;
+  }
+
+  .sub-menu {
+    position: relative;
+    background: none;
+    box-shadow: none;
+    padding-left: 20px;
+  }
+
+  .has-sub:hover .sub-menu {
+    display: block;
+  }
 }
+
 @media (max-width:640px) {
   .hero-banner { padding: 28px 24px; }
   .btn { display: block; margin: 10px auto; }
