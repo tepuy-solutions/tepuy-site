@@ -292,7 +292,14 @@ footer .tiny {
   flex-direction: row-reverse;
 }
 .feature-img {
-  width: 260px; max-width: 40%; flex-shrink: 0;
+  width: 260px;
+  max-width: 40%;
+  flex-shrink: 0;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 }
 .feature-copy h3 {
   margin: 0 0 10px; font-size: 1.6rem; color: var(--brand-green);
