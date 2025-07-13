@@ -20,24 +20,9 @@
     .then(html => {
       document.getElementById("navbar-placeholder").innerHTML = html;
 
-      // Hamburger menu toggle
+      // Enable mobile toggle after navbar is injected
       document.getElementById('menuToggle').onclick = () =>
         document.querySelector('.nav-links').classList.toggle('show');
-
-      // Sub-menu toggle (for "Calculators ▾", "Resources ▾")
-      document.querySelectorAll('.has-sub > a').forEach(link =>
-        link.onclick = e => {
-          e.preventDefault(); // Prevent jump on click
-          link.parentElement.classList.toggle('open');
-        });
-
-      // Auto-close mobile menu after clicking a link
-      document.addEventListener('click', function (e) {
-        const nav = document.querySelector('.nav-links');
-        if (e.target.closest('.nav-links a')) {
-          nav.classList.remove('show');
-        }
-      });
     });
 </script>
 

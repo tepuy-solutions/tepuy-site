@@ -28,7 +28,6 @@
 
 <body>
 <!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
-<!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
 <div id="navbar-placeholder"></div>
 
 <script>
@@ -37,24 +36,9 @@
     .then(html => {
       document.getElementById("navbar-placeholder").innerHTML = html;
 
-      // Hamburger menu toggle
+      // Enable mobile toggle after navbar is injected
       document.getElementById('menuToggle').onclick = () =>
         document.querySelector('.nav-links').classList.toggle('show');
-
-      // Sub-menu toggle for mobile (e.g. "Calculators ▾")
-      document.querySelectorAll('.has-sub > a').forEach(link =>
-        link.onclick = e => {
-          e.preventDefault(); // Prevents jump-to-top behavior
-          link.parentElement.classList.toggle('open');
-        });
-
-      // Auto-close nav on link click (mobile UX)
-      document.addEventListener('click', function (e) {
-        const nav = document.querySelector('.nav-links');
-        if (e.target.closest('.nav-links a')) {
-          nav.classList.remove('show');
-        }
-      });
     });
 </script>
 
