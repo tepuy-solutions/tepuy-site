@@ -13,30 +13,36 @@
 </head>
 <body>
   <header id="navbar-placeholder"></header>
+<!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
+<div id="navbar-placeholder"></div>
+
 <script>
   fetch("/includes/navbar.html")
     .then(res => res.text())
     .then(html => {
       document.getElementById("navbar-placeholder").innerHTML = html;
 
-      // Toggle menu
+      // Hamburger menu toggle
       document.getElementById('menuToggle').onclick = () =>
         document.querySelector('.nav-links').classList.toggle('show');
 
-      // Close menu on link click
+      // Sub-menu toggle (for "Calculators ▾", "Resources ▾")
+      document.querySelectorAll('.has-sub > a').forEach(link =>
+        link.onclick = e => {
+          e.preventDefault(); // Prevent jump on click
+          link.parentElement.classList.toggle('open');
+        });
+
+      // Auto-close mobile menu after clicking a link
       document.addEventListener('click', function (e) {
         const nav = document.querySelector('.nav-links');
         if (e.target.closest('.nav-links a')) {
           nav.classList.remove('show');
         }
       });
-
-      // Close on scroll
-      window.addEventListener("scroll", () => {
-        document.querySelector('.nav-links').classList.remove('show');
-      });
     });
 </script>
+
 
   <main class="content-wrapper">
     <h1>Australian Property vs. S&P 500 (1990–2024): A Comparative Analysis</h1>

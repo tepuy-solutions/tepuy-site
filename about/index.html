@@ -28,6 +28,7 @@
 
 <body>
 <!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
+<!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
 <div id="navbar-placeholder"></div>
 
 <script>
@@ -36,11 +37,27 @@
     .then(html => {
       document.getElementById("navbar-placeholder").innerHTML = html;
 
-      // Enable mobile toggle after navbar is injected
+      // Hamburger menu toggle
       document.getElementById('menuToggle').onclick = () =>
         document.querySelector('.nav-links').classList.toggle('show');
+
+      // Sub-menu toggle for mobile (e.g. "Calculators ▾")
+      document.querySelectorAll('.has-sub > a').forEach(link =>
+        link.onclick = e => {
+          e.preventDefault(); // Prevents jump-to-top behavior
+          link.parentElement.classList.toggle('open');
+        });
+
+      // Auto-close nav on link click (mobile UX)
+      document.addEventListener('click', function (e) {
+        const nav = document.querySelector('.nav-links');
+        if (e.target.closest('.nav-links a')) {
+          nav.classList.remove('show');
+        }
+      });
     });
 </script>
+
 
 <!-- ───────── HERO BANNER (standardized) ───────── -->
 <section class="hero">
@@ -60,11 +77,5 @@
 
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
 
-<script>
-  document.getElementById('menuToggle').onclick = () =>
-    document.getElementById('navMenu').classList.toggle('show');
-  document.querySelectorAll('.sub-toggle').forEach(btn =>
-    btn.onclick = () => btn.parentElement.classList.toggle('open'));
-</script>
 </body>
 </html>

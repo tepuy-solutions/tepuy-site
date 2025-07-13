@@ -10,18 +10,37 @@
 </head>
 <body>
 
-<header class="navbar">
-  <div class="logo-title">
-    <img src="/img/tepuy_logo.png" class="logo" alt="Tepuy logo">Tepuy Solutions
-  </div>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/calculators/property_vs_shares.html">Property vs Shares</a>
-    <a href="/calculators/retirement.html">Retirement</a>
-    <a href="/store/">Store</a>
-    <a class="active" href="/blog/">Blog</a>
-  </nav>
-</header>
+  <header id="navbar-placeholder"></header>
+<!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
+<div id="navbar-placeholder"></div>
+
+<script>
+  fetch("/includes/navbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("navbar-placeholder").innerHTML = html;
+
+      // Hamburger menu toggle
+      document.getElementById('menuToggle').onclick = () =>
+        document.querySelector('.nav-links').classList.toggle('show');
+
+      // Sub-menu toggle (for "Calculators ▾", "Resources ▾")
+      document.querySelectorAll('.has-sub > a').forEach(link =>
+        link.onclick = e => {
+          e.preventDefault(); // Prevent jump on click
+          link.parentElement.classList.toggle('open');
+        });
+
+      // Auto-close mobile menu after clicking a link
+      document.addEventListener('click', function (e) {
+        const nav = document.querySelector('.nav-links');
+        if (e.target.closest('.nav-links a')) {
+          nav.classList.remove('show');
+        }
+      });
+    });
+</script>
+
 
 <main class="calc-wrapper">
   <article class="blog-post">
