@@ -80,8 +80,8 @@ function runRetirementCalc(){
     }
   });
 
-  $("retResults").innerHTML=
-    `<table><thead><tr><th>Age</th><th>Capital ($)</th><th>Infl-Adj Goal</th></tr></thead><tbody>${rows}</tbody></table>`;
+$("retResults").innerHTML =
+  `<table class="results-table centered"><thead><tr><th>Age</th><th>Capital ($)</th><th>Infl-Adj Goal</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 window.runRetirementCalc=runRetirementCalc;
