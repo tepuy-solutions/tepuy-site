@@ -764,6 +764,19 @@ input[type="text"]:focus {
   margin-bottom: 6px;
 }
 
+figure {
+  margin: 40px 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  width: 900px;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
 
 
 
