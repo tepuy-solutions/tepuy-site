@@ -19,16 +19,21 @@
     .then(html => {
       document.getElementById("navbar-placeholder").innerHTML = html;
 
-      // Toggle mobile menu on hamburger click
-      document.getElementById("menuToggle").onclick = () =>
-        document.querySelector(".nav-links").classList.toggle("show");
+      // Toggle menu
+      document.getElementById('menuToggle').onclick = () =>
+        document.querySelector('.nav-links').classList.toggle('show');
 
-      // Close mobile menu when a nav link is clicked
-      document.addEventListener("click", function (e) {
-        const nav = document.querySelector(".nav-links");
-        if (e.target.closest(".nav-links a")) {
-          nav.classList.remove("show");
+      // Close menu on link click
+      document.addEventListener('click', function (e) {
+        const nav = document.querySelector('.nav-links');
+        if (e.target.closest('.nav-links a')) {
+          nav.classList.remove('show');
         }
+      });
+
+      // Close on scroll
+      window.addEventListener("scroll", () => {
+        document.querySelector('.nav-links').classList.remove('show');
       });
     });
 </script>

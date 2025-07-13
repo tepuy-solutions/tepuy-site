@@ -28,6 +28,8 @@ img { max-width: 100%; }
   color: var(--text-light);
   width: 100%;
   padding: 16px 0;
+  position: relative; /* ✅ ADD THIS */
+  z-index: 1000;       /* Optional, to ensure it sits above hero/image */
 }
 
 .navbar-inner {
@@ -261,7 +263,9 @@ footer .tiny {
     margin: 10px 0;
     font-size: 1.1rem;
   }
-
+  .cta-button {
+    display: none;
+  }
   .sub-menu {
     position: relative;
     background: none;
@@ -270,7 +274,7 @@ footer .tiny {
   }
 
   .has-sub:hover .sub-menu {
-    display: block;
+    display: none;
   }
 }
 
