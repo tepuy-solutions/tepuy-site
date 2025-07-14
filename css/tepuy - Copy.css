@@ -249,7 +249,9 @@ footer .tiny {
     align-items: center;
   }
 
-  
+  .cta-button {
+    display: none;
+  }
 
   .hamburger {
     display: block;
@@ -281,7 +283,9 @@ footer .tiny {
     margin: 10px 0;
     font-size: 1.1rem;
   }
-  
+  .cta-button {
+    display: none;
+  }
   .sub-menu {
     position: relative;
     background: none;
@@ -335,7 +339,7 @@ footer .tiny {
 }
 @media (max-width: 768px) {
   .feature-card {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 
   .feature-img,
@@ -812,7 +816,9 @@ input[type="text"]:focus {
 
 /* Responsive: hide on small screens */
 @media (max-width: 768px) {
-  
+  .cta-button {
+    display: none;
+  }
 }
 .contact-form {
   padding: 60px 0;
@@ -857,9 +863,3 @@ figure img {
 
 
 
-
-@media (max-width: 768px) {
-  .feature-card {
-    flex-direction: column !important;
-  }
-}
