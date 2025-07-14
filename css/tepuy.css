@@ -371,6 +371,7 @@ footer .tiny {
     background-repeat: no-repeat;
     border-radius: 12px;
     margin-bottom: 16px;
+    transition: background-image 0.3s ease-in-out;
   }
 
   .feature-copy {
