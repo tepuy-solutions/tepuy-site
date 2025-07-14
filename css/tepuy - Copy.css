@@ -1,0 +1,863 @@
+/* === Tepuy Solutions: Premium Forest Theme ========================= */
+
+:root {
+  --brand-green: #1f4c3b;
+  --brand-green-dark: #163f30;
+  --brand-green-light: #d4ede1;
+  --brand-bg: #f4f8f6;
+  --text-dark: #0b1f16;
+  --text-light: #ffffff;
+  --accent: #28a745;
+}
+
+/* --- base ----------------------------------- */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Inter','Segoe UI',sans-serif;
+  background: var(--brand-bg);
+  color: var(--text-dark);
+}
+a { color: var(--brand-green); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; }
+
+/* --- nav ------------------------------------ */
+.navbar {
+  background: var(--brand-green);
+  color: var(--text-light);
+  width: 100%;
+  padding: 16px 0;
+  position: relative; /* ✅ ADD THIS */
+  z-index: 1000;       /* Optional, to ensure it sits above hero/image */
+}
+
+.navbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.nav-links a {
+  font-size: 1.2rem; /* Increase this value as needed (1.2rem or 16px for example) */
+  font-weight: 600;
+  padding: 8px 16px;
+  color: var(--text-light);
+}
+.logo {
+  height: 36px;
+  margin-right: 10px;
+}
+.logo-title {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.25rem;
+  text-align: left;          /* ✅ Force left alignment */
+  flex-shrink: 0;            /* ✅ Prevent it from shrinking */
+}
+
+/* hamburger (hidden desktop) */
+.hamburger {
+  display: none; font-size: 1.8rem; background: none; border: none;
+  color: var(--text-light); cursor: pointer;
+}
+
+/* --- Hero section ------------------------- */
+.hero {
+  position: relative;
+  background-image: url('/img/auyantepui.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--text-light);
+  padding: 120px 20px;
+  text-align: center;
+  z-index: 0;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);  /* dark overlay */
+  z-index: 1;
+}
+
+.hero h1,
+.hero p {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* --- layout shell ---------------------------- */
+.calc-wrapper {
+  max-width: 1000px; margin: 40px auto; padding: 0 20px;
+}
+.grid-3col, .grid-2col {
+  display: grid; gap: 18px; margin-bottom: 28px;
+}
+.grid-3col {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+.grid-2col {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+label { display: flex; flex-direction: column; font-weight: 600; }
+input, select {
+  padding: 9px 10px; border: 1px solid #ccc; border-radius: 6px;
+  font-size: 1rem; background: #fffdf5;
+}
+
+/* --- buttons / result boxes ------------------ */
+.btn-primary {
+  padding: 14px 28px; margin: 0 auto 10px auto; display: block;
+  background: var(--accent); border: none; color: #fff;
+  border-radius: 6px; font-size: 1rem; cursor: pointer;
+}
+.btn-primary:hover { background: #218838; }
+.result-box {
+  margin-top: 26px; padding: 18px;
+  border-left: 6px solid var(--accent); background: var(--brand-green-light);
+  font-weight: 600;
+}
+.result-box.error {
+  border-left-color: #dc3545; background: #ffe8e8;
+}
+.strip {
+  padding-top: 60px; /* or use margin-top instead */
+}
+
+/* --- table & quick outputs ------------------ */
+.quick-out label { font-size: .92rem; }
+.quick-out input {
+  background: #f3f3f3; color: #333; font-weight: 600;
+}
+.table-container {
+  max-height: 480px;       /* Or whatever height you want */
+  overflow-y: auto;
+  overflow-x: auto;
+  position: relative;      /* Needed for sticky positioning to anchor */
+  margin-top: 26px;
+}
+
+th, td {
+  padding: 10px; border: 1px solid #d0d0d0; text-align: right;
+}
+tr:nth-child(even) { background: #fafafa; }
+.results-table td.highlight,
+.results-table th.highlight {
+  background-color: var(--brand-green-light);
+  font-weight: 600;
+}
+/* --- blog grid ------------------------------ */
+.blog-grid {
+  max-width: 1000px; margin: 40px auto; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 26px; padding: 0 20px;
+}
+.post-card {
+  background: #fff; border: 1px solid #ddd;
+  border-radius: 8px; transition: transform .15s;
+}
+.post-card:hover { transform: translateY(-4px); }
+.post-card img {
+  width: 100%; height: 160px; object-fit: cover;
+  border-top-left-radius: 8px; border-top-right-radius: 8px;
+}
+.post-card-body { padding: 18px; }
+.post-card-body h2 {
+  font-size: 1.15rem; margin: 0 0 8px 0; color: var(--brand-green);
+}
+.meta { font-size: .83rem; color: #666; margin-bottom: 10px; }
+.excerpt { font-size: .9rem; color: #333; }
+
+/* --- blog single post ------------------------ */
+.blog-post {
+  max-width: 750px; margin: 40px auto; padding: 0 20px;
+  background: #fff;
+}
+.post-meta { color: #666; font-size: .85rem; margin-bottom: 20px; }
+.blog-footer { margin-top: 40px; text-align: center; }
+
+/* --- footer ---------------------------------- */
+footer {
+  background: var(--brand-green); color: var(--text-light);
+  text-align: center; padding: 16px; font-size: .9rem;
+}
+.ts-footer {
+  background: var(--brand-green);
+  color: var(--text-light);
+  padding: 24px 0;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+  align-items: start;
+  padding-bottom: 20px;
+}
+
+.footer-grid a {
+  display: block;
+  color: var(--text-light);
+  margin-top: 6px;
+}
+
+.footer-cta {
+  text-align: center;
+}
+.footer-cta .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;         /* ensures a consistent button height */
+  padding: 0 24px;       /* horizontal padding */
+  font-size: 1rem;
+  text-align: center;
+}
+.footer-legal-links {
+  margin-top: 6px;
+  font-size: 0.9rem;         /* Optional: smaller legal font size */
+}
+
+.footer-legal-links a {
+  display: inline;
+  color: var(--text-light);  /* Keep it consistent with other links */
+  margin: 0 4px;
+  text-decoration: none;
+}
+
+.footer-legal-links a:hover {
+  text-decoration: underline;
+}
+
+footer .tiny {
+  font-size: 0.8rem;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* --- responsive tweaks ----------------------- */
+@media (max-width: 768px) {
+  .navbar-inner {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .cta-button {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+    font-size: 1.8rem;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background: var(--brand-green);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 999;
+    padding: 10px 20px;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .nav-links a {
+    margin: 10px 0;
+    font-size: 1.1rem;
+  }
+  .cta-button {
+    display: none;
+  }
+  .sub-menu {
+    position: relative;
+    background: none;
+    box-shadow: none;
+    padding-left: 20px;
+  }
+
+  .has-sub:hover .sub-menu {
+    display: none;
+  }
+}
+
+@media (max-width:640px) {
+  .hero-banner { padding: 28px 24px; }
+  .btn { display: block; margin: 10px auto; }
+  th, td { font-size: .84rem; }
+}
+
+/* --- feature cards --------------------------- */
+.feature-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: 60px;
+}
+
+.feature-card:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+.feature-img {
+  flex: 0 0 50%;
+  height: 260px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.feature-copy {
+  flex: 0 0 50%;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.feature-copy h3 {
+  margin: 0 0 10px; font-size: 1.6rem; color: var(--brand-green);
+}
+@media (max-width: 768px) {
+  .feature-card {
+    flex-direction: column;
+  }
+
+  .feature-img,
+  .feature-copy {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  .feature-img {
+    height: 200px;
+  }
+
+  .feature-copy {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 650px) {
+  .feature-card {
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .feature-img {
+    display: block;
+    width: 100%;
+    height: 180px; /* ✅ FORCE height */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    transition: background-image 0.3s ease-in-out;
+  }
+
+  .feature-copy {
+    padding: 0 20px;
+  }
+}
+
+
+
+/* --- soft-gate overlay ----------------------- */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(3px);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 9999; color: #fff; text-align: center;
+}
+.overlay-card {
+  background: var(--brand-green-dark);
+  padding: 34px 28px; border-radius: 8px; max-width: 420px;
+}
+.overlay-card h3 { margin-top: 0; font-size: 1.4rem; }
+.blur { filter: blur(4px); pointer-events: none; user-select: none; }
+
+/* --- Pro gate section ------------------------ */
+.pro-gate { margin: 40px 0; text-align: center; }
+.locked-msg {
+  margin-bottom: 14px; font-weight: 600; color: #b02d2d;
+}
+.pro-only.locked {
+  filter: none; pointer-events: auto;
+}
+
+/* --- Pricing modal --------------------------- */
+.modal-overlay {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.55); z-index: 9999;
+}
+.modal {
+  background: #fff; border-radius: 10px; padding: 32px 36px;
+  max-width: 360px; width: 90%;
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+  text-align: center; position: relative;
+}
+.modal-close {
+  position: absolute; top: 10px; right: 10px;
+  background: none; border: none; font-size: 1.2rem;
+  cursor: pointer; color: var(--text-dark);
+}
+.modal h2 {
+  margin: 0 0 12px; font-size: 1.55rem; color: var(--brand-green);
+}
+.modal .price {
+  font-size: 1.8rem; margin: 0 0 18px; color: var(--accent);
+}
+.modal .benefits {
+  list-style: none; padding: 0; margin: 0 0 24px;
+  text-align: left; font-size: .96rem;
+}
+.modal .benefits li {
+  margin: 6px 0; padding-left: 4px;
+}
+.btn-wide {
+  width: 100%; max-width: 260px; margin: 0 auto;
+}
+.small-note {
+  font-size: .8rem; color: #555; margin-top: 12px;
+}
+
+/* --- Enhanced Upsell Modal ------------------------ */
+.overlay-card {
+  background: #fff;
+  padding: 32px;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  animation: slideUp 0.4s ease-out;
+}
+.modal-title {
+  margin-bottom: 8px;
+  font-size: 1.6rem;
+  color: var(--brand-green);
+}
+.modal-subtitle {
+  margin-bottom: 16px;
+  font-size: 1.05rem;
+  color: #333;
+}
+.modal-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  text-align: left;
+  font-size: .95rem;
+}
+.modal-benefits li {
+  margin: 6px 0;
+  padding-left: 1.4em;
+  text-indent: -1.2em;
+}
+.modal-benefits li::before {
+  content: "✓ ";
+  color: var(--accent);
+  font-weight: bold;
+}
+.text-link {
+  font-size: 0.9rem;
+  color: var(--brand-green);
+  text-decoration: underline;
+  cursor: pointer;
+}
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@media (max-width: 480px){
+  input {
+    font-size: 0.9rem;
+  }
+}
+.pro-badge {
+  background: #b02d2d;
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* --- Pro-only input gating ------------------- */
+.pro-only input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pro-only.locked {
+  opacity: 1;            /* Label text remains normal */
+  cursor: pointer;
+  filter: none;          /* No blur */
+  pointer-events: auto;  /* Allows triggering upsell modal */
+}
+
+.pro-only.locked input:disabled {
+  opacity: 0.5;
+  filter: grayscale(100%);  /* Subtle visual cue */
+}
+/* --- Planner Layout Enhancements ------------------- */
+.form-sectioned {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-bottom: 1.5rem;
+}
+
+
+
+.results-summary {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 640px;
+  margin: 1rem auto 2rem auto;
+  font-size: 1.1rem;
+  padding: 0.75rem 1.25rem;
+  background: #ffffff;
+  border: 2px solid var(--brand-green-light);
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  gap: 10px;
+}
+
+.results-summary div {
+  font-weight: 600;
+}
+.results-scroll {
+  max-height: 480px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+
+
+/* === Sticky Table Header Row === */
+.results-table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 2;
+}
+
+/* === Sticky First Column === */
+.results-table th:first-child,
+.results-table td:first-child {
+  position: sticky;
+  left: 0;
+  background-color: #ffffff;
+  z-index: 1;
+}
+
+/* === Sticky Top-Left Corner Fix === */
+.results-table thead th:first-child {
+  z-index: 3; /* Stays on top of everything */
+}
+
+
+/* === Column Shading === */
+.results-table td.property,
+.results-table th.property {
+  background-color: #e6f4e6;
+}
+.results-table td.shares,
+.results-table th.shares {
+  background-color: #e6f0fa;
+}
+
+/* === Toggle Buttons === */
+.planner-controls {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+.btn-toggle {
+  background: var(--brand-green-dark);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-toggle:hover {
+  background: var(--brand-green);
+}
+
+/* === Enhanced Wide Summary === */
+.results-summary.wide {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 1.5rem;
+}
+/* === Enhanced Input Aesthetics === */
+
+
+label {
+  font-weight: 500;
+  font-size: 0.92rem;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  color: #333;
+}
+
+
+
+/* Better spacing on grouped fields */
+fieldset label:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+/* Responsive form refinement */
+@media (max-width: 768px) {
+  .form-sectioned {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Improve results-summary visuals */
+.results-summary {
+  background: #f9fbfa;
+  border: 2px solid #d4ede1;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  font-size: 1.1rem;
+  color: #1f4c3b;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+}
+
+.results-summary div {
+  font-weight: 700;
+}
+
+.btn-toggle.inactive {
+  opacity: 0.6;
+  background-color: #555;
+}
+
+/* === Fancy Card Headers for Fieldsets === */
+/* === Modern Fieldset Cards with Accent Borders === */
+/* === Modern Fieldset Cards with Accent Borders === */
+fieldset {
+  border-left: 6px solid var(--accent);
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease;
+}
+/* On hover, make the accent border brighter */
+fieldset:hover {
+  border-color: #218838;
+}
+
+/* Header tag (legend) styled like a floating label */
+legend {
+  display: inline-block;
+  white-space: nowrap;             /* ✅ Prevents text wrapping */
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--brand-green-dark);
+  background: #ffffff;
+  padding: 0.4rem 1.2rem;
+  border-radius: 22px;
+  position: relative;
+  top: -1.2rem;
+  margin: 0 auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+
+
+/* === Animated Input Focus Effect === */
+/* Base state */
+input[type="number"],
+input[type="text"] {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus state only */
+input[type="number"]:focus,
+input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.12);
+  outline: none;
+}
+.content-wrapper {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Dropdowns show on hover instead of click */
+.has-sub {
+  position: relative;
+}
+.has-sub:hover .sub-menu {
+  display: block;
+}
+
+/* Submenu styles */
+.sub-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  color: black;
+  padding: 10px 0;
+  border-radius: 6px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+  z-index: 1000;
+  min-width: 200px;
+}
+.sub-menu a {
+  display: block;
+  font-size: 1rem;
+  padding: 10px 18px;
+  color: var(--text-dark);
+  text-decoration: none;
+}
+.sub-menu a:hover {
+  background-color: #f4f8f6;
+}
+.has-sub > a {
+  position: relative;
+  padding-right: 10px;
+}
+
+/* Prevent layout jumping on hover */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.btn-cta {
+  background: #28a745;
+  color: white;
+  padding: 8px 16px;
+  font-weight: 600;
+  border-radius: 5px;
+  margin-left: 20px;
+  transition: background 0.3s ease;
+}
+.btn-cta:hover {
+  background: #218838;
+}
+.hero-banner.transparent {
+  background: rgba(0, 0, 0, 0.45);
+  color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 8px;
+  max-width: 700px;
+  text-align: left;
+}
+.hero-banner.transparent h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.hero-banner.transparent p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+/* CTA Button Styling */
+.cta-button {
+  background-color: var(--accent);
+  font-size: 1rem;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  margin-left: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #218838;
+}
+
+/* Responsive: hide on small screens */
+@media (max-width: 768px) {
+  .cta-button {
+    display: none;
+  }
+}
+.contact-form {
+  padding: 60px 0;
+  background-color: #f5f8f5;
+}
+.contact-form h1,
+.contact-form p {
+  text-align: center;
+}
+.contact-form iframe {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+/* --- References section (Sources list) --- */
+.references {
+  margin-top: 40px;
+}
+.references ul {
+  list-style: disc inside;
+  margin-top: 10px;
+}
+.references ul li {
+  margin-bottom: 6px;
+}
+
+figure {
+  margin: 40px 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  width: 900px;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+
+
+
+
+
+
