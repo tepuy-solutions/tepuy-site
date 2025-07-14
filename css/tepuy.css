@@ -359,18 +359,18 @@ footer .tiny {
   .feature-card {
     flex-direction: column;
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 48px;
   }
 
   .feature-img {
-    display: block;                          /* Ensures the box renders */
+    display: block;
     width: 100%;
-    height: 180px;                           /* MUST have a height */
+    height: 180px; /* ✅ FORCE height */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    border-radius: 12px;
     margin-bottom: 16px;
-    border-radius: 10px;                     /* Optional for nice polish */
   }
 
   .feature-copy {
