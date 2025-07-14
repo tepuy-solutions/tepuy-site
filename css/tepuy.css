@@ -354,15 +354,19 @@ footer .tiny {
     flex-direction: row-reverse;
   }
 }
-/* --- feature cards --------------------------- */
+/* === Tepuy Homepage: Feature Strip Cards ======================= */
 .feature-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
-  width: 100%;
-  margin-bottom: 60px;
   gap: 32px;
+  margin-bottom: 48px;
+  width: 100%;
+}
+
+.feature-card.reverse {
+  flex-direction: row-reverse;
 }
 
 .feature-img {
@@ -376,8 +380,8 @@ footer .tiny {
 
 .feature-copy {
   flex: 1;
-  padding: 20px 30px;
   max-width: 60%;
+  padding: 20px 30px;
   box-sizing: border-box;
 }
 
@@ -387,9 +391,6 @@ footer .tiny {
   color: var(--brand-green);
 }
 
-.feature-card.reverse {
-  flex-direction: row-reverse;
-}
 
 
 
@@ -861,27 +862,5 @@ figure img {
 }
 
 
-
-/* === Tepuy Homepage: Feature Strip Cards ======================= */
-
-.feature-card {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  margin-bottom: 48px;
-}
-
-.feature-img {
-  flex: 0 0 240px;
-  height: 240px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 12px;
-}
-
-.feature-copy {
-  flex: 1;
-  padding-right: 12px;
-}
 
 
