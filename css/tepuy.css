@@ -219,6 +219,21 @@ footer {
   font-size: 1rem;
   text-align: center;
 }
+.footer-legal-links {
+  margin-top: 6px;
+  font-size: 0.9rem;         /* Optional: smaller legal font size */
+}
+
+.footer-legal-links a {
+  display: inline;
+  color: var(--text-light);  /* Keep it consistent with other links */
+  margin: 0 4px;
+  text-decoration: none;
+}
+
+.footer-legal-links a:hover {
+  text-decoration: underline;
+}
 
 footer .tiny {
   font-size: 0.8rem;
