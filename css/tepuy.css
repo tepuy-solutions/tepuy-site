@@ -43,6 +43,7 @@ img { max-width: 100%; }
   font-size: 1.2rem; /* Increase this value as needed (1.2rem or 16px for example) */
   font-weight: 600;
   padding: 8px 16px;
+  color: var(--text-light);
 }
 .logo {
   height: 36px;
