@@ -359,7 +359,7 @@ footer .tiny {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 32px;
   margin-bottom: 48px;
   width: 100%;
