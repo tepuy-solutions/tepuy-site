@@ -314,8 +314,10 @@ footer .tiny {
   margin-bottom: 60px;
 }
 
-.feature-card:nth-child(even) {
-  flex-direction: row-reverse;
+@media (min-width: 769px) {
+  .feature-card:nth-child(even) {
+    flex-direction: row-reverse;
+  }
 }
 
 .feature-img {
@@ -337,7 +339,7 @@ footer .tiny {
 }
 @media (max-width: 768px) {
   .feature-card {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 
   .feature-img,
