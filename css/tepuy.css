@@ -855,6 +855,8 @@ figure img {
 
 
 .feature-img {
+  width: 100%;
+  height: 260px; /* always set fixed height */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -885,6 +887,46 @@ figure img {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+  }
+
+  .feature-copy {
+    padding: 0 20px 20px;
+  }
+}
+/* === Tepuy Homepage: Feature Strip Cards ======================= */
+
+.feature-card {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.feature-img {
+  flex: 0 0 240px;
+  height: 240px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+}
+
+.feature-copy {
+  flex: 1;
+  padding-right: 12px;
+}
+
+/* ───── Mobile Layout ───── */
+@media (max-width: 768px) {
+  .feature-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .feature-img {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 12px;
   }
 
   .feature-copy {
