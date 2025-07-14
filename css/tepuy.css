@@ -854,6 +854,11 @@ figure img {
 
 
 
+.feature-img {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
 
 
@@ -874,9 +879,12 @@ figure img {
 
   .feature-img {
     width: 100%;
-    height: auto;
+    height: 200px; /* ✅ fixed height so image is visible */
     border-radius: 12px 12px 0 0;
     margin-bottom: 16px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .feature-copy {
@@ -884,15 +892,3 @@ figure img {
   }
 }
 
-
-  .feature-img {
-    width: 100%;
-    height: auto;
-    border-radius: 12px 12px 0 0;
-    margin-bottom: 16px;
-  }
-
-  .feature-copy {
-    padding: 0 20px 20px;
-  }
-}
