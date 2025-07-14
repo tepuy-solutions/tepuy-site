@@ -859,23 +859,31 @@ figure img {
 
 
 @media (max-width: 768px) {
-  .feature-card {
-    flex-direction: column !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .btn-cta {
+  /* Hide CTA button on mobile */
+  .btn-cta,
+  .cta-button {
     display: none !important;
   }
-}
 
-@media (max-width: 768px) {
+  /* Stack feature cards vertically on mobile */
   .feature-card {
     flex-direction: column !important;
     align-items: stretch;
     text-align: center;
   }
+
+  .feature-img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 16px;
+  }
+
+  .feature-copy {
+    padding: 0 20px 20px;
+  }
+}
+
 
   .feature-img {
     width: 100%;
