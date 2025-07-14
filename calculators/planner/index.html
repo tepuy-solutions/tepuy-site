@@ -97,12 +97,55 @@
 
 <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
 
-<script src="src/planner_calc.js"></script>
 <script>
-  document.getElementById('menuToggle').onclick = () =>
-    document.getElementById('navMenu').classList.toggle('show');
+  const menuToggle = document.getElementById('menuToggle');
+  const navMenu = document.getElementById('navMenu');
+  menuToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('show');
+  });
+
   document.querySelectorAll('.sub-toggle').forEach(btn =>
     btn.onclick = () => btn.parentElement.classList.toggle('open'));
 </script>
+
+<style>
+  .has-sub { position: relative; }
+  .sub-toggle {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font: inherit;
+    margin-left: 20px;
+  }
+  .sub-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--brand-green-dark);
+    padding: 8px 0;
+    border-radius: 4px;
+    min-width: 180px;
+    z-index: 999;
+  }
+  .sub-menu a {
+    display: block;
+    padding: 8px 18px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .has-sub.open .sub-menu {
+    display: block;
+  }
+  @media(max-width:768px) {
+    .sub-toggle { margin: 10px 0; font-size: 1.1rem; }
+    .sub-menu { position: static; }
+    .nav-links { display: none; flex-direction: column; gap: 14px; }
+    .nav-links.show { display: flex; }
+    .hamburger { display: block; }
+  }
+</style>
+
 </body>
 </html>
