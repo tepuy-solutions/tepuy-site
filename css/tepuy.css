@@ -357,20 +357,20 @@ footer .tiny {
 
 @media (max-width: 650px) {
   .feature-card {
-    flex-direction: column !important;
+    flex-direction: column;
     text-align: center;
     margin-bottom: 40px;
   }
 
   .feature-img {
-    display: block;                  /* ✅ Ensure visibility */
-    width: 100%;                     /* ✅ Full width */
-    height: 220px;                   /* ✅ Must define height! */
+    display: block;                          /* Ensures the box renders */
+    width: 100%;
+    height: 180px;                           /* MUST have a height */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    margin-bottom: 20px;
-    border-radius: 8px;              /* Optional: polish */
+    margin-bottom: 16px;
+    border-radius: 10px;                     /* Optional for nice polish */
   }
 
   .feature-copy {
