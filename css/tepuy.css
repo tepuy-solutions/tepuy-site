@@ -303,6 +303,7 @@ footer .tiny {
   .feature-img {
     width: 100% !important;
     height: 220px !important;
+    min-height: 220px;
     border-radius: 12px 12px 0 0;
     margin-bottom: 16px;
     background-size: cover;
