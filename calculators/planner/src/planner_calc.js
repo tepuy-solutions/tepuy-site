@@ -53,12 +53,12 @@ function calculatePlanner() {
   rows.push([
     "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
     "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
-    "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Profit (Property)",
+    "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Cash (Property)",
     "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
     "Cost Base of Units Sold", "Units Bought", "Units Sold", "Units Held",
     "Avg Unit Cost", "Value of Shares Owned",
     "Total Cost Base (Shares)", "Capital Gain if All Shares Sold", "CGT if All Shares Sold",
-    "Net Profit if All Shares Sold"
+    "Net Cash if All Shares Sold"
   ]);
 
   for (let y = 0; y <= yrsRet; y++) {
@@ -81,7 +81,7 @@ function calculatePlanner() {
     const propCapGain = y ? propVal - adjustedCostBase : 0;
     const propCGT = y ? Math.round(Math.max(0, propCapGain * 0.5 * saleTaxRate)) : 0;
     const saleCost = y ? Math.round(propVal * salePct) : 0;
-    const netProfitProp = propVal - owed - propCGT - saleCost;
+    const netCashProp = propVal - owed - propCGT - saleCost;
 
 
     // Shares logic
@@ -153,7 +153,7 @@ function calculatePlanner() {
     rows.push([
       y, propVal, owed, equity, rent, ownCost, interest,
       cfBeforeTax, depr, taxableIncome, tax, netCF,
-      propCapGain, propCGT, saleCost, netProfitProp,
+      propCapGain, propCGT, saleCost, netCashProp,
       sharesAdj, cgtSharesSold,
       Math.round(costBaseSold), Math.round(unitsBought), Math.round(unitsSold),
       Math.round(unitsHeld), avgCost.toFixed(2), sharesValue,
@@ -164,7 +164,15 @@ function calculatePlanner() {
 
 if (chart) chart.destroy();
 const ctx = $("plannerChart");
-chart = createTepuyStyledChart(ctx, labels, equityArr, sharesArr, 'Equity in Property', 'Value of Shares', 'Projection Year');
+const showNetCash = $("toggleNetCashChart").checked;
+
+const y1 = showNetCash ? rows.slice(1).map(r => r[15]) : equityArr; // Net Cash Prop (col 15)
+const y2 = showNetCash ? rows.slice(1).map(r => r[27]) : sharesArr; // Net Cash Shares (col 27)
+
+const label1 = showNetCash ? "Net Cash in Property (if sold)" : "Equity in Property";
+const label2 = showNetCash ? "Net Cash in Shares (if sold)" : "Value of Shares";
+
+chart = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, 'Projection Year');
 
 
 

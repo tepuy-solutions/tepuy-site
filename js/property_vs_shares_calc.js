@@ -141,7 +141,7 @@ function drawProjection(base, showTable) {
            <th>Yr</th><th>Property Value</th><th>Capital Owed</th>
            <th class="highlight">Equity</th>
            <th>Own Costs</th><th>Rent</th><th>Interest</th>
-           <th>Depr.</th><th>Amort.</th><th>Net CF</th>
+           <th>Depr.</th><th>Adj. Cost Base</th><th>Amort.</th><th>Net CF</th>
            <th class="highlight">Shares Value</th>
          </tr></thead>
          <tbody>${rows}</tbody></table></div>`;
