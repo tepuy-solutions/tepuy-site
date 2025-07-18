@@ -63,21 +63,82 @@ function runRetirementCalc(){
     ? `✔️ Goal reached by age ${hitAge} (${hitAge-age} yrs) with ≈ ${fmt(caps[labels.indexOf(hitAge.toString())])}.`
     : `⚠️ Goal not met by age ${age+55}.`;
 
-  if(chart) chart.destroy();
-  chart=new Chart($("retChart"),{
-    type:"line",
-    data:{
+  if (chart) chart.destroy();
+  chart = new Chart($("retChart"), {
+    type: "line",
+    data: {
       labels,
-      datasets:[
-        {label:"Capital",data:caps ,borderColor:"#28a745",borderWidth:2,fill:false},
-        {label:"Infl-Adj Goal",data:goals,borderColor:"#dc3545",borderWidth:2,fill:false}
-      ]
+      datasets: [
+        {
+          label: "Capital",
+          data: caps,
+          borderColor: "#28a745",
+          backgroundColor: "rgba(40,167,69,.1)",
+          fill: true,
+          tension: 0.35,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+        },
+        {
+          label: "Infl-Adj Goal",
+          data: goals,
+          borderColor: "#dc3545",
+          backgroundColor: "rgba(220,53,69,.1)",
+          fill: true,
+          tension: 0.35,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+        },
+      ],
     },
-    options:{
-      responsive:true,
-      plugins:{legend:{labels:{boxWidth:14}}},
-      scales:{y:{ticks:{callback:v=>fmt(v)}}}
-    }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "bottom" },
+        watermark: {
+          image: new Image(),
+          opacity: 0.07,
+          alignX: "center",
+          alignY: "center",
+          width: 300,
+          height: 150,
+        },
+      },
+      scales: {
+        y: {
+          ticks: {
+            callback: (v) => fmt(v),
+          },
+          grid: {
+            color: "#e0e0e0",
+            lineWidth: 0.5,
+          },
+        },
+        x: {
+          ticks: {
+            maxTicksLimit: 15,
+          },
+          grid: {
+            display: false,
+          },
+        },
+      },
+    },
+    plugins: [{
+      id: 'watermark',
+      beforeDraw: (chart) => {
+        const ctx = chart.ctx;
+        const { chartArea } = chart;
+        const img = new Image();
+        img.src = "/img/tepuy_logo_watermark.png"; // ✅ Your transparent logo
+        ctx.globalAlpha = 0.07;
+        const x = chartArea.left + chartArea.width / 2 - 150;
+        const y = chartArea.top + chartArea.height / 2 - 75;
+        ctx.drawImage(img, x, y, 300, 150);
+        ctx.globalAlpha = 1;
+      }
+    }]
   });
 
 $("retResults").innerHTML =

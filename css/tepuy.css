@@ -155,6 +155,27 @@ tr:nth-child(even) { background: #fafafa; }
   background-color: var(--brand-green-light);
   font-weight: 600;
 }
+/* --- Results Table Styling ----------------------- */
+.results-table.centered {
+  margin: 2rem auto;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.results-table.centered th,
+.results-table.centered td {
+  padding: 8px 14px;
+  border: 1px solid #ccc;
+}
+.results-table.centered tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.results-table.centered thead th {
+  background-color: #1f4c3b;
+  color: white;
+}
+
 /* --- blog grid ------------------------------ */
 .blog-grid {
   max-width: 1000px; margin: 40px auto; display: grid;
