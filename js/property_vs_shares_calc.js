@@ -138,7 +138,7 @@ function drawProjection(base, showTable) {
   if (showTable) {
     const rows = csvRows.slice(1)
       .map(r => `<tr>${r.map((c, i) => {
-        const highlightCols = [3, 10]; // 3 = Equity, 10 = Shares Value
+        const highlightCols = [3, 11]; // 3 = Equity, 11 = Shares Value
         const cls = highlightCols.includes(i) ? ' class="highlight"' : '';
         return `<td${cls}>${fmt(c)}</td>`;
       }).join("")}</tr>`).join("");
