@@ -66,70 +66,109 @@ function runRetirementCalc(){
     ? `✔️ Goal reached by age ${hitAge} (${hitAge-age} yrs) with ≈ ${fmt(caps[labels.indexOf(hitAge.toString())])}.`
     : `⚠️ Goal not met by age ${age+55}.`;
 
-if (chart) chart.destroy();
-chart = new Chart($("retChart"), {
-  type: "line",
-  data: {
-    labels,
-    datasets: [
-      {
-        label: "Capital",
-        data: caps,
-        borderColor: "#28a745",
-        backgroundColor: "rgba(40,167,69,.1)",
-        fill: true,
-        tension: 0.35,
-        pointRadius: 3,
-        pointHoverRadius: 5,
-      },
-      {
-        label: "Infl-Adj Goal",
-        data: goals,
-        borderColor: "#dc3545",
-        backgroundColor: "rgba(220,53,69,.1)",
-        fill: true,
-        tension: 0.35,
-        pointRadius: 3,
-        pointHoverRadius: 5,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { position: "bottom" }
+  // 🟢 Replace chart with Tepuy style
+  if (chart) chart.destroy();
+  chart = new Chart($("retChart"), {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Capital",
+          data: caps,
+          borderColor: "#28a745",
+          backgroundColor: "rgba(40, 167, 69, 0.08)",
+          borderWidth: 3,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          fill: true,
+          tension: 0.35
+        },
+        {
+          label: "Infl-Adj Goal",
+          data: goals,
+          borderColor: "#dc3545",
+          backgroundColor: "rgba(220, 53, 69, 0.08)",
+          borderWidth: 3,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          fill: true,
+          tension: 0.35
+        }
+      ]
     },
-    scales: {
-      y: {
-        ticks: { callback: v => fmt(v) },
-        grid: { color: "#e0e0e0", lineWidth: 0.5 }
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: 20 },
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            font: { family: 'Inter', size: 14, weight: '600' },
+            color: '#163f30',
+            boxWidth: 18,
+            boxHeight: 18,
+            usePointStyle: true,
+            pointStyle: 'circle'
+          }
+        },
+        tooltip: {
+          backgroundColor: '#163f30',
+          titleFont: { family: 'Inter', weight: '700' },
+          bodyFont: { family: 'Inter' },
+          cornerRadius: 4
+        }
       },
-      x: {
-        ticks: { maxTicksLimit: 15 },
-        grid: { display: false }
-      }
-    }
-  },
-  plugins: [
-    {
-      id: 'watermark',
-      beforeDraw: chart => {
-        const { width, height, ctx } = chart;
-        if (watermarkLogo.complete) {
-          const scale = 180 / watermarkLogo.width;
-          const w = 180;
-          const h = watermarkLogo.height * scale;
-          ctx.save();
-          ctx.globalAlpha = 0.07;
-          ctx.drawImage(watermarkLogo, width - w - 10, height - h - 10, w, h);
-          ctx.restore();
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Age',
+            font: { family: 'Inter', size: 14, weight: '600' },
+            color: '#0b1f16'
+          },
+          ticks: {
+            color: '#0b1f16',
+            maxTicksLimit: 15,
+            font: { family: 'Inter', size: 12 }
+          },
+          grid: { color: '#e0e0e0' }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Value (AUD)',
+            font: { family: 'Inter', size: 14, weight: '600' },
+            color: '#0b1f16'
+          },
+          ticks: {
+            callback: v => v.toLocaleString('en-AU'),
+            color: '#0b1f16',
+            font: { family: 'Inter', size: 12 }
+          },
+          grid: { color: '#e0e0e0' }
         }
       }
-    }
-  ]
-});
-
+    },
+    plugins: [
+      {
+        id: 'watermark',
+        beforeDraw: chart => {
+          const { width, height, ctx } = chart;
+          if (watermarkLogo.complete) {
+            const scale = 180 / watermarkLogo.width;
+            const w = 180;
+            const h = watermarkLogo.height * scale;
+            ctx.save();
+            ctx.globalAlpha = 0.07;
+            ctx.drawImage(watermarkLogo, width - w - 10, height - h - 10, w, h);
+            ctx.restore();
+          }
+        }
+      }
+    ]
+  });
 
 
 $("retResults").innerHTML =
