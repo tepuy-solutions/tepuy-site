@@ -12,6 +12,12 @@ const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
 const num = id => parseFloat($(id).value.replace(/,/g, "")) || 0;
 const pct = id => num(id) / 100;
+function calculateAnnualLoanPayment(principal, annualRate, years) {
+  const r = annualRate;
+  const n = years;
+  return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+}
+
 
 /* ---------- global state ---------- */
 const FREE_LIMIT = 10;
@@ -46,16 +52,18 @@ function calculateBasic() {
   const lmiAmt = Math.round(loanAmt * lmiPct / (1 + lmiPct));
   const price = Math.round(loanAmt / ((1 - dpPct) * (1 + lmiPct)));
   const cashUp = Math.round(dpPct * price + costs);
-  const wkPay = ((rLoan / 12) * loanAmt * Math.pow(1 + rLoan / 12, yrs * 12)) /
-                (Math.pow(1 + rLoan / 12, yrs * 12) - 1) * 12 / 52;
+  const annualRepayment = calculateAnnualLoanPayment(loanAmt, rLoan, yrs);
+  const monthlyPayment = annualRepayment / 12;
 
   $("lmiPercentage").value = (lmiPct * 100).toFixed(2);
   $("lmiAmount").value = fmt(lmiAmt);
   $("buyPrice").value = fmt(price);
   $("totalCashUpfront").value = fmt(cashUp);
-  $("weeklyPayment").value = wkPay.toFixed(2);
+  $("monthlyPayment").value = monthlyPayment.toFixed(2);
 
-  return { loanAmt, dpPct, costs, yrs, rLoan, price, cashUp, wkPay };
+
+  return { loanAmt, dpPct, costs, yrs, rLoan, price, cashUp, monthlyPayment, annualRepayment };
+
 }
 
 /* ---------- full projection ---------- */
@@ -89,8 +97,8 @@ function drawProjection(base, showTable) {
     const ownCost = y ? Math.round(propVal * (ownPct + agentPct)) : 0;
     const depr = y ? Math.round(base.price * buildPct / 40) : 0;
     const adjCostBase = base.price - (depr * y);
-    const amort = y ? Math.round(base.wkPay * 52 - interest) : 0;
-    if (y) owed = Math.max(0, Math.round(owed * (1 + base.rLoan) - base.wkPay * 52));
+    const amort = y ? Math.round(base.annualRepayment - interest) : 0;
+    if (y) owed = Math.max(0, Math.round(owed * (1 + base.rLoan) - base.annualRepayment));
 
     let equity = propVal - owed;
 
