@@ -1,4 +1,7 @@
 /* ---------- helpers --------- */
+const watermarkLogo = new Image();
+watermarkLogo.src = "/img/tepuy_logo_dark.png";
+
 const $  = id => document.getElementById(id);
 const fmt= n  => n.toLocaleString("en-AU",{maximumFractionDigits:0});
 
@@ -64,7 +67,69 @@ function runRetirementCalc(){
     : `⚠️ Goal not met by age ${age+55}.`;
 
 if (chart) chart.destroy();
-chart = createTepuyStyledChart($("retChart"), labels, caps, goals);
+chart = new Chart($("retChart"), {
+  type: "line",
+  data: {
+    labels,
+    datasets: [
+      {
+        label: "Capital",
+        data: caps,
+        borderColor: "#28a745",
+        backgroundColor: "rgba(40,167,69,.1)",
+        fill: true,
+        tension: 0.35,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+      },
+      {
+        label: "Infl-Adj Goal",
+        data: goals,
+        borderColor: "#dc3545",
+        backgroundColor: "rgba(220,53,69,.1)",
+        fill: true,
+        tension: 0.35,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: "bottom" }
+    },
+    scales: {
+      y: {
+        ticks: { callback: v => fmt(v) },
+        grid: { color: "#e0e0e0", lineWidth: 0.5 }
+      },
+      x: {
+        ticks: { maxTicksLimit: 15 },
+        grid: { display: false }
+      }
+    }
+  },
+  plugins: [
+    {
+      id: 'watermark',
+      beforeDraw: chart => {
+        const { width, height, ctx } = chart;
+        if (watermarkLogo.complete) {
+          const scale = 180 / watermarkLogo.width;
+          const w = 180;
+          const h = watermarkLogo.height * scale;
+          ctx.save();
+          ctx.globalAlpha = 0.07;
+          ctx.drawImage(watermarkLogo, width - w - 10, height - h - 10, w, h);
+          ctx.restore();
+        }
+      }
+    }
+  ]
+});
+
 
 
 $("retResults").innerHTML =
