@@ -116,10 +116,22 @@
     const unlockBtn = document.getElementById('unlockPro');
 
     if (isPro) {
-      proGate.style.display = 'none';
-      proButtons.style.display = 'block';
-      if (unlockBtn) unlockBtn.textContent = 'Go to Planner';
-      unlockBtn.style.display = 'inline-block';
+        // ✅ Hide only the locked message, not the whole proGate
+        const lockedMsg = proGate.querySelector('.locked-msg');
+        if (lockedMsg) lockedMsg.style.display = 'none';
+
+        // ✅ Style the box to indicate it's unlocked
+        proGate.style.border = '2px solid #28a745';
+        proGate.style.background = '#e8fce9';
+
+        // ✅ Show Pro-only buttons and change unlock button
+        proButtons.style.display = 'block';
+        if (unlockBtn) {
+            unlockBtn.textContent = 'Go to Planner';
+            unlockBtn.classList.remove('btn-disabled');
+            unlockBtn.style.display = 'inline-block';
+        }
+    }
 
 
     // ✅ TOAST: only show once per session
