@@ -26,7 +26,7 @@ function updateSuggest(){
 document.addEventListener("DOMContentLoaded", () => {
   $("annRet").addEventListener("input", updateSuggest);
   $("infl").addEventListener("input", updateSuggest);
-  window.runRetirementCalc = runRetirementCalc;
+  $("runBtn").addEventListener("click", runRetirementCalc);  // ✅ attach properly
 });
 
 /* ------------- main projection ------------- */
