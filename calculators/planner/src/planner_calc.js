@@ -158,40 +158,9 @@ function calculatePlanner() {
     ]);
   }
 
-  if (chart) chart.destroy();
-  chart = new Chart($("plannerChart"), {
-    type: "line",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Property Equity",
-          data: equityArr,
-          borderColor: "#28a745",
-          backgroundColor: "rgba(40,167,69,.15)",
-          fill: true,
-          tension: .35
-        },
-        {
-          label: "Shares Value",
-          data: sharesArr,
-          borderColor: "#007bff",
-          backgroundColor: "rgba(0,123,255,.15)",
-          fill: true,
-          tension: .35
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: "bottom" } },
-      scales: {
-        y: { ticks: { callback: v => fmt(v) } },
-        x: { ticks: { autoSkip: true, maxTicksLimit: 12 } }
-      }
-    }
-  });
+if (chart) chart.destroy();
+const ctx = $("plannerChart");
+chart = createTepuyStyledChart(ctx, labels, equityArr, sharesArr);
 
   const propertyCols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
   const sharesCols = [16,17,18,19,20,21,22,23,24,25,26,27];
