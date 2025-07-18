@@ -118,10 +118,23 @@
     if (isPro) {
       proGate.style.display = 'none';
       proButtons.style.display = 'block';
-      unlockBtn.textContent = 'Go to Planner';
+      if (unlockBtn) unlockBtn.textContent = 'Go to Planner';
+
+    // ✅ TOAST: only show once per session
+    if (!sessionStorage.getItem("proToastShown")) {
+      sessionStorage.setItem("proToastShown", "yes");
+      const toast = document.createElement("div");
+      toast.textContent = "✅ Pro features unlocked";
+      toast.style = "position:fixed;bottom:20px;left:20px;background:#28a745;color:#fff;padding:8px 12px;border-radius:6px;z-index:10000;";
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
     } else {
       proButtons.style.display = 'none';
     }
+
+ 
 
     if (unlockBtn) {
       unlockBtn.onclick = async () => {

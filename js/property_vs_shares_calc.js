@@ -250,6 +250,7 @@ function init() {
   if (new URLSearchParams(location.search).get("code") === "tepuy2025") {
     localStorage.setItem(paidKey, "yes");
     paid = true;
+    location.replace(location.pathname); // ✅ Clean URL after applying code
   }
 
   /* gate pro-only UI */
