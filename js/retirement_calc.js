@@ -17,13 +17,17 @@ const fmt= n  => n.toLocaleString("en-AU",{maximumFractionDigits:0});
 function updateSuggest(){
   const r = +$("annRet").value / 100 || 0;
   const i = +$("infl").value   / 100 || 0;
-  const safeWR = ((1 + r) / (1 + i) - 1) * 100;   // exact perpetuity formula
+  const safeWR = ((1 + r) / (1 + i) - 1) * 100;
   const safeTxt = safeWR.toFixed(1);
   $("recRateLabel").textContent = `(suggested ${safeTxt} %)`;
-  $("wdRate").value = safeTxt;                     // keep input in sync
+  $("wdRate").value = safeTxt;
 }
-$("annRet").addEventListener("input",updateSuggest);
-$("infl").addEventListener("input",updateSuggest);
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("annRet").addEventListener("input", updateSuggest);
+  $("infl").addEventListener("input", updateSuggest);
+  window.runRetirementCalc = runRetirementCalc;
+});
 
 /* ------------- main projection ------------- */
 let chart;
@@ -46,18 +50,18 @@ function runRetirementCalc(){
   updateSuggest();
 
   let bal=bal0, labels=[],caps=[],goals=[],rows="",hitAge=null;
-  for(let y=0;y<=55;y++){                    // project up to ~age 100
+  for(let y=0;y<=55;y++){
     const curAge=age+y;
     if(y>0) bal=(bal+cpm*12)*(1+r);
 
     const goal=tgtM*12/wdr*Math.pow(1+infl,y);
     labels.push(curAge.toString());
-    caps  .push(Math.round(bal));
-    goals .push(Math.round(goal));
+    caps.push(Math.round(bal));
+    goals.push(Math.round(goal));
     rows+=`<tr><td>${curAge}</td><td>${fmt(bal)}</td><td>${fmt(goal)}</td></tr>`;
 
     if(!hitAge && bal>=goal) hitAge=curAge;
-    if(hitAge && y>1) break;                 // stop chart/table right after goal hit
+    if(hitAge && y>1) break;
   }
 
   $("quickMsg").hidden=false;
@@ -66,14 +70,10 @@ function runRetirementCalc(){
     ? `✔️ Goal reached by age ${hitAge} (${hitAge-age} yrs) with ≈ ${fmt(caps[labels.indexOf(hitAge.toString())])}.`
     : `⚠️ Goal not met by age ${age+55}.`;
 
-if (chart) chart.destroy();
-const ctx = $("retChart");
-chart = createTepuyStyledChart(ctx, labels, caps, goals);
+  if (chart) chart.destroy();
+  const ctx = $("retChart");
+  chart = createTepuyStyledChart(ctx, labels, caps, goals);
 
-
-
-$("retResults").innerHTML =
-  `<table class="results-table centered"><thead><tr><th>Age</th><th>Capital ($)</th><th>Infl-Adj Goal</th></tr></thead><tbody>${rows}</tbody></table>`;
+  $("retResults").innerHTML =
+    `<table class="results-table centered"><thead><tr><th>Age</th><th>Capital ($)</th><th>Infl-Adj Goal</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
-
-window.runRetirementCalc=runRetirementCalc;
