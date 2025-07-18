@@ -261,6 +261,7 @@ function init() {
   if (paid) {
     unlockBtn.textContent = "Go to Planner";
     unlockBtn.classList.remove("btn-disabled");
+    unlockBtn.style.display = "inline-block"; // ✅ SHOW the button!
     unlockBtn.onclick = goToPlanner;
     sellBox.disabled = false;
     sellBox.closest("label").classList.remove("locked");
