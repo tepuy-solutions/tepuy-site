@@ -117,30 +117,11 @@ function drawProjection(base, showTable) {
 
   }
 
-  /* ---- chart ---- */
-  if (chart) chart.destroy();
-  chart = new Chart($("investmentChart"), {
-    type: "line",
-    data: {
-      labels,
-      datasets: [
-        { label: "Property Equity", data: equityArr,
-          borderColor: "#28a745", backgroundColor: "rgba(40,167,69,.15)",
-          fill: true, tension: .35 },
-        { label: "Shares Value", data: sharesArr,
-          borderColor: "#007bff", backgroundColor: "rgba(0,123,255,.15)",
-          fill: true, tension: .35 }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: "bottom" } },
-      scales: {
-        y: { ticks: { callback: v => fmt(v) } },
-        x: { ticks: { autoSkip: true, maxTicksLimit: 12 } }
-      }
-    }
-  });
+/* ---- chart ---- */
+if (chart) chart.destroy();
+const ctx = $("investmentChart");
+chart = createTepuyStyledChart(ctx, labels, equityArr, sharesArr);
+
 
   /* ---- table ---- */
   if (showTable) {
