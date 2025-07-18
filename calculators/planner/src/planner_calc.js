@@ -77,7 +77,8 @@ function calculatePlanner() {
     const netCF = Math.round(cfBeforeTax - tax - amort);
 
     // Property side
-    const propCapGain = y ? propVal - price : 0;
+    const adjustedCostBase = price - (depr * y);
+    const propCapGain = y ? propVal - adjustedCostBase : 0;
     const propCGT = y ? Math.round(Math.max(0, propCapGain * 0.5 * saleTaxRate)) : 0;
     const saleCost = y ? Math.round(propVal * salePct) : 0;
     const netProfitProp = propVal - owed - propCGT - saleCost;

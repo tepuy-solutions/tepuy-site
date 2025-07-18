@@ -79,7 +79,8 @@ function drawProjection(base, showTable) {
       owed = base.loanAmt;
 
   const labels = [], equityArr = [], sharesArr = [];
-  csvRows = [["Year", "Property", "Owed", "Equity", "OwnCosts", "Rent", "Interest", "Depr", "Amort", "NetCF", "Shares"]];
+  csvRows = [["Year", "Property", "Owed", "Equity", "OwnCosts", "Rent", "Interest", "Depr", "Adj. Cost Base", "Amort", "NetCF", "Shares"]];
+
 
   for (let y = 0; y <= lastYear; y++) {
     const rent = y ? Math.round(propVal * rentYld * occ) : 0;
@@ -87,6 +88,7 @@ function drawProjection(base, showTable) {
     if (y) propVal = Math.round(propVal * (1 + growProp));
     const ownCost = y ? Math.round(propVal * (ownPct + agentPct)) : 0;
     const depr = y ? Math.round(base.price * buildPct / 40) : 0;
+    const adjCostBase = base.price - (depr * y);
     const amort = y ? Math.round(base.wkPay * 52 - interest) : 0;
     if (y) owed = Math.max(0, Math.round(owed * (1 + base.rLoan) - base.wkPay * 52));
 
@@ -115,7 +117,8 @@ function drawProjection(base, showTable) {
     equityArr.push(equity);
     sharesArr.push(shares);
 
-    csvRows.push([y, propVal, owed, equity, ownCost, rent, interest, depr, amort, netCF, shares]);
+    csvRows.push([y, propVal, owed, equity, ownCost, rent, interest, depr, adjCostBase, amort, netCF, shares]);
+
   }
 
   /* ---- chart ---- */
