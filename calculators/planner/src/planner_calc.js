@@ -160,7 +160,9 @@ function calculatePlanner() {
 
 if (chart) chart.destroy();
 const ctx = $("plannerChart");
-chart = createTepuyStyledChart(ctx, labels, equityArr, sharesArr);
+chart = createTepuyStyledChart(ctx, labels, equityArr, sharesArr, 'Equity in Property', 'Value of Shares', 'Projection Year');
+
+
 
   const propertyCols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
   const sharesCols = [16,17,18,19,20,21,22,23,24,25,26,27];
