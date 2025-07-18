@@ -31,11 +31,15 @@ function calculatePlanner() {
   const lmiAmt = Math.round(loanAmt * lmiPct / (1 + lmiPct));
   const price = Math.round(loanAmt / ((1 - dpPct) * (1 + lmiPct)));
   const cashUp = Math.round(dpPct * price + costs);
-  const wkPay = (((rLoan / 12) * loanAmt * Math.pow(1 + rLoan / 12, yrs * 12)) /
-    (Math.pow(1 + rLoan / 12, yrs * 12) - 1)) * 12 / 52;
+  function calculateAnnualLoanPayment(P, rate, n) {
+    return P * (rate * Math.pow(1 + rate, n)) / (Math.pow(1 + rate, n) - 1);
+  }
+
+  const annualRepayment = calculateAnnualLoanPayment(loanAmt, rLoan, yrs);
+  const monthlyPayment = annualRepayment / 12;
 
   $("lmiOutput").textContent = fmt(lmiAmt);
-  $("mortgageOutput").textContent = fmt(Math.round(wkPay));
+  $("mortgageOutput").textContent = fmt(Math.round(monthlyPayment));
   $("buyPriceOutput").textContent = fmt(price);
   $("cashUpfrontOutput").textContent = fmt(cashUp);
 
@@ -67,8 +71,9 @@ function calculatePlanner() {
     if (y) propVal = Math.round(propVal * (1 + growProp));
     const ownCost = y ? Math.round(propVal * (ownPct + agentPct)) : 0;
     const depr = y ? Math.round(price * buildPct / 40) : 0;
-    const amort = y ? Math.round(wkPay * 52 - interest) : 0;
-    if (y) owed = Math.max(0, Math.round(owed * (1 + rLoan) - wkPay * 52));
+    const amort = y ? Math.round(annualRepayment - interest) : 0;
+    if (y) owed = Math.max(0, Math.round(owed * (1 + rLoan) - annualRepayment));
+
 
     const equity = propVal - owed;
     const cfBeforeTax = rent - ownCost - interest;
