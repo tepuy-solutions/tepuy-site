@@ -7,7 +7,6 @@
   <meta name="description" content="Plan your retirement income and investment needs with a detailed year-by-year goal tracker. Built for Australians.">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/js/tepuy-charts.js"></script>
-  <script src="/js/retirement_calc.js"></script>
 
   <!-- SEO & Social Sharing Meta -->
   <meta property="og:title" content="Retirement Calculator | Tepuy Solutions">
@@ -36,8 +35,6 @@
       .then(res => res.text())
       .then(html => {
         document.getElementById("navbar-placeholder").innerHTML = html;
-        document.getElementById('menuToggle').onclick = () =>
-          document.querySelector('.nav-links').classList.toggle('show');
       });
 
     // Navbar menu toggle
@@ -49,8 +46,10 @@
       });
     }
 
-    document.querySelectorAll('.sub-toggle').forEach(btn =>
-      btn.onclick = () => btn.parentElement.classList.toggle('open'));
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll('.sub-toggle').forEach(btn =>
+        btn.onclick = () => btn.parentElement.classList.toggle('open'));
+    });
   </script>
 
   <section class="hero">
@@ -70,7 +69,8 @@
       <label>Target Monthly Income ($) <input id="targetMonthly" value="5,000"></label>
     </form>
 
-    <button class="btn-primary" id="runBtn">Calculate</button>
+    <button class="btn-primary" id="runBtn" type="button">Calculate</button>
+
 
     <p id="quickMsg" class="result-box" hidden></p>
 
@@ -126,5 +126,7 @@
       .hamburger { display: block; }
     }
   </style>
+  <script src="/js/retirement_calc.js"></script>
+
 </body>
 </html>
