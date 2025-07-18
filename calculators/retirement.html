@@ -7,9 +7,8 @@
   <meta name="description" content="Plan your retirement income and investment needs with a detailed year-by-year goal tracker. Built for Australians.">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/js/tepuy-charts.js"></script>
-  <script src="/js/retirement_calc.js"></script>
 
-  <!-- 🔥 SEO & Social Sharing Meta -->
+  <!-- SEO & Social Sharing Meta -->
   <meta property="og:title" content="Retirement Calculator | Tepuy Solutions">
   <meta property="og:description" content="Plan your financial future with clarity. Estimate how much you need to retire comfortably.">
   <meta property="og:url" content="https://tepuysolutions.com/calculators/retirement.html">
@@ -19,6 +18,7 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
+ zie.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Retirement Calculator | Tepuy Solutions">
   <meta name="twitter:description" content="Year-by-year retirement planning for Australians.">
@@ -29,111 +29,188 @@
 </head>
 
 <body>
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+  <script>
+    fetch("/includes/navbar.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("navbar-placeholder").innerHTML = html;
+        document.getElementById('menuToggle').onclick = () =>
+          document.querySelector('.nav-links').classList.toggle('show');
+      });
+  </script>
 
-<!-- ───────── NAVBAR (with dropdown) ───────── -->
-<!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
-<div id="navbar-placeholder"></div>
-
-<script>
-  fetch("/includes/navbar.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("navbar-placeholder").innerHTML = html;
-
-      // Enable mobile toggle after navbar is injected
-      document.getElementById('menuToggle').onclick = () =>
-        document.querySelector('.nav-links').classList.toggle('show');
-    });
-</script>
-
-<section class="hero">
+  <section class="hero">
     <h1>Retirement Goal Calculator</h1>
     <p>Estimate the capital required to fund your target income in retirement.</p>
-</section>
+  </section>
 
-<main class="calc-wrapper">
-  <form id="retForm" class="grid-3col">
-    <label>Current Age <input id="curAge" type="number" value="50"></label>
-    <label>Current Capital to Invest ($) <input id="curCap" value="100,000"></label>
-    <label>Expected Annual Return (%) <input id="annRet" type="number" value="8" step=".1"></label>
-    <label>Expected Inflation Rate (%) <input id="infl" type="number" value="2.5" step=".1"></label>
-    <label>Withdrawal Rate (%) <small id="recRateLabel" class="suggest">(suggested 5.4 %)</small>
-      <input id="wdRate" type="number" value="5.4" step=".1"></label>
-    <label>Monthly Contributions ($) <input id="monthlyContrib" value="1,000"></label>
-    <label>Target Monthly Income ($) <input id="targetMonthly" value="5,000"></label>
-  </form>
+  <main class="calc-wrapper">
+    <form id="retForm" class="grid-3col">
+      <label>Current Age <input id="curAge" type="number" value="50"></label>
+      <label>Current Capital to Invest ($) <input id="curCap" value="100,000"></label>
+      <label>Expected Annual Return (%) <input id="annRet" type="number" value="8" step=".1"></label>
+      <label>Expected Inflation Rate (%) <input id="infl" type="number" value="2.5" step=".1"></label>
+      <label>Withdrawal Rate (%) <small id="recRateLabel" class="suggest">(suggested 5.4 %)</small>
+        <input id="wdRate" type="number" value="5.4" step=".1"></label>
+      <label>Monthly Contributions ($) <input id="monthlyContrib" value="1,000"></label>
+      <label>Target Monthly Income ($) <input id="targetMonthly" value="5,000"></label>
+    </form>
 
-  <button class="btn-primary" id="runBtn">Calculate</button>
+    <button class="btn-primary" id="runBtn">Calculate</button>
 
+    <p id="quickMsg" class="result-box" hidden></p>
 
-  <p id="quickMsg" class="result-box" hidden></p>
+    <div class="chart-wrap" style="height:320px;margin-top:24px;">
+      <canvas id="retChart"></canvas>
+    </div>
 
-<div class="chart-wrap" style="height:320px;margin-top:24px;">
-  <canvas id="retChart"></canvas>
-</div>
+    <div id="retResults" class="table-container"></div>
 
-  <div id="retResults" class="table-container"></div>
+    <p class="disclaimer">
+      This tool is intended for premium users and provides advanced projections, including detailed tax breakdowns and annual sale modeling. All results are estimates and should not be considered financial advice. Please consult a qualified professional before making investment decisions.
+    </p>
+  </main>
 
-<p class="disclaimer">
-  This tool is intended for premium users and provides advanced projections, including detailed tax breakdowns and annual sale modeling. All results are estimates and should not be considered financial advice. Please consult a qualified professional before making investment decisions.
-</p>
-</main>
+  <footer>© 2025 Tepuy Solutions</footer>
 
-<footer>© 2025 Tepuy Solutions</footer>
+  <!-- Consolidated JavaScript -->
+  <script>
+    // Watermark logo (redundant if defined in tepuy-charts.js, but kept for compatibility)
+    const watermarkLogo = new Image();
+    watermarkLogo.src = "/img/tepuy_logo_dark.png";
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const menuToggle = document.getElementById('menuToggle');
-  const navMenu = document.getElementById('navMenu');
-  menuToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('show');
-  });
+    // Helper functions
+    const $ = id => document.getElementById(id);
+    const fmt = n => n.toLocaleString("en-AU", { maximumFractionDigits: 0 });
 
-  document.querySelectorAll('.sub-toggle').forEach(btn =>
-    btn.onclick = () => btn.parentElement.classList.toggle('open'));
-</script>
+    // Money-field comma formatting
+    ["curCap", "monthlyContrib", "targetMonthly"].forEach(id => {
+      $(id).addEventListener("input", e => {
+        const raw = e.target.value.replace(/,/g, "");
+        if (!isNaN(raw) && raw !== "") e.target.value = parseInt(raw, 10).toLocaleString();
+      });
+    });
 
-<!-- Scoped dropdown menu styling -->
-<style>
-  .has-sub { position: relative; }
-  .sub-toggle {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    cursor: pointer;
-    font: inherit;
-    margin-left: 20px;
-  }
-  .sub-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: var(--brand-green-dark);
-    padding: 8px 0;
-    border-radius: 4px;
-    min-width: 180px;
-    z-index: 999;
-  }
-  .sub-menu a {
-    display: block;
-    padding: 8px 18px;
-    color: #fff;
-    white-space: nowrap;
-  }
-  .has-sub.open .sub-menu {
-    display: block;
-  }
-  @media(max-width:768px) {
-    .sub-toggle { margin: 10px 0; font-size: 1.1rem; }
-    .sub-menu { position: static; }
-    .nav-links { display: none; flex-direction: column; gap: 14px; }
-    .nav-links.show { display: flex; }
-    .hamburger { display: block; }
-  }
-</style>
+    // Live safe-rate suggestion = (r-i)/(1+i)
+    function updateSuggest() {
+      const r = +$("annRet").value / 100 || 0;
+      const i = +$("infl").value / 100 || 0;
+      const safeWR = ((1 + r) / (1 + i) - 1) * 100;
+      const safeTxt = safeWR.toFixed(1);
+      $("recRateLabel").textContent = `(suggested ${safeTxt} %)`;
+      $("wdRate").value = safeTxt;
+    }
 
+    // Main projection function
+    let chart;
+    function runRetirementCalc() {
+      const age = +$("curAge").value;
+      const bal0 = +$("curCap").value.replace(/,/g, "") || 0;
+      const r = +$("annRet").value / 100 || 0;
+      const infl = +$("infl").value / 100 || 0;
+      const wdr = +$("wdRate").value / 100 || 0.04;
+      const cpm = +$("monthlyContrib").value.replace(/,/g, "") || 0;
+      const tgtM = +$("targetMonthly").value.replace(/,/g, "") || 0;
 
+      if (age <= 0 || bal0 < 0 || r < 0 || wdr <= 0) {
+        $("quickMsg").hidden = false;
+        $("quickMsg").className = "result-box error";
+        $("quickMsg").textContent = "❌ Please enter valid numbers.";
+        return;
+      }
 
+      updateSuggest();
+
+      let bal = bal0, labels = [], caps = [], goals = [], rows = "", hitAge = null;
+      for (let y = 0; y <= 55; y++) {
+        const curAge = age + y;
+        if (y > 0) bal = (bal + cpm * 12) * (1 + r);
+
+        const goal = tgtM * 12 / wdr * Math.pow(1 + infl, y);
+        labels.push(curAge.toString());
+        caps.push(Math.round(bal));
+        goals.push(Math.round(goal));
+        rows += `<tr><td>${curAge}</td><td>${fmt(bal)}</td><td>${fmt(goal)}</td></tr>`;
+
+        if (!hitAge && bal >= goal) hitAge = curAge;
+        if (hitAge && y > 1) break;
+      }
+
+      $("quickMsg").hidden = false;
+      $("quickMsg").className = hitAge ? "result-box" : "result-box error";
+      $("quickMsg").textContent = hitAge
+        ? `✔️ Goal reached by age ${hitAge} (${hitAge - age} yrs) with ≈ ${fmt(caps[labels.indexOf(hitAge.toString())])}.`
+        : `⚠️ Goal not met by age ${age + 55}.`;
+
+      if (chart) chart.destroy();
+      const ctx = $("retChart");
+      // Pass custom labels for retirement calculator
+      chart = createTepuyStyledChart(ctx, labels, caps, goals, 'Capital', 'Inflation-Adjusted Goal', 'Age');
+
+      $("retResults").innerHTML =
+        `<table class="results-table centered"><thead><tr><th>Age</th><th>Capital ($)</th><th>Infl-Adj Goal</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    // Event listeners
+    document.addEventListener("DOMContentLoaded", () => {
+      $("annRet").addEventListener("input", updateSuggest);
+      $("infl").addEventListener("input", updateSuggest);
+      $("runBtn").addEventListener("click", runRetirementCalc);
+    });
+
+    // Navbar menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    if (menuToggle && navMenu) {
+      menuToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('show');
+      });
+    }
+
+    document.querySelectorAll('.sub-toggle').forEach(btn =>
+      btn.onclick = () => btn.parentElement.classList.toggle('open'));
+  </script>
+
+  <!-- Scoped dropdown menu styling -->
+  <style>
+    .has-sub { position: relative; }
+    .sub-toggle {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      font: inherit;
+      margin-left: 20px;
+    }
+    .sub-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--brand-green-dark);
+      padding: 8px 0;
+      border-radius: 4px;
+      min-width: 180px;
+      z-index: 999;
+    }
+    .sub-menu a {
+      display: block;
+      padding: 8px 18px;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .has-sub.open .sub-menu {
+      display: block;
+    }
+    @media(max-width:768px) {
+      .sub-toggle { margin: 10px 0; font-size: 1.1rem; }
+      .sub-menu { position: static; }
+      .nav-links { display: none; flex-direction: column; gap: 14px; }
+      .nav-links.show { display: flex; }
+      .hamburger { display: block; }
+    }
+  </style>
 </body>
 </html>

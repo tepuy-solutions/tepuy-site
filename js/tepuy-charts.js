@@ -1,17 +1,16 @@
-// 🔁 Preload once (outside the function)
+// tepuy-charts.js
 const watermarkLogo = new Image();
 watermarkLogo.src = '/img/tepuy_logo_dark.png';
 
-// ✅ Main chart function
-function createTepuyStyledChart(ctx, labels, equityData, sharesData) {
+function createTepuyStyledChart(ctx, labels, data1, data2, label1 = 'Dataset 1', label2 = 'Dataset 2', xAxisLabel = 'Year') {
   return new Chart(ctx, {
     type: 'line',
     data: {
       labels,
       datasets: [
         {
-          label: 'Property Equity',
-          data: equityData,
+          label: label1, // Custom label for first dataset
+          data: data1,
           borderColor: '#28a745',
           backgroundColor: 'rgba(40, 167, 69, 0.08)',
           borderWidth: 3,
@@ -21,8 +20,8 @@ function createTepuyStyledChart(ctx, labels, equityData, sharesData) {
           tension: 0.35,
         },
         {
-          label: 'Shares Value',
-          data: sharesData,
+          label: label2, // Custom label for second dataset
+          data: data2,
           borderColor: '#007bff',
           backgroundColor: 'rgba(0, 123, 255, 0.08)',
           borderWidth: 3,
@@ -60,7 +59,7 @@ function createTepuyStyledChart(ctx, labels, equityData, sharesData) {
         x: {
           title: {
             display: true,
-            text: 'Year',
+            text: xAxisLabel, // Custom x-axis label
             font: { family: 'Inter', size: 14, weight: '600' },
             color: '#0b1f16'
           },
