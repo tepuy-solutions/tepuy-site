@@ -244,6 +244,7 @@ function goToPlanner() {
 function init() {
   const sellBox = $("sellAtRet");
   const unlockBtn = $("unlockPro");
+  if (!unlockBtn) return; // ✅ prevent crash
 
   /* unlock via ?code=tepuy2025 */
   if (new URLSearchParams(location.search).get("code") === "tepuy2025") {
