@@ -70,7 +70,7 @@ function drawProjection(base, showTable) {
   const taxRate = pct("taxBracket");
   const yrsRet = num("yearsToRetirement");
   const salePct = pct("saleCostPct");
-  const sellFlag = $("sellAtRet").checked;
+  const sellFlag = false; // ← Hardcoded: no asset sale at retirement
 
   const lastYear = sellFlag ? yrsRet : base.yrs;
 
@@ -242,7 +242,6 @@ function goToPlanner() {
 
 /* ---------- init ---------- */
 function init() {
-  const sellBox = $("sellAtRet");
   const unlockBtn = $("unlockPro");
   if (!unlockBtn) return; // ✅ prevent crash
 
@@ -263,17 +262,12 @@ function init() {
     unlockBtn.classList.remove("btn-disabled");
     unlockBtn.style.display = "inline-block"; // ✅ SHOW the button!
     unlockBtn.onclick = goToPlanner;
-    sellBox.disabled = false;
-    sellBox.closest("label").classList.remove("locked");
   } else {
     unlockBtn.classList.add("btn-disabled");
     unlockBtn.onclick = startCheckout;
   }
 
-  /* soft upsell click on disabled CGT box */
-  sellBox.closest("label").addEventListener("click", e => {
-    if (sellBox.disabled) { e.preventDefault(); recommendPro(); }
-  });
+
 
   /* main listeners */
   addCommaFormatting();

@@ -21,6 +21,8 @@ function calculatePlanner() {
   const rShares = pct("stockMarketAppreciation");
   const buildPct = pct("buildingComponent");
   const taxRate = pct("taxBracket");
+  const saleTaxRate = parseFloat($("retireTaxBracket").value) / 100 || 0;
+
   const yrsRet = num("yearsToRetirement");
   const salePct = pct("saleCostPct");
   const ageNow = num("currentAge");
@@ -76,9 +78,10 @@ function calculatePlanner() {
 
     // Property side
     const propCapGain = y ? propVal - price : 0;
-    const propCGT = y ? Math.round(Math.max(0, propCapGain * 0.5 * taxRate)) : 0;
+    const propCGT = y ? Math.round(Math.max(0, propCapGain * 0.5 * saleTaxRate)) : 0;
     const saleCost = y ? Math.round(propVal * salePct) : 0;
-    const netProfitProp = (y === yrsRet) ? equity - propCGT - saleCost : 0;
+    const netProfitProp = propVal - owed - propCGT - saleCost;
+
 
     // Shares logic
     let sharesAdj = 0;
@@ -121,7 +124,7 @@ function calculatePlanner() {
           }
         }
 
-        cgtSharesSold = gain > 0 ? Math.round(gain * 0.5 * taxRate) : 0;
+        cgtSharesSold = gain > 0 ? Math.round(gain * 0.5 * saleTaxRate) : 0;
         shareHistory.length = 0;
         shareHistory.push(...newHistory);
         unitsHeld -= unitsSold;
@@ -140,7 +143,7 @@ function calculatePlanner() {
 
     const totalCostBase = shareHistory.reduce((sum, lot) => sum + lot.cost, 0);
     const capitalGainShares = sharesValue - totalCostBase;
-    const cgtIfAllSharesSold = capitalGainShares > 0 ? Math.round(capitalGainShares * 0.5 * taxRate) : 0;
+    const cgtIfAllSharesSold = capitalGainShares > 0 ? Math.round(capitalGainShares * 0.5 * saleTaxRate) : 0;
 
     labels.push(`Yr ${y}`);
     equityArr.push(equity);
