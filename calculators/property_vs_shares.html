@@ -6,7 +6,7 @@
   <title>Property vs Shares Calculator | Tepuy Solutions</title>
   <meta name="description" content="Compare the financial outcome of investing in property vs shares with our interactive, year-by-year Australian calculator. Built for investors.">
 
-  <!-- 🔥 SEO & Social Sharing Meta -->
+  <!-- SEO & Social Sharing Meta -->
   <meta property="og:title" content="Property vs Shares Calculator | Tepuy Solutions">
   <meta property="og:description" content="Stress-test scenarios and compare results over time. Built for Australian investors.">
   <meta property="og:url" content="https://tepuysolutions.com/calculators/property_vs_shares.html">
@@ -23,195 +23,164 @@
 
   <link rel="canonical" href="https://tepuysolutions.com/calculators/property_vs_shares.html" />
   <link rel="stylesheet" href="/css/tepuy.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/tepuy-charts.js"></script>
+  <script src="/js/property_vs_shares_calc.js"></script>
 </head>
 
-
 <body>
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+  <script>
+    fetch("/includes/navbar.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("navbar-placeholder").innerHTML = html;
+        document.getElementById('menuToggle').onclick = () =>
+          document.querySelector('.nav-links').classList.toggle('show');
+      });
+  </script>
 
-<!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
-<div id="navbar-placeholder"></div>
-
-<script>
-  fetch("/includes/navbar.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("navbar-placeholder").innerHTML = html;
-
-      // Enable mobile toggle after navbar is injected
-      document.getElementById('menuToggle').onclick = () =>
-        document.querySelector('.nav-links').classList.toggle('show');
-    });
-</script>
-
-<!-- ─── HERO ─────────────────────────────────────────── -->
-
-
-<section class="hero">
+  <section class="hero">
     <h1>Property Investment vs Shares Calculator</h1>
     <p>Project net-worth growth in real estate versus an index-fund portfolio.</p>
-</section>
+  </section>
 
-<!-- ─── MAIN ─────────────────────────────────────────── -->
-<main class="calc-wrapper">
-  <!-- ── INPUT FORM ───────────────────────────────── -->
-  <form id="investmentForm" class="grid-3col">
-    <label>Loan Amount <input id="loanAmount" value="800,000" /></label>
-    <label>Down-payment (%) <input id="downpayment" type="number" value="10" step=".1" /></label>
-    <label>Stamp Duty &amp; Costs ($) <input id="buyingCosts" value="48,000" /></label>
-    <label>Loan Period (yrs) <input id="loanPeriod" type="number" value="30" /></label>
-    <label>Interest Rate (%) <input id="loanInterestRate" type="number" value="6.5" step=".1" /></label>
-    <label>Owning Costs (%/yr) <input id="owningCosts" type="number" value="2" step=".1" /></label>
-    <label>Agent Fees (%/yr) <input id="agentFees" type="number" value="0.2" step=".1" /></label>
-    <label>Occupancy Rate (%) <input id="occupancyRate" type="number" value="90" /></label>
-    <label>Appreciation Rate (%/yr) <input id="propertyAppreciation" type="number" value="6.5" step=".1" /></label>
-    <label>Rental Yield (%/yr) <input id="rentalIncome" type="number" value="4.8" step=".1" /></label>
-    <label>Shares Return (%/yr) <input id="stockMarketAppreciation" type="number" value="11" step=".1" /></label>
-    <label>Tax Bracket (%) <input id="taxBracket" type="number" value="30" step=".1" /></label>
-    <label>Years to Retirement <input id="yearsToRetirement" type="number" value="30" /></label>
-    <label class="pro-only locked"><input type="checkbox" id="sellAtRet" disabled> Sell assets at retirement (apply CGT)</label>
-    <label>Building Component (%) <input id="buildingComponent" type="number" value="50" /></label>
-    <label>Sale Costs (% of sale price) <input id="saleCostPct" type="number" value="2.5" step=".1"></label>
-  </form>
+  <main class="calc-wrapper">
+    <form id="investmentForm" class="grid-3col">
+      <label>Loan Amount <input id="loanAmount" value="800,000" /></label>
+      <label>Down-payment (%) <input id="downpayment" type="number" value="10" step=".1" /></label>
+      <label>Stamp Duty & Costs ($) <input id="buyingCosts" value="48,000" /></label>
+      <label>Loan Period (yrs) <input id="loanPeriod" type="number" value="30" /></label>
+      <label>Interest Rate (%) <input id="loanInterestRate" type="number" value="6.5" step=".1" /></label>
+      <label>Owning Costs (%/yr) <input id="owningCosts" type="number" value="2" step=".1" /></label>
+      <label>Agent Fees (%/yr) <input id="agentFees" type="number" value="0.2" step=".1" /></label>
+      <label>Occupancy Rate (%) <input id="occupancyRate" type="number" value="90" /></label>
+      <label>Appreciation Rate (%/yr) <input id="propertyAppreciation" type="number" value="6.5" step=".1" /></label>
+      <label>Rental Yield (%/yr) <input id="rentalIncome" type="number" value="4.8" step=".1" /></label>
+      <label>Shares Return (%/yr) <input id="stockMarketAppreciation" type="number" value="11" step=".1" /></label>
+      <label>Tax Bracket (%) <input id="taxBracket" type="number" value="30" step=".1" /></label>
+      <label>Years to Retirement <input id="yearsToRetirement" type="number" value="30" /></label>
+      <label class="pro-only locked"><input type="checkbox" id="sellAtRet" disabled> Sell assets at retirement (apply CGT)</label>
+      <label>Building Component (%) <input id="buildingComponent" type="number" value="50" /></label>
+      <label>Sale Costs (% of sale price) <input id="saleCostPct" type="number" value="2.5" step=".1"></label>
+    </form>
 
-  <button class="btn-primary" id="runCalc">Calculate</button>
+    <button class="btn-primary" id="runCalc">Calculate</button>
 
-  <!-- ── QUICK-OUT METRICS ─────────────────────────── -->
-  <div class="grid-2col quick-out" style="margin-top:18px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
-    <label>LMI (%)<input id="lmiPercentage" readonly></label>
-    <label>LMI ($)<input id="lmiAmount" readonly></label>
-    <label>Buy Price<input id="buyPrice" readonly></label>
-    <label>Total Upfront<input id="totalCashUpfront" readonly></label>
-    <label>Weekly Payment<input id="weeklyPayment" readonly></label>
-  </div>
+    <div class="grid-2col quick-out" style="margin-top:18px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+      <label>LMI (%)<input id="lmiPercentage" readonly></label>
+      <label>LMI ($)<input id="lmiAmount" readonly></label>
+      <label>Buy Price<input id="buyPrice" readonly></label>
+      <label>Total Upfront<input id="totalCashUpfront" readonly></label>
+      <label>Weekly Payment<input id="weeklyPayment" readonly></label>
+    </div>
 
-  <!-- ── CHART + RESULTS TABLE ────────────────────── -->
-  <div class="chart-wrap" style="height:320px;margin-top:24px;">
-    <canvas id="investmentChart"></canvas>
-  </div>
-  <div id="results" class="table-container" style="margin-top:24px;"></div>
+    <div class="chart-wrap" style="height:320px;margin-top:24px;">
+      <canvas id="investmentChart"></canvas>
+    </div>
+    <div id="results" class="table-container" style="margin-top:24px;"></div>
 
-<p class="disclaimer">
-  This tool is intended for premium users and provides advanced projections, including detailed tax breakdowns and annual sale modeling. All results are estimates and should not be considered financial advice. Please consult a qualified professional before making investment decisions.
-</p>
+    <p class="disclaimer">
+      This tool is intended for premium users and provides advanced projections, including detailed tax breakdowns and annual sale modeling. All results are estimates and should not be considered financial advice. Please consult a qualified professional before making investment decisions.
+    </p>
 
-  <!-- ── PRO GATE ─────────────────────────────────── -->
-  <div class="pro-gate" id="proGate" style="margin-top:32px;padding:24px;border:2px dashed #aaa;border-radius:8px;text-align:center;background:#fafafa;">
-    <p class="locked-msg" style="margin:0 0 14px;font-weight:600;">🔒 Extra results, CSV export &amp; save-scenario are Pro features.</p>
-    <button id="unlockPro" class="btn-primary">Unlock Pro (A$9)</button>
-  </div>
+    <div class="pro-gate" id="proGate" style="margin-top:32px;padding:24px;border:2px dashed #aaa;border-radius:8px;text-align:center;background:#fafafa;">
+      <p class="locked-msg" style="margin:0 0 14px;font-weight:600;">🔒 Extra results, CSV export & save-scenario are Pro features.</p>
+      <button id="unlockPro" class="btn-primary">Unlock Pro (A$9)</button>
+    </div>
 
-  <!-- ── PRO BUTTONS ───────────────────────────────── -->
-  <div id="proButtons" class="pro-only" style="text-align:center;margin:18px 0;">
-    <button id="btnSave" class="btn-primary" type="button">💾 Save Scenario</button>
-    <button id="btnCSV" class="btn-primary" type="button">⬇️ Download CSV</button>
-  </div>
+    <div id="proButtons" class="pro-only" style="text-align:center;margin:18px 0;">
+      <button id="btnSave" class="btn-primary" type="button">💾 Save Scenario</button>
+      <button id="btnCSV" class="btn-primary" type="button">⬇️ Download CSV</button>
+    </div>
+  </main>
 
-</main>
+  <footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
 
-<footer>© 2025 Tepuy Solutions. All rights reserved.</footer>
+  <!-- Navbar and Pro-gating Logic -->
+  <script>
+    /* NAV toggle */
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    if (menuToggle && navMenu) {
+      menuToggle.onclick = () => navMenu.classList.toggle('show');
+    }
+    document.querySelectorAll('.sub-toggle').forEach(btn =>
+      btn.onclick = () => btn.parentElement.classList.toggle('open'));
 
-<script src="/js/property_vs_shares_calc.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  /* NAV toggle */
-  document.getElementById('menuToggle').onclick = () =>
-    document.getElementById('navMenu').classList.toggle('show');
-  document.querySelectorAll('.sub-toggle').forEach(btn =>
-    btn.onclick = () => btn.parentElement.classList.toggle('open'));
+    /* Pro-gating logic */
+    const isPro = localStorage.getItem('pvProPaid') === 'yes';
+    const proGate = document.getElementById('proGate');
+    const proButtons = document.getElementById('proButtons');
+    const unlockBtn = document.getElementById('unlockPro');
 
-  /* ---- Pro gating logic ---- */
-  const isPro      = localStorage.getItem('pvProPaid') === 'yes';
-  const proGate    = document.getElementById('proGate');
-  const proButtons = document.getElementById('proButtons');
-  const unlockBtn  = document.getElementById('unlockPro');
-  const plannerBtn = document.getElementById('goPlanner');
-
-
-  if (isPro) {
-    proGate.style.display = 'none';
-    proButtons.style.display = 'block';
-    unlockBtn.textContent = 'Go to Planner';
-  } else {
-    proButtons.style.display = 'none';
-  }
-  /* --- Planner shortcut button --- */
-  if (plannerBtn) {
     if (isPro) {
-      plannerBtn.disabled = false;
-      plannerBtn.onclick  = () => location.href = '/calculators/planner/index.html';
+      proGate.style.display = 'none';
+      proButtons.style.display = 'block';
+      unlockBtn.textContent = 'Go to Planner';
     } else {
-      plannerBtn.disabled = true;
-      plannerBtn.title    = 'Unlock Pro to access the Planner';
-      plannerBtn.style.opacity = 0.5;
-      plannerBtn.style.cursor  = 'not-allowed';
+      proButtons.style.display = 'none';
     }
-  }
 
-  if (unlockBtn) {
-unlockBtn.onclick = async () => {
-  if (isPro) {
-    const formData = new FormData(document.getElementById("investmentForm"));
-    const queryParams = new URLSearchParams();
-
-    queryParams.set("age", formData.get("yearsToRetirement") ? (65 - parseInt(formData.get("yearsToRetirement"))) : 45);
-    queryParams.set("retAge", 65);
-    queryParams.set("taxRate", formData.get("taxBracket"));
-    queryParams.set("propPrice", parseFloat(formData.get("loanAmount")) + parseFloat(formData.get("buyingCosts")));
-    queryParams.set("propLVR", 100 - parseFloat(formData.get("downpayment")));
-    queryParams.set("loanRate", formData.get("loanInterestRate"));
-    queryParams.set("rentYield", formData.get("rentalIncome"));
-    queryParams.set("propGrowth", formData.get("propertyAppreciation"));
-    queryParams.set("propExp", formData.get("owningCosts"));
-    queryParams.set("propDep", 200000); // Placeholder, you can change
-    queryParams.set("sharesInit", parseFloat(formData.get("loanAmount")) + parseFloat(formData.get("buyingCosts")));
-    queryParams.set("sharesRet", formData.get("stockMarketAppreciation"));
-    queryParams.set("divYield", 4); // You can pass a fixed or input value
-
-    location.href = `/calculators/planner/index.html?${queryParams.toString()}`;
-    return;
-  }
-  // Non-Pro user → send to Stripe
-  unlockBtn.disabled = true;
-  try {
-    const r = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
-    const j = await r.json();
-    if (j.url) {
-      location.href = j.url;
-    } else {
-      alert('Checkout link missing');
-      unlockBtn.disabled = false;
+    if (unlockBtn) {
+      unlockBtn.onclick = async () => {
+        if (isPro) {
+          const formData = new FormData(document.getElementById("investmentForm"));
+          const queryParams = new URLSearchParams();
+          queryParams.set("age", formData.get("yearsToRetirement") ? (65 - parseInt(formData.get("yearsToRetirement"))) : 45);
+          queryParams.set("retAge", 65);
+          queryParams.set("taxRate", formData.get("taxBracket"));
+          queryParams.set("propPrice", parseFloat(formData.get("loanAmount")) + parseFloat(formData.get("buyingCosts")));
+          queryParams.set("propLVR", 100 - parseFloat(formData.get("downpayment")));
+          queryParams.set("loanRate", formData.get("loanInterestRate"));
+          queryParams.set("rentYield", formData.get("rentalIncome"));
+          queryParams.set("propGrowth", formData.get("propertyAppreciation"));
+          queryParams.set("propExp", formData.get("owningCosts"));
+          queryParams.set("propDep", 200000); // Placeholder
+          queryParams.set("sharesInit", parseFloat(formData.get("loanAmount")) + parseFloat(formData.get("buyingCosts")));
+          queryParams.set("sharesRet", formData.get("stockMarketAppreciation"));
+          queryParams.set("divYield", 4);
+          location.href = `/calculators/planner/index.html?${queryParams.toString()}`;
+          return;
+        }
+        unlockBtn.disabled = true;
+        try {
+          const r = await fetch('/.netlify/functions/createCheckout', { method: 'POST' });
+          const j = await r.json();
+          if (j.url) {
+            location.href = j.url;
+          } else {
+            alert('Checkout link missing');
+            unlockBtn.disabled = false;
+          }
+        } catch (err) {
+          alert('Checkout error');
+          unlockBtn.disabled = false;
+        }
+      };
     }
-  } catch (err) {
-    alert('Checkout error');
-    unlockBtn.disabled = false;
-  }
-};
+  </script>
 
-  }
-</script>
-
-<!-- existing styles preserved -->
-<style>
-  .has-sub{position:relative}
-  .sub-toggle{background:none;border:none;color:var(--text-light);cursor:pointer;font:inherit;margin-left:20px}
-  .sub-menu{display:none;position:absolute;top:100%;left:0;background:var(--brand-green-dark);padding:8px 0;border-radius:4px;min-width:180px;z-index:999}
-  .sub-menu a{display:block;padding:8px 18px;color:#fff;white-space:nowrap}
-  .has-sub.open .sub-menu{display:block}
-  @media(max-width:768px){
-    .sub-toggle{margin:10px 0;font-size:1.1rem}
-    .sub-menu{position:static}
-    .nav-links{display:none;flex-direction:column;gap:14px}
-    .nav-links.show{display:flex}
-    .hamburger{display:block}
-  }
-  .pro-gate{margin-top:32px;padding:24px;border:2px dashed #aaa;border-radius:8px;text-align:center;background:#fafafa}
-  .pro-gate .locked-msg{margin:0 0 14px;font-weight:600}
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999}
-  .overlay-card{background:#fff;padding:28px 32px;border-radius:10px;max-width:380px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25)}
-  main.blur{filter:blur(4px)}
-</style>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="/js/tepuy-charts.js"></script>
-
+  <!-- Styles -->
+  <style>
+    .has-sub{position:relative}
+    .sub-toggle{background:none;border:none;color:var(--text-light);cursor:pointer;font:inherit;margin-left:20px}
+    .sub-menu{display:none;position:absolute;top:100%;left:0;background:var(--brand-green-dark);padding:8px 0;border-radius:4px;min-width:180px;z-index:999}
+    .sub-menu a{display:block;padding:8px 18px;color:#fff;white-space:nowrap}
+    .has-sub.open .sub-menu{display:block}
+    @media(max-width:768px){
+      .sub-toggle{margin:10px 0;font-size:1.1rem}
+      .sub-menu{position:static}
+      .nav-links{display:none;flex-direction:column;gap:14px}
+      .nav-links.show{display:flex}
+      .hamburger{display:block}
+    }
+    .pro-gate{margin-top:32px;padding:24px;border:2px dashed #aaa;border-radius:8px;text-align:center;background:#fafafa}
+    .pro-gate .locked-msg{margin:0 0 14px;font-weight:600}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999}
+    .overlay-card{background:#fff;padding:28px 32px;border-radius:10px;max-width:380px;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+    main.blur{filter:blur(4px)}
+  </style>
 </body>
 </html>
