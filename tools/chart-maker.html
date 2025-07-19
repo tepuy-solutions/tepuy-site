@@ -82,27 +82,48 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/js/tepuy-charts.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById('chartForm');
-    const codeBlock = document.getElementById('chartCodeBlock');
-    let chartInstance;
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById('chartForm');
+      const codeBlock = document.getElementById('chartCodeBlock');
+      let chartInstance;
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-      const labels = document.getElementById('xLabels').value.split(',').map(s => s.trim());
-      const y1 = document.getElementById('y1').value.split(',').map(Number);
-      const y2 = document.getElementById('y2').value.split(',').map(Number);
-      const label1 = document.getElementById('label1').value.trim() || "Dataset 1";
-      const label2 = document.getElementById('label2').value.trim() || "Dataset 2";
-      const xAxisLabel = document.getElementById('xAxisLabel').value.trim();
+        const labels = document.getElementById('xLabels').value
+          .split(',')
+          .map(s => s.trim())
+          .filter(s => s);
 
-      const ctx = document.getElementById('outputChart').getContext('2d');
-      if (chartInstance) chartInstance.destroy();
-      chartInstance = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, xAxisLabel);
+        const y1 = document.getElementById('y1').value
+          .split(',')
+          .map(s => parseFloat(s.trim()))
+          .filter(n => !isNaN(n));
 
-      const chartCode = `
+        const y2 = document.getElementById('y2').value
+          .split(',')
+          .map(s => parseFloat(s.trim()))
+          .filter(n => !isNaN(n));
+
+        const label1 = document.getElementById('label1').value.trim() || "Dataset 1";
+        const label2 = document.getElementById('label2').value.trim() || "Dataset 2";
+        const xAxisLabel = document.getElementById('xAxisLabel').value.trim();
+
+        if (labels.length !== y1.length) {
+          alert("❌ X-Axis and Y1 must have the same number of values.");
+          return;
+        }
+        if (y2.length && labels.length !== y2.length) {
+          alert("❌ X-Axis and Y2 must have the same number of values.");
+          return;
+        }
+
+        const ctx = document.getElementById('outputChart').getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, xAxisLabel);
+
+        const chartCode = `
 &lt;canvas id="myChart"&gt;&lt;/canvas&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;
 &lt;script src="/js/tepuy-charts.js"&gt;&lt;/script&gt;
@@ -115,10 +136,9 @@
 &lt;/script&gt;
 `.trim();
 
-      codeBlock.innerHTML = chartCode;
+        codeBlock.innerHTML = chartCode;
+      });
     });
-  });
-</script>
-
+  </script>
 </body>
 </html>
