@@ -39,8 +39,15 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    canvas {
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 400px; /* Constrain the chart height */
       margin-top: 2rem;
+    }
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
     }
     pre {
       background: #f4f4f4;
@@ -72,15 +79,17 @@
     <button type="submit">Generate Chart</button>
   </form>
 
-  <canvas id="outputChart" style="width:100%; height:400px;"></canvas>
+  <div class="chart-container">
+    <canvas id="outputChart" width="800" height="400"></canvas>
+  </div>
 
   <h2>📋 Copy This for Blog Embeds</h2>
-  <pre id="chartCodeBlock">&lt;canvas id="myChart"&gt;&lt;/canvas&gt;
-&lt;script&gt;
+  <pre id="chartCodeBlock"><canvas id="myChart"></canvas>
+<script>
 // Your chart script here
-&lt;/script&gt;</pre>
+</script></pre>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script src="/js/tepuy-charts.js"></script>
 
   <script>
@@ -92,41 +101,48 @@
       form.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        const labels = document.getElementById('xLabels').value.split(',').map(s => s.trim());
+        // Parse inputs with stricter validation
+        const labels = document.getElementById('xLabels').value.split(',').map(s => s.trim()).filter(s => s !== '');
         const y1 = document.getElementById('y1').value.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
         const y2 = document.getElementById('y2').value.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
         const label1 = document.getElementById('label1').value.trim() || "Dataset 1";
         const label2 = document.getElementById('label2').value.trim() || "Dataset 2";
-        const xAxisLabel = document.getElementById('xAxisLabel').value.trim();
+        const xAxisLabel = document.getElementById('xAxisLabel').value.trim() || "Year";
 
+        // Validate inputs
+        if (labels.length === 0 || y1.length === 0) {
+          alert('Please provide valid X-axis labels and Y1 data.');
+          return;
+        }
         if (labels.length !== y1.length) {
           alert(`Mismatch: ${labels.length} x-values vs ${y1.length} y1-values`);
           return;
         }
-
         if (y2.length > 0 && y2.length !== labels.length) {
           alert(`Mismatch: ${labels.length} x-values vs ${y2.length} y2-values`);
           return;
         }
 
+        // Create or update chart
         const ctx = document.getElementById('outputChart').getContext('2d');
         if (chartInstance) chartInstance.destroy();
         chartInstance = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, xAxisLabel);
 
+        // Generate embed code
         const chartCode = `
-&lt;canvas id="myChart"&gt;&lt;/canvas&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;
-&lt;script src="/js/tepuy-charts.js"&gt;&lt;/script&gt;
-&lt;script&gt;
+<canvas id="myChart" width="800" height="400"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="/js/tepuy-charts.js"></script>
+<script>
   const ctx = document.getElementById('myChart').getContext('2d');
   const labels = [${labels.map(l => `"${l}"`).join(', ')}];
   const y1 = [${y1.join(', ')}];
   const y2 = [${y2.join(', ')}];
   createTepuyStyledChart(ctx, labels, y1, y2, "${label1}", "${label2}", "${xAxisLabel}");
-&lt;/script&gt;
+</script>
 `.trim();
 
-        codeBlock.innerHTML = chartCode;
+        codeBlock.textContent = chartCode;
       });
     });
   </script>
