@@ -69,26 +69,23 @@ function calculatePlanner() {
     "Net Cash if All Shares Sold"
   ]);
 
-  for (let y = 0; y <= yrsRet; y++) {
-    const rent = y ? Math.round(propVal * rentYld * occ) : 0;
-    const interest = y ? Math.round(owed * rLoan) : 0;
-    if (y) propVal = Math.round(propVal * (1 + growProp));
-    const ownCost = y ? Math.round(propVal * (ownPct + agentPct)) : 0;
-    const depr = y ? Math.round(price * buildPct / 40) : 0;
-    let amort = 0;
-    if (y && y <= interestOnlyYears) {
-      amort = 0; // Interest-only period
-    } else if (y) {
-      amort = Math.round(annualRepayment - interest);
-    }
+for (let y = 0; y <= yrsRet; y++) {
+  const rent = y ? Math.round(propVal * rentYld * occ) : 0;
+  if (y) propVal = Math.round(propVal * (1 + growProp));
+  const ownCost = y ? Math.round(propVal * (ownPct + agentPct)) : 0;
+  const depr = y ? Math.round(price * buildPct / 40) : 0;
 
+  let amort = 0;
+  let interest = 0;
 
-    if (y && y > interestOnlyYears) {
-      owed = Math.max(0, Math.round(owed * (1 + rLoan) - annualRepayment));
-    } else if (y) {
-      owed = Math.round(owed * (1 + rLoan)); // interest accrues but no repayment
-    }
-
+  if (y && y <= interestOnlyYears) {
+    interest = Math.round(owed * rLoan);   // Pay only interest
+    // owed remains unchanged
+  } else if (y) {
+    interest = Math.round(owed * rLoan);
+    owed = Math.max(0, Math.round(owed + interest - annualRepayment)); // accrue + repay
+    amort = annualRepayment - interest; // portion that reduces debt
+  }
 
 
     const equity = propVal - owed;
