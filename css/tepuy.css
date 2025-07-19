@@ -153,7 +153,7 @@ tr:nth-child(even) { background: #fafafa; }
 .results-table td.highlight,
 .results-table th.highlight {
   background-color: var(--brand-green-light);
-  font-weight: 600;
+  font-weight: bold;
 }
 /* --- Results Table Styling ----------------------- */
 .results-table.centered {
