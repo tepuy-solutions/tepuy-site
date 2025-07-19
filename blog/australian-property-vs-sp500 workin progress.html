@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Compare the long-term performance of Australian property vs the S&P 500 (AUD-adjusted). See charts, trends, and indexed returns from 1975 to 2025.">
+  <meta property="og:title" content="Australian Property vs S&P 500 – Tepuy Solutions">
+  <meta property="og:image" content="/img/summary-infographic.png">
+  <title>Australian Property vs S&P 500 | Tepuy Solutions</title>
+  <link rel="stylesheet" href="/css/tepuy.css" />
+  <link rel="icon" href="/img/favicon.png" type="image/png">
+</head>
+<body>
+  <header id="navbar-placeholder"></header>
+  <script>
+    fetch("/includes/navbar.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("navbar-placeholder").innerHTML = html;
+        document.getElementById('menuToggle').onclick = () =>
+          document.querySelector('.nav-links').classList.toggle('show');
+      });
+  </script>
+
+  <main class="content-wrapper">
+    <h1>Australian Property vs. S&P 500 (1975–2025): A Comparative Analysis</h1>
+    <p>This article explores the historical investment performance of Australian property and the S&P 500 (in AUD terms) over the past 50 years, unpacking trends in prices, interest rates, wages, and risk dynamics to inform long-term investors.</p>
+
+    <h2>1. Indexed Growth: House Prices vs Wages</h2>
+    <figure>
+      <img src="/img/charts/tepuy_indexed_house_vs_wage_watermarked.png" alt="House vs Wage Index" loading="lazy">
+      <figcaption><strong>Figure 1:</strong> Since 1975, house prices have grown ~48x while wages have increased ~10x. This illustrates a persistent and widening gap in affordability. <em>Source: ABS, CoreLogic</em></figcaption>
+    </figure>
+    <p><strong>Insight:</strong> The disconnect between income growth and property prices highlights why housing affordability has become a central concern in policy and investment discussions. Investors benefit, but new entrants are increasingly locked out.</p>
+
+    <h2>2. Cash Rate vs Housing Growth</h2>
+    <figure>
+      <img src="/img/charts/chart-cash-vs-growth.png" alt="Interest vs Growth" loading="lazy">
+      <figcaption><strong>Figure 2:</strong> RBA cash rates vs annual house price growth, showing inverse correlation. <em>Source: RBA, CoreLogic</em></figcaption>
+    </figure>
+    <p><strong>Insight:</strong> Low interest rates post-2010 stimulated housing markets. However, the rate hikes of 2022+ already show signs of cooling prices. Monetary policy remains a powerful tool in controlling asset inflation.</p>
+
+    <h2>3. Indexed Performance: Property vs S&P 500 (AUD)</h2>
+    <figure>
+      <img src="/img/charts/chart-sp500-vs-property.png" alt="S&P 500 vs Property" loading="lazy">
+      <figcaption><strong>Figure 3:</strong> Indexed from base 100 in 1975, S&P 500 (AUD-adjusted) has grown ~130x, while Australian property has grown ~48x. <em>Sources: Yahoo Finance, RBA FX, CoreLogic</em></figcaption>
+    </figure>
+    <p><strong>Insight:</strong> Despite more volatility, the S&P 500 has outpaced Australian property significantly over time. This underscores the growth potential of equities—especially with reinvested dividends and long holding periods.</p>
+
+    <h2>4. Summary Infographic: Property vs Shares</h2>
+    <figure>
+      <img src="/img/charts/summary-infographic.png" alt="Summary Comparison" loading="lazy">
+      <figcaption><strong>Figure 4:</strong> Returns, risk, liquidity, accessibility and key drivers of both asset classes. <em>Source: Tepuy Solutions</em></figcaption>
+    </figure>
+
+    <h2>5. Deeper Dive: Supporting Evidence & Comparisons</h2>
+
+    <figure>
+      <img src="/img/charts/chart-house-vs-sp500.png" alt="House vs S&P 500 Indexed" loading="lazy">
+      <figcaption><strong>Figure 5:</strong> Median house price vs S&P 500 growth trajectory. <em>Sources: CoreLogic, Yahoo Finance, RBA</em></figcaption>
+    </figure>
+    <p>The S&P 500, adjusted to AUD, compounded over 13,000% from 1975 to 2025, compared to ~4,800% for housing. Equity returns included dividends and reinvestment, while property data reflected capital gains only. The stability of property comes at the cost of opportunity.</p>
+
+    <figure>
+      <img src="/img/charts/chart-house-vs-wages-indexed.png" alt="House vs Wage Indexed" loading="lazy">
+      <figcaption><strong>Figure 6:</strong> Indexed comparison of house prices vs wages from 1975. <em>Source: ABS</em></figcaption>
+    </figure>
+    <p>Housing prices accelerated far beyond wage growth, particularly after 2000. This was fueled by low interest rates, urban demand pressures, and investor activity. Wage stagnation, by contrast, reflects broader economic productivity and demographic shifts.</p>
+
+    <h2>6. Final Observations</h2>
+    <ul>
+      <li><strong>Volatility:</strong> Equities endure more short-term shocks but reward patience. Property offers smoother curves but is capital-intensive and illiquid.</li>
+      <li><strong>Accessibility:</strong> Shares are globally accessible and easy to diversify. Property carries frictional costs and higher entry thresholds.</li>
+      <li><strong>Performance:</strong> Historically, the S&P 500 has delivered higher cumulative returns for AUD investors—especially with long-term compounding.</li>
+    </ul>
+
+    <h2>7. Try the Calculator</h2>
+    <div style="margin-top: 40px; text-align: center;">
+      <p style="font-size: 1.1em;">📊 See what works best for you:</p>
+      <a href="https://tepuysolutions.com/calculators/property_vs_shares" class="cta-button">Launch Property vs Shares Calculator</a>
+    </div>
+
+    <section class="references">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.cotality.com/au/our-data/indices" target="_blank">CoreLogic / Cotality</a></li>
+        <li><a href="https://www.abs.gov.au/" target="_blank">Australian Bureau of Statistics (ABS)</a></li>
+        <li><a href="https://www.rba.gov.au/statistics/" target="_blank">Reserve Bank of Australia (RBA)</a></li>
+        <li><a href="https://finance.yahoo.com/" target="_blank">Yahoo Finance</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="ts-footer">
+    <div class="content-wrapper">
+      © 2025 Tepuy Solutions
+    </div>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    menuToggle?.addEventListener('click', () => {
+      navMenu.classList.toggle('show');
+    });
+    document.querySelectorAll('.sub-toggle').forEach(btn =>
+      btn.onclick = () => btn.parentElement.classList.toggle('open'));
+  </script>
+
+  <style>
+    .has-sub { position: relative; }
+    .sub-toggle {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      font: inherit;
+      margin-left: 20px;
+    }
+    .sub-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--brand-green-dark);
+      padding: 8px 0;
+      border-radius: 4px;
+      min-width: 180px;
+      z-index: 999;
+    }
+    .sub-menu a {
+      display: block;
+      padding: 8px 18px;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .has-sub.open .sub-menu {
+      display: block;
+    }
+    @media(max-width:768px) {
+      .sub-toggle { margin: 10px 0; font-size: 1.1rem; }
+      .sub-menu { position: static; }
+      .nav-links { display: none; flex-direction: column; gap: 14px; }
+      .nav-links.show { display: flex; }
+      .hamburger { display: block; }
+    }
+  </style>
+</body>
+</html>
