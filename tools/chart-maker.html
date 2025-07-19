@@ -42,7 +42,7 @@
     .chart-container {
       position: relative;
       width: 100%;
-      height: 400px; /* Constrain the chart height */
+      height: 400px;
       margin-top: 2rem;
     }
     canvas {
@@ -98,10 +98,97 @@
       const codeBlock = document.getElementById('chartCodeBlock');
       let chartInstance;
 
+      // Fallback function
+      function createTepuyStyledChart(ctx, labels, data1, data2, label1 = 'Dataset 1', label2 = 'Dataset 2', xAxisLabel = 'Year') {
+        return new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [
+              {
+                label: label1,
+                data: data1,
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.08)',
+                borderWidth: 3,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                fill: true,
+                tension: 0.35,
+              },
+              {
+                label: label2,
+                data: data2,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.08)',
+                borderWidth: 3,
+                pointRadius: 3,
+                pointHoverRadius: 5,
+                fill: true,
+                tension: 0.35,
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: 20 },
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: {
+                  font: { family: 'Inter', size: 14, weight: '600' },
+                  color: '#163f30',
+                  boxWidth: 18,
+                  boxHeight: 18,
+                  usePointStyle: true,
+                  pointStyle: 'circle'
+                }
+              },
+              tooltip: {
+                backgroundColor: '#163f30',
+                titleFont: { family: 'Inter', weight: '700' },
+                bodyFont: { family: 'Inter' },
+                cornerRadius: 4
+              }
+            },
+            scales: {
+              x: {
+                title: {
+                  display: true,
+                  text: xAxisLabel,
+                  font: { family: 'Inter', size: 14, weight: '600' },
+                  color: '#0b1f16'
+                },
+                ticks: {
+                  color: '#0b1f16',
+                  maxTicksLimit: 12,
+                  font: { family: 'Inter', size: 12 }
+                },
+                grid: { color: '#e0e0e0' }
+              },
+              y: {
+                title: {
+                  display: true,
+                  text: 'Value (AUD)',
+                  font: { family: 'Inter', size: 14, weight: '600' },
+                  color: '#0b1f16'
+                },
+                ticks: {
+                  callback: v => v.toLocaleString('en-AU'),
+                  color: '#0b1f16',
+                  font: { family: 'Inter', size: 12 }
+                },
+                grid: { color: '#e0e0e0' }
+              }
+            }
+          }
+        });
+      }
+
       form.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        // Parse inputs with stricter validation
         const labels = document.getElementById('xLabels').value.split(',').map(s => s.trim()).filter(s => s !== '');
         const y1 = document.getElementById('y1').value.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
         const y2 = document.getElementById('y2').value.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
@@ -109,7 +196,6 @@
         const label2 = document.getElementById('label2').value.trim() || "Dataset 2";
         const xAxisLabel = document.getElementById('xAxisLabel').value.trim() || "Year";
 
-        // Validate inputs
         if (labels.length === 0 || y1.length === 0) {
           alert('Please provide valid X-axis labels and Y1 data.');
           return;
@@ -123,12 +209,10 @@
           return;
         }
 
-        // Create or update chart
         const ctx = document.getElementById('outputChart').getContext('2d');
         if (chartInstance) chartInstance.destroy();
         chartInstance = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, xAxisLabel);
 
-        // Generate embed code
         const chartCode = `
 <canvas id="myChart" width="800" height="400"></canvas>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
