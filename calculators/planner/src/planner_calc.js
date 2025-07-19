@@ -22,6 +22,9 @@ function calculatePlanner() {
   const buildPct = pct("buildingComponent");
   const taxRate = pct("taxBracket");
   const saleTaxRate = parseFloat($("retireTaxBracket").value) / 100 || 0;
+  const interestOnlyEnabled = $("interestOnlyToggle").checked;
+  const interestOnlyYears = interestOnlyEnabled ? num("interestOnlyYears") : 0;
+
 
   const yrsRet = num("yearsToRetirement");
   const salePct = pct("saleCostPct");
@@ -71,7 +74,14 @@ function calculatePlanner() {
     if (y) propVal = Math.round(propVal * (1 + growProp));
     const ownCost = y ? Math.round(propVal * (ownPct + agentPct)) : 0;
     const depr = y ? Math.round(price * buildPct / 40) : 0;
-    const amort = y ? Math.round(annualRepayment - interest) : 0;
+    let amort = 0;
+    if (y && y <= interestOnlyYears) {
+      amort = 0; // Interest-only period
+    } else if (y) {
+      amort = Math.round(annualRepayment - interest);
+    }
+
+
     if (y) owed = Math.max(0, Math.round(owed * (1 + rLoan) - annualRepayment));
 
 

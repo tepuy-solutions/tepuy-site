@@ -44,6 +44,14 @@
     <label>Building Component (%) <input id="buildingComponent" type="number" value="50" /></label>
     <label>Loan Period (yrs) <input id="loanPeriod" type="number" value="30" /></label>
     <label>Interest Rate (%) <input id="loanInterestRate" type="number" value="6.5" /></label>
+    <label>
+      <input type="checkbox" id="interestOnlyToggle" onchange="document.getElementById('interestOnlyYearsWrap').style.display = this.checked ? 'block' : 'none';" />
+      Interest-Only Loan Period?
+    </label>
+    <div id="interestOnlyYearsWrap" style="display:none;">
+    <label>Interest-Only Period (yrs) <input id="interestOnlyYears" type="number" value="0" /></label>
+</div>
+
   </fieldset>
 
   <fieldset>
