@@ -885,7 +885,31 @@ figure img {
   background-position: center;
   background-repeat: no-repeat;
 }
+/* === Blog-Specific Button (Visible on All Screens) === */
+.blog-button {
+  display: inline-block;                /* Allows padding + centering */
+  background-color: var(--accent);      /* Same green as .cta-button */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  margin: 20px auto;                   /* Centers horizontally */
+}
 
+.blog-button:hover {
+  background-color: #218838;            /* Darker green on hover */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .blog-button {
+    width: 100%;                       /* Full width on small screens */
+    max-width: 280px;                  /* Optional: Limits max width */
+  }
+}
 
 
 
