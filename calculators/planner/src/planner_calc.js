@@ -198,7 +198,7 @@ chart = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, 'Projection 
   const sharesCols = [16,17,18,19,20,21,22,23,24,25,26,27];
 
   const htmlRows = rows.slice(1).map(r => `<tr>${r.map((c, i) => {
-    const cls = [3, 23].includes(i) ? ' highlight' : '';
+    const cls = [3, 24].includes(i) ? ' highlight' : '';
     const colClass = propertyCols.includes(i) ? 'property' :
                      sharesCols.includes(i) ? 'shares' : '';
     return `<td class="${colClass}${cls}">${fmt(c)}</td>`;
@@ -206,7 +206,7 @@ chart = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, 'Projection 
 
   $("results").innerHTML = `<table class="results-table">
     <thead><tr>${rows[0].map((h, i) => {
-      const cls = [3, 23].includes(i) ? ' highlight' : '';
+      const cls = [3, 24].includes(i) ? ' highlight' : '';
       const colClass = propertyCols.includes(i) ? 'property' :
                        sharesCols.includes(i) ? 'shares' : '';
       return `<th class="${colClass}${cls}">${h}</th>`;
