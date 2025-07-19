@@ -31,18 +31,19 @@
   <!-- Navbar -->
   <div id="navbar-placeholder"></div>
   <script>
+
 fetch("/includes/navbar.html")
   .then(res => res.text())
   .then(html => {
     document.getElementById("navbar-placeholder").innerHTML = html;
 
-    // ✅ Add event listener *after* navbar is inserted
+    // 👇 Do NOT wait for DOMContentLoaded — do this directly
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
     if (menuToggle && navMenu) {
-      menuToggle.addEventListener('click', () => {
+      menuToggle.onclick = () => {
         navMenu.classList.toggle('show');
-      });
+      };
     }
 
     document.querySelectorAll('.sub-toggle').forEach(btn =>
