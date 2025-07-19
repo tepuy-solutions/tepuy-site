@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tepuy Chart Maker</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="/css/tepuy.css" />
+  <style>
+    body {
+      max-width: 800px;
+      margin: 2rem auto;
+      font-family: Inter, sans-serif;
+      padding: 1rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-top: 0.3rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--brand-green-dark, #163f30);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    canvas {
+      margin-top: 2rem;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 1rem;
+      margin-top: 2rem;
+      overflow-x: auto;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔒 Tepuy Chart Maker (Private Tool)</h1>
+
+  <form id="chartForm">
+    <label for="xLabels">X-Axis (comma-separated)</label>
+    <input type="text" id="xLabels" value="1975,1980,1985,1990,1995,2000,2005,2010,2015,2020,2025" />
+
+    <label for="y1">Y1 Data (comma-separated)</label>
+    <input type="text" id="y1" value="1,1.8,2.5,3.5,5.0,7.2,12.0,18.0,25.0,38.0,48.0" />
+    <input type="text" id="label1" value="House Prices" placeholder="Label for Y1" />
+
+    <label for="y2">Y2 Data (optional, comma-separated)</label>
+    <input type="text" id="y2" value="1,1.3,1.7,2.2,2.8,3.5,5.0,6.5,8.0,9.5,10.0" />
+    <input type="text" id="label2" value="Wages" placeholder="Label for Y2" />
+
+    <label for="xAxisLabel">X-Axis Label</label>
+    <input type="text" id="xAxisLabel" value="Year" />
+
+    <button type="submit">Generate Chart</button>
+  </form>
+
+  <canvas id="outputChart" style="width:100%; height:400px;"></canvas>
+
+  <h2>📋 Copy This for Blog Embeds</h2>
+  <pre id="chartCodeBlock">&lt;canvas id="myChart"&gt;&lt;/canvas&gt;
+&lt;script&gt;
+// Your chart script here
+&lt;/script&gt;</pre>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/tepuy-charts.js"></script>
+  <script>
+    const form = document.getElementById('chartForm');
+    const codeBlock = document.getElementById('chartCodeBlock');
+    let chartInstance;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const labels = document.getElementById('xLabels').value.split(',').map(s => s.trim());
+      const y1 = document.getElementById('y1').value.split(',').map(Number);
+      const y2 = document.getElementById('y2').value.split(',').map(Number);
+      const label1 = document.getElementById('label1').value.trim() || "Dataset 1";
+      const label2 = document.getElementById('label2').value.trim() || "Dataset 2";
+      const xAxisLabel = document.getElementById('xAxisLabel').value.trim();
+
+      const ctx = document.getElementById('outputChart').getContext('2d');
+      if (chartInstance) chartInstance.destroy();
+      chartInstance = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, xAxisLabel);
+
+      // Generate copy-paste code block
+      const chartCode = `
+&lt;canvas id="myChart"&gt;&lt;/canvas&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;
+&lt;script src="/js/tepuy-charts.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const labels = [${labels.map(l => `"${l}"`).join(', ')}];
+  const y1 = [${y1.join(', ')}];
+  const y2 = [${y2.join(', ')}];
+  createTepuyStyledChart(ctx, labels, y1, y2, "${label1}", "${label2}", "${xAxisLabel}");
+&lt;/script&gt;`.trim();
+
+      codeBlock.innerHTML = chartCode;
+    });
+  </script>
+</body>
+</html>

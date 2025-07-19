@@ -27,44 +27,47 @@
     <p>This article explores the historical investment performance of Australian property and the S&P 500 (in AUD terms) over the past 50 years, unpacking trends in prices, interest rates, wages, and risk dynamics to inform long-term investors.</p>
 
     <h2>1. Indexed Growth: House Prices vs Wages</h2>
-    <figure>
-      <img src="/img/charts/tepuy_indexed_house_vs_wage_watermarked.png" alt="House vs Wage Index" loading="lazy">
-      <figcaption><strong>Figure 1:</strong> Since 1975, house prices have grown ~48x while wages have increased ~10x. This illustrates a persistent and widening gap in affordability. <em>Source: ABS, CoreLogic</em></figcaption>
-    </figure>
+<figure>
+  <canvas id="indexedChart1" style="max-width:100%; height:400px;"></canvas>
+  <figcaption><strong>Figure 1:</strong> Indexed House Prices vs Wages <em>Source: ABS</em>.</figcaption>
+</figure>
+
     <p><strong>Insight:</strong> The disconnect between income growth and property prices highlights why housing affordability has become a central concern in policy and investment discussions. Investors benefit, but new entrants are increasingly locked out.</p>
 
     <h2>2. Cash Rate vs Housing Growth</h2>
-    <figure>
-      <img src="/img/charts/chart-cash-vs-growth.png" alt="Interest vs Growth" loading="lazy">
-      <figcaption><strong>Figure 2:</strong> RBA cash rates vs annual house price growth, showing inverse correlation. <em>Source: RBA, CoreLogic</em></figcaption>
-    </figure>
+<figure>
+  <canvas id="indexedChart2" style="max-width:100%; height:400px;"></canvas>
+  <figcaption><strong>Figure 2:</strong> Cash Rate vs Housing. <em>Source: ABS</em>.</figcaption>
+</figure>
     <p><strong>Insight:</strong> Low interest rates post-2010 stimulated housing markets. However, the rate hikes of 2022+ already show signs of cooling prices. Monetary policy remains a powerful tool in controlling asset inflation.</p>
 
     <h2>3. Indexed Performance: Property vs S&P 500 (AUD)</h2>
-    <figure>
-      <img src="/img/charts/chart-sp500-vs-property.png" alt="S&P 500 vs Property" loading="lazy">
-      <figcaption><strong>Figure 3:</strong> Indexed from base 100 in 1975, S&P 500 (AUD-adjusted) has grown ~130x, while Australian property has grown ~48x. <em>Sources: Yahoo Finance, RBA FX, CoreLogic</em></figcaption>
-    </figure>
+<figure>
+  <canvas id="indexedChart3" style="max-width:100%; height:400px;"></canvas>
+  <figcaption><strong>Figure 3:</strong> Property vs S&P 500. <em>Source: ABS</em>.</figcaption>
+</figure>
+
     <p><strong>Insight:</strong> Despite more volatility, the S&P 500 has outpaced Australian property significantly over time. This underscores the growth potential of equities—especially with reinvested dividends and long holding periods.</p>
 
     <h2>4. Summary Infographic: Property vs Shares</h2>
-    <figure>
-      <img src="/img/charts/summary-infographic.png" alt="Summary Comparison" loading="lazy">
-      <figcaption><strong>Figure 4:</strong> Returns, risk, liquidity, accessibility and key drivers of both asset classes. <em>Source: Tepuy Solutions</em></figcaption>
-    </figure>
+<figure>
+  <canvas id="indexedChart4" style="max-width:100%; height:400px;"></canvas>
+  <figcaption><strong>Figure 4:</strong> Summary Infographic. <em>Source: ABS</em>.</figcaption>
+</figure>
 
     <h2>5. Deeper Dive: Supporting Evidence & Comparisons</h2>
 
-    <figure>
-      <img src="/img/charts/chart-house-vs-sp500.png" alt="House vs S&P 500 Indexed" loading="lazy">
-      <figcaption><strong>Figure 5:</strong> Median house price vs S&P 500 growth trajectory. <em>Sources: CoreLogic, Yahoo Finance, RBA</em></figcaption>
-    </figure>
+<figure>
+  <canvas id="indexedChart5" style="max-width:100%; height:400px;"></canvas>
+  <figcaption><strong>Figure 5:</strong> Additional Indexed Comparison. <em>Source: ABS</em>.</figcaption>
+</figure>
+
     <p>The S&P 500, adjusted to AUD, compounded over 13,000% from 1975 to 2025, compared to ~4,800% for housing. Equity returns included dividends and reinvestment, while property data reflected capital gains only. The stability of property comes at the cost of opportunity.</p>
 
-    <figure>
-      <img src="/img/charts/chart-house-vs-wages-indexed.png" alt="House vs Wage Indexed" loading="lazy">
-      <figcaption><strong>Figure 6:</strong> Indexed comparison of house prices vs wages from 1975. <em>Source: ABS</em></figcaption>
-    </figure>
+<figure>
+  <canvas id="indexedChart6" style="max-width:100%; height:400px;"></canvas>
+  <figcaption><strong>Figure 6:</strong> Post-2000 Acceleration Effects. <em>Source: ABS</em>.</figcaption>
+</figure>
     <p>Housing prices accelerated far beyond wage growth, particularly after 2000. This was fueled by low interest rates, urban demand pressures, and investor activity. Wage stagnation, by contrast, reflects broader economic productivity and demographic shifts.</p>
 
     <h2>6. Final Observations</h2>
@@ -145,5 +148,27 @@
       .hamburger { display: block; }
     }
   </style>
+<!-- Chart.js + Tepuy Chart Template -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/tepuy-charts.js"></script>
+
+<script>
+  const years = [
+    "1975", "1980", "1985", "1990", "1995", "2000",
+    "2005", "2010", "2015", "2020", "2025"
+  ];
+  const houseIndex = [1, 1.8, 2.5, 3.5, 5.0, 7.2, 12.0, 18.0, 25.0, 38.0, 48.0];
+  const wageIndex  = [1, 1.3, 1.7, 2.2, 2.8, 3.5, 5.0, 6.5, 8.0, 9.5, 10.0];
+
+  for (let i = 1; i <= 6; i++) {
+    const canvas = document.getElementById(`indexedChart${i}`);
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      createTepuyStyledChart(ctx, years, houseIndex, wageIndex, "Median House Price Index", "Wage Index", "Year");
+    }
+  }
+</script>
+
+
 </body>
 </html>
