@@ -31,13 +31,12 @@
   <!-- Navbar -->
   <div id="navbar-placeholder"></div>
   <script>
-    fetch("/includes/navbar.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("navbar-placeholder").innerHTML = html;
-      });
+fetch("/includes/navbar.html")
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById("navbar-placeholder").innerHTML = html;
 
-    // Navbar menu toggle
+    // ✅ Add event listener *after* navbar is inserted
     const menuToggle = document.getElementById('menuToggle');
     const navMenu = document.getElementById('navMenu');
     if (menuToggle && navMenu) {
@@ -46,10 +45,10 @@
       });
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll('.sub-toggle').forEach(btn =>
-        btn.onclick = () => btn.parentElement.classList.toggle('open'));
-    });
+    document.querySelectorAll('.sub-toggle').forEach(btn =>
+      btn.onclick = () => btn.parentElement.classList.toggle('open'));
+  });
+
   </script>
 
   <section class="hero">
