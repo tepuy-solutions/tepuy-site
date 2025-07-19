@@ -28,29 +28,20 @@
 </head>
 
 <body>
-  <!-- Navbar -->
-  <div id="navbar-placeholder"></div>
-  <script>
+<!-- ───────── NAVBAR (dropdown + mobile) ───────── -->
+<div id="navbar-placeholder"></div>
 
-fetch("/includes/navbar.html")
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById("navbar-placeholder").innerHTML = html;
+<script>
+  fetch("/includes/navbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("navbar-placeholder").innerHTML = html;
 
-    // 👇 Do NOT wait for DOMContentLoaded — do this directly
-    const menuToggle = document.getElementById('menuToggle');
-    const navMenu = document.getElementById('navMenu');
-    if (menuToggle && navMenu) {
-      menuToggle.onclick = () => {
-        navMenu.classList.toggle('show');
-      };
-    }
-
-    document.querySelectorAll('.sub-toggle').forEach(btn =>
-      btn.onclick = () => btn.parentElement.classList.toggle('open'));
-  });
-
-  </script>
+      // Enable mobile toggle after navbar is injected
+      document.getElementById('menuToggle').onclick = () =>
+        document.querySelector('.nav-links').classList.toggle('show');
+    });
+</script>
 
   <section class="hero">
     <h1>Retirement Goal Calculator</h1>
@@ -85,47 +76,58 @@ fetch("/includes/navbar.html")
     </p>
   </main>
 
-  <footer>© 2025 Tepuy Solutions</footer>
+<!-- ───────── JS: menu toggle & sub-menu ───────── -->
+<script>
+  const menuToggle = document.getElementById('menuToggle');
+  const navMenu = document.getElementById('navMenu');
+  menuToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('show');
+  });
 
-  <!-- Scoped dropdown menu styling -->
-  <style>
-    .has-sub { position: relative; }
-    .sub-toggle {
-      background: none;
-      border: none;
-      color: var(--text-light);
-      cursor: pointer;
-      font: inherit;
-      margin-left: 20px;
-    }
-    .sub-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background: var(--brand-green-dark);
-      padding: 8px 0;
-      border-radius: 4px;
-      min-width: 180px;
-      z-index: 999;
-    }
-    .sub-menu a {
-      display: block;
-      padding: 8px 18px;
-      color: #fff;
-      white-space: nowrap;
-    }
-    .has-sub.open .sub-menu {
-      display: block;
-    }
-    @media(max-width:768px) {
-      .sub-toggle { margin: 10px 0; font-size: 1.1rem; }
-      .sub-menu { position: static; }
-      .nav-links { display: none; flex-direction: column; gap: 14px; }
-      .nav-links.show { display: flex; }
-      .hamburger { display: block; }
-    }
-  </style>
+  document.querySelectorAll('.sub-toggle').forEach(btn =>
+    btn.onclick = () => btn.parentElement.classList.toggle('open'));
+</script>
+
+<!-- ───────── CSS: dropdown menu ───────── -->
+<style>
+  .has-sub { position: relative; }
+  .sub-toggle {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font: inherit;
+    margin-left: 20px;
+  }
+  .sub-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--brand-green-dark);
+    padding: 8px 0;
+    border-radius: 4px;
+    min-width: 180px;
+    z-index: 999;
+  }
+  .sub-menu a {
+    display: block;
+    padding: 8px 18px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .has-sub.open .sub-menu {
+    display: block;
+  }
+  @media(max-width:768px) {
+    .sub-toggle { margin: 10px 0; font-size: 1.1rem; }
+    .sub-menu { position: static; }
+    .nav-links { display: none; flex-direction: column; gap: 14px; }
+    .nav-links.show { display: flex; }
+    .hamburger { display: block; }
+  }
+</style>
+
   <script src="/js/retirement_calc.js"></script>
 
 </body>
