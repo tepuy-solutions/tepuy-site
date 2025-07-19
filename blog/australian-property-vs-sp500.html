@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Compare the long-term performance of Australian property vs the S&P 500 (AUD-adjusted). See charts, trends, and indexed returns from 1975 to 2025.">
-  <meta property="og:title" content="Australian Property vs S&P 500 – Tepuy Solutions">
-  <meta property="og:image" content="/img/summary-infographic.png">
+  <meta name="description" content="Compare the long-term performance of Australian property vs the S&P 500 (AUD-adjusted). See charts, trends, and indexed returns from 1975 to 2025." />
+  <meta property="og:title" content="Australian Property vs S&P 500 – Tepuy Solutions" />
+  <meta property="og:image" content="/img/summary-infographic.png" />
   <title>Australian Property vs S&P 500 | Tepuy Solutions</title>
   <link rel="stylesheet" href="/css/tepuy.css" />
-  <link rel="icon" href="/img/favicon.png" type="image/png">
+  <link rel="icon" href="/img/favicon.png" type="image/png" />
 </head>
 <body>
   <header id="navbar-placeholder"></header>
@@ -17,8 +17,7 @@
       .then(res => res.text())
       .then(html => {
         document.getElementById("navbar-placeholder").innerHTML = html;
-        document.getElementById('menuToggle').onclick = () =>
-          document.querySelector('.nav-links').classList.toggle('show');
+        document.getElementById('menuToggle').onclick = () => document.querySelector('.nav-links').classList.toggle('show');
       });
   </script>
 
@@ -38,14 +37,14 @@
       <figcaption><strong>Figure 1:</strong> Annual Growth Rates for Housing and Wages in Australia (1990–2024). <em>Source: ABS</em>.</figcaption>
     </figure>
     <p>Over the past three decades, Australian housing prices have significantly outpaced wage growth. House prices have averaged an annual growth rate of approximately 6%, while wages have grown at a modest 3% per year. However, housing prices exhibit much higher volatility, with sharp spikes during boom periods (e.g., early 2000s, post-COVID recovery) and occasional corrections.</p>
-<p><strong>Key Insight:</strong> The growing gap between housing prices and wages has strained affordability, particularly for younger Australians...</p>
+    <p><strong>Key Insight:</strong> The growing gap between housing prices and wages has strained affordability, particularly for younger Australians...</p>
 
     <h2>2. Long-Term Indexed Growth from 1975–2025</h2>
     <figure>
       <img src="/img/charts/indexed_house_vs_wages.png" alt="Indexed House Price vs Wage Index 1975–2025" />
       <figcaption><strong>Figure 2:</strong> Indexed Median House Price vs. Wage Growth since 1975. <em>Source: ABS</em>.</figcaption>
     </figure>
-<p>Taking a broader view from 1975, house prices have skyrocketed nearly <strong>48-fold</strong>, while wages have only increased around <strong>10-fold</strong>. This indexed comparison reinforces how housing has consistently outpaced income growth over nearly five decades. The chart below visualises this divergence and provides historical context for the affordability debate today.</p>
+    <p>Taking a broader view from 1975, house prices have skyrocketed nearly <strong>48-fold</strong>, while wages have only increased around <strong>10-fold</strong>. This indexed comparison reinforces how housing has consistently outpaced income growth over nearly five decades. The chart below visualises this divergence and provides historical context for the affordability debate today.</p>
 
     <h2>3. Interest Rates and Housing Price Growth (1975–2024)</h2>
     <figure>
@@ -79,7 +78,7 @@
     </ul>
     <p>Both asset classes have strengths and weaknesses. Diversifying across property and equities may offer the best balance for long-term wealth creation. For deeper insights or tailored investment strategies, consult a financial advisor or explore data-driven tools from providers like Tepuy Solutions.</p>
 
-    <h2>8. Try It Yourself</h2>
+    <h2>Try It Yourself</h2>
     <div style="margin-top: 40px; text-align: center;">
       <p style="font-size: 1.1em;">📊 Want to test different assumptions for your own situation?</p>
       <a href="https://tepuysolutions.com/calculators/property_vs_shares" class="cta-button">Launch Property vs Shares Calculator</a>
@@ -109,7 +108,8 @@
       navMenu.classList.toggle('show');
     });
     document.querySelectorAll('.sub-toggle').forEach(btn =>
-      btn.onclick = () => btn.parentElement.classList.toggle('open'));
+      btn.onclick = () => btn.parentElement.classList.toggle('open')
+    );
   </script>
 
   <style>
@@ -139,10 +139,8 @@
       color: #fff;
       white-space: nowrap;
     }
-    .has-sub.open .sub-menu {
-      display: block;
-    }
-    @media(max-width:768px) {
+    .has-sub.open .sub-menu { display: block; }
+    @media (max-width: 768px) {
       .sub-toggle { margin: 10px 0; font-size: 1.1rem; }
       .sub-menu { position: static; }
       .nav-links { display: none; flex-direction: column; gap: 14px; }
