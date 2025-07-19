@@ -59,7 +59,7 @@ function calculatePlanner() {
   const labels = [], equityArr = [], sharesArr = [], rows = [];
 
   rows.push([
-    "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid",
+    "Year", "Prop Value", "Owed", "Equity", "Rental Income", "Ownership Costs", "Interest Paid", "Amortization",
     "CF Before Tax", "Depreciation", "Taxable Income", "Tax", "Net CF",
     "Capital Gain (Prop)", "CGT if Sold (Prop)", "Sale Cost (Prop)", "Net Cash if Property Sold",
     "Equalizing Value of Shares Added/Sold", "CGT from Shares Sold",
@@ -169,7 +169,7 @@ for (let y = 0; y <= yrsRet; y++) {
     sharesArr.push(sharesValue);
 
     rows.push([
-      y, propVal, owed, equity, rent, ownCost, interest,
+      y, propVal, owed, equity, rent, ownCost, interest, amort,
       cfBeforeTax, depr, taxableIncome, tax, netCF,
       propCapGain, propCGT, saleCost, netCashProp,
       sharesAdj, cgtSharesSold,
