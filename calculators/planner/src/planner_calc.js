@@ -195,7 +195,7 @@ chart = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, 'Projection 
 
 
   const propertyCols = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-  const sharesCols = [16,17,18,19,20,21,22,23,24,25,26,27];
+  const sharesCols = [16,17,18,19,20,21,22,23,24,25,26,27,28];
 
   const htmlRows = rows.slice(1).map(r => `<tr>${r.map((c, i) => {
     const cls = [3, 24].includes(i) ? ' highlight' : '';
