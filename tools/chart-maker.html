@@ -82,7 +82,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/js/tepuy-charts.js"></script>
-  <script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById('chartForm');
     const codeBlock = document.getElementById('chartCodeBlock');
     let chartInstance;
@@ -101,7 +102,6 @@
       if (chartInstance) chartInstance.destroy();
       chartInstance = createTepuyStyledChart(ctx, labels, y1, y2, label1, label2, xAxisLabel);
 
-      // Generate copy-paste code block
       const chartCode = `
 &lt;canvas id="myChart"&gt;&lt;/canvas&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;
@@ -112,10 +112,13 @@
   const y1 = [${y1.join(', ')}];
   const y2 = [${y2.join(', ')}];
   createTepuyStyledChart(ctx, labels, y1, y2, "${label1}", "${label2}", "${xAxisLabel}");
-&lt;/script&gt;`.trim();
+&lt;/script&gt;
+`.trim();
 
       codeBlock.innerHTML = chartCode;
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
