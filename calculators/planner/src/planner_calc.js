@@ -38,7 +38,8 @@ function calculatePlanner() {
     return P * (rate * Math.pow(1 + rate, n)) / (Math.pow(1 + rate, n) - 1);
   }
 
-  const annualRepayment = calculateAnnualLoanPayment(loanAmt, rLoan, yrs);
+  const actualRepaymentYears = yrs - interestOnlyYears;
+  const annualRepayment = calculateAnnualLoanPayment(loanAmt, rLoan, actualRepaymentYears);
   const monthlyPayment = annualRepayment / 12;
 
   $("lmiOutput").textContent = fmt(lmiAmt);
@@ -82,7 +83,12 @@ function calculatePlanner() {
     }
 
 
-    if (y) owed = Math.max(0, Math.round(owed * (1 + rLoan) - annualRepayment));
+    if (y && y > interestOnlyYears) {
+      owed = Math.max(0, Math.round(owed * (1 + rLoan) - annualRepayment));
+    } else if (y) {
+      owed = Math.round(owed * (1 + rLoan)); // interest accrues but no repayment
+    }
+
 
 
     const equity = propVal - owed;
